@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+  </head>
+  <body style="font-family:Verdana;font-size:10pt;line-height:1.5;margin:0;">
+
+    <div class="site" style="width:580px;margin:0 auto;">
+
+      <table width="100%" border=0" cellpadding="0" cellspacing="0" style="border-bottom:3px solid #aee0f6;margin-bottom:16px;padding:17px 0;">
+        <tr>
+          <td><a href="/" target="_blank" style="text-decoration:none;"><div class="logo" style="color:#ff9933;font-size:16pt;font-weight:bold;">Rozario<span style="color:#00b050;">Flowers.Ru</span></div></a>
+          </td>
+          <td width="450" align="right"><a style="color:#ff9933;font-family:Verdana;font-size:8.5pt;" href="/user_accounts/profile" target="_blank">Войти в личный кабинет</a>
+          </td>
+        </tr>
+      </table>
+
+      <div style="color:#f26522;font-size:16pt;margin-bottom:22px;">Уважаемый <%= surname %>!</div>
+
+      <p style="margin-bottom:22px;"><%= date.strftime('%d.%m.%Y') %> вы совершили заказ в интернет-магазине <a href="/" target="_blank" style="text-decoration:none;"><span style="font-weight:bold;font-size:14pt;color:#ff9933;">Rozario<span style="color:#00b050;">Flowers</span>.Ru</span></a>. Хотим предложить Вам оформить заказ снова.</p>
+
+      <p style="margin-bottom:22px;">Информацию о Вашем заказе Вы можете получить в любой момент! Для этого нужно просто <b><a href="/sessions/new" target="_blank" style="color:#ff9933;">авторизоваться</a></b> на сайте <a href="/" target="_blank" style="text-decoration:none;"><span style="font-weight:bold;font-size:14pt;color:#ff9933;">Rozario<span style="color:#00b050;">Flowers</span>.Ru</span></a> и перейти в раздел <b>«<a href="/user_accounts/profile#orders-data" target="_blank" style="color:#ff9933;">Заказы</a>»</b>.</p>
+
+      <p><b>Служба поддержки</b><br>
+      Данное письмо отправлено автоматически и не требует ответа. Если у Вас остались вопросы, пожалуйста, задайте их через <b><a href="/page/contacts#feedback-form" style="color:#ff9933;">форму обратной связи</a></b> на&nbsp;сайте.</p>
+
+      <p>Вы также можете обратиться в нашу службу по работе с клиентами по телефонам:<br>
+      8 (8152) 70-64-70<br>
+      8 (800) 250-64-70 (бесплатно по России)
+      </p>
+      <div>
+        <% if image_url.nil? %>
+          <img src="/<%= image_src %>" style="width: 100%;" />
+        <% else %>
+          <a href="/<%= image_url %>" target="_blank">
+            <img src="/<%= image_src %>" style="width: 100%;" />
+          </a>
+          <% end %>
+      </div>
+
+      <div class="yb" style="background-color:#ff9933;">
+        <div style="text-align:center;padding-top:8px;">
+          <a href="/" style="color:#fff;">Букеты</a>&nbsp;&nbsp;
+          <a href="/category/1" style="color:#fff;">Срезанные цветы</a>&nbsp;&nbsp;
+          <a href="/category/2" style="color:#fff;">Комнатные растения</a>&nbsp;&nbsp;
+          <a href="/category/5" style="color:#fff;">Семена</a>&nbsp;&nbsp;
+          <a href="/category/77" style="color:#fff;">Грунт и Удобрения</a>
+        </div>
+        <table width="100%" border="0" style="font-family:Arial;font-size:11px;line-height:14px;padding:16px 0 12px;">
+          <tr>
+            <td width="25%" align="center" valign="top"><a style="color:#fff;text-decoration:none;" href="/page/opl"><img src="/images/micon1.png"><br>Оплата</a></td>
+            <td width="25%" align="center" valign="top"><a style="color:#fff;text-decoration:none;" href="/page/dostavka"><img style="position:relative;left:-8px;" src="/images/micon2.png"><br>Бесплатная курьерская доставка по Мурманску заказов от 6 000 р.</a></td>
+            <td width="25%" align="center" valign="top"><a style="color:#fff;text-decoration:none;" href="/page/vozvrat"><img src="/images/micon3.png" width="64"><br>Удобный<br>возврат товаров</a></td>
+            <td width="25%" align="center" valign="top"><a style="color:#fff;text-decoration:none;" href="/page/skidki"><img src="/images/micon4.png" width="60"><br>Скидки по дисконтным картам до 20%</a></td>
+          </tr>
+        </table>
+      </div>
+
+  
+      <table id="footer" width="100%" border="0" cellpadding="0" cellspacing="0">
+        <tr>
+          <td width="450"><div class="logo" style="padding:17px 0;color:#ff9933;font-size:16pt;font-weight:bold;"><a href="/" style="text-decoration:none;">Rozario<span style="color:#00b050;">Flowers.Ru</span></a></div></td>
+          <td align="right">
+            <div class="social">
+              <a href="http://vk.com/rozario.shop"><img src="/images/vk-icon24.png" alt=""></a>
+              <a href="http://www.facebook.com/rozario.shop"><img src="/images/fb-icon24.png" alt=""></a>
+            </div>
+          </td>
+        </tr>
+      </table>
+
+    </div>
+
+  </body>
+</html>

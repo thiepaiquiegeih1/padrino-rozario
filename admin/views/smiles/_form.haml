@@ -1,0 +1,270 @@
+-# coding: utf-8
+- error = @smile.errors.include?(:title)
+%fieldset.control-group{:class => error ? 'has-error' : ''}
+  =f.label :title, :class => 'control-label'
+  .controls
+    =f.text_field :title, :class => 'input-xlarge input-with-feedback', :autofocus => true
+    %span.help-inline=error ? f.error_message_on(:title, :class => 'text-error') : 'Заголовок'
+- error = @smile.errors.include?(:slug)
+%fieldset.control-group{:class => error ? 'has-error' : ''}
+  =f.label :slug, :class => 'control-label'
+  .controls
+    =f.text_field :slug, :class => 'input-xlarge input-with-feedback', :autofocus => true
+    %span.help-inline=error ? f.error_message_on(:slug, :class => 'text-error') : 'URI (по-умолчанию транслитерация поля title, повторения недопустимы)'
+
+- error = @smile.errors.include?(:date)
+%fieldset.control-group{:class => error ? 'has-error' : ''}
+  =f.label "Дата", :class => 'control-label'
+  .controls
+    =f.text_field :date, :class => 'input-xlarge input-with-feedback', :autofocus => true
+    %span.help-inline=error ? f.error_message_on(:date, :class => 'text-error') : 'Число месяц год'
+
+- error = @smile.errors.include?(:body)
+%fieldset.control-group{:class => error ? 'has-error' : ''}
+  =f.label :body, :class => 'control-label'
+  .controls
+    =f.text_area :body, :class => 'input-xlarge input-with-feedback ckeditor'
+    %span.help-inline=error ? f.error_message_on(:body, :class => 'text-error') : 'Текст'
+
+
+- error = @smile.errors.include?(:images)
+%fieldset.control-group{:class => error ? 'has-error' : ''}
+  =f.label "Фото", :class => 'control-label'
+
+  %div=image_tag(@smile.images, :class => 'img-rounded', :style => 'max-height:200px; margin: 10px 30px;') if @smile.images.present?
+  .img_preview{style: 'display:none; max-height:200px; margin-bottom: 15px;'}
+    %img#img_preview{style: 'margin: 10px 30px;'}/
+  .controls
+    %span.btn.btn-file
+      Загрузить
+      =f.file_field :images, :class => 'input-xlarge input-with-feedback', onchange: 'previewImg(this)'
+    %span.help-inline=error ? f.error_message_on(:images, :class => 'text-error') : 'Фото'
+
+- error = @smile.errors.include?(:alt)
+%fieldset.control-group{:class => error ? 'has-error' : ''}
+  =f.label "Alt", :class => 'control-label'
+  .controls
+    =f.text_field :alt, :class => 'input-xlarge input-with-feedback'
+    %span.help-inline=error ? f.error_message_on(:alt, :class => 'text-error') : 'Тег alt для изображения'
+
+%fieldset.control-group
+  =f.label "Продукт", :class => 'control-label'
+  #products.container-fluid{ style: "display: inline-block; margin-left: 15px; width: 80%;"}
+    - products = @product
+    .controls
+      %div
+      - val_names = @product_n
+      - val_complects = @product_c
+      %product-data{":components" => val_complects,
+                    ":names" => val_names,
+                    ":products" => @product}
+      %span.help-inline= 'id - Название продукта'
+
+- error = @smile.errors.include?(:rating)
+%fieldset.control-group{:class => error ? 'has-error' : ''}
+  =f.label "Рейтинг", :class => 'control-label'
+  .controls
+    =f.text_field :rating, type: "number", min: 1, max: 5, step: 0.5, :class => 'input-xlarge input-with-feedback'
+    %span.help-inline=error ? f.error_message_on(:rating, :class => 'text-error') : 'Рейтинг'
+
+- error = @smile.errors.include?(:sidebar)
+%fieldset.control-group{:class => error ? 'has-error' : ''}
+  =f.label "Выбрать для отображения в сайдбаре", :class => 'control-label'
+  .controls
+    =f.check_box :sidebar, :class => 'input-xlarge input-with-feedback'
+    %span.help-inline=error ? f.error_message_on(:sidebar, :class => 'text-error') : ''
+
+=partial 'seo/seo_fields', locals: { f: f, data: @smile, h1: false}
+
+.form-actions
+  =f.submit pat(:save), :class => 'btn btn-primary'
+  &nbsp;
+  =f.submit pat(:save_and_continue), :class => 'btn btn-info', :name => 'save_and_continue'
+  &nbsp;
+  =link_to pat(:cancel), url(:smiles, :index), :class => 'btn'
+
+:javascript
+  function previewImg(input) {
+    if (input.files && input.files[0]) {
+      var reader = new FileReader();
+      $('.img-rounded').css('display', 'none');
+      $('.img_preview').css('display', 'block');
+      reader.onload = function (e) {
+        $('#img_preview')
+          .attr('src', e.target.result)
+          .width('auto')
+          .height(200);
+      };
+
+      reader.readAsDataURL(input.files[0]);
+    }
+  }
+  Vue.component('v-select', VueSelect.VueSelect);
+  const ProductData = Vue.component('product-data', {
+    props: {
+      names:{
+        type: Array,
+        default: function(){
+          return [""]
+        }
+      },
+      components:{
+        type: Array,
+        default: function(){
+          return [""]
+        }
+      },
+      products:{
+        type: Array,
+        default: function(){
+          return []
+        }
+      },
+    },
+    data: function () {
+      return {
+        optionsNames: this.products,
+        optionsComponents: [],
+        productNames: this.names,
+        productComponents: this.components,
+        upd: false
+      }
+    },
+    computed: {
+      selected_names:{
+        get: function () {
+          return this.productNames
+        },
+        set: function (val) {
+          this.productNames = this.val
+        }
+      },
+      selected_components:{
+        get: function () {
+          return this.productComponents
+        },
+        set: function (val) {
+          this.productComponents = this.val
+        }
+      },
+      allComponents:{
+        get: function () {
+          return this.optionsComponents
+        },
+        set: function (val) {
+          this.optionsComponents = this.val
+        }
+      }
+    },
+    watch: {
+      productNames: function(val){
+        var data = this.productNames
+        this.optionsComponents = null;
+        this.optionsComponents = [];
+        var index = 0;
+        var ids = "";
+        var scope = this
+        data.forEach(function(val, i, arr) {
+          var v = val.split(' - ')[0];
+          if (v.length > 0) {
+            ids += 'product_id[' + i + ']=' + v;
+            if(arr.length > 1 && i < arr.length -1){
+              ids += "&";
+            }
+          }
+        });
+        fetch('/api/v1/orders/complects?'+ids)
+          .then((response) => {
+            if(response.ok) {
+              return response.json();
+            }
+            throw new Error('Network error');
+          })
+          .then((response) => {
+            response.forEach(function(val, i, arr) {
+              if(!val.includes(scope.productComponents[i])){
+                scope.productComponents[i] = val[0]
+              }
+              scope.allComponents.push(val);
+            });
+          })
+          .catch((error) => {
+              console.log(error);
+          });
+      }
+    },
+    methods: {
+      addProductInput(){
+        this.selected_names.push("");
+        this.selected_components.push("");
+      },
+      removeAll(){
+        this.productNames = [""];
+        this.productComponents = [""];
+      },
+      removeRow(index) {
+        this.selected_names.splice(index,1);
+        this.selected_components.splice(index,1);
+      },
+    },
+    mounted(){
+      if(this.names.length == 0){
+        this.selected_names.push("");
+        this.selected_components.push("");
+      } else {
+
+      }
+    },
+    template: `<div>
+                <ul style="width:90%; list-style:none;">
+                  <li
+                    v-for="(name, index) in selected_names"
+                    style="padding-bottom: 15px; width: 100%;"
+                  >
+                    <v-select
+                      v-model="selected_names[index]"
+                      :options="optionsNames"
+                      style="width: 500px; max-width: 500px; float: left; margin:5px 20px 5px 0"
+                     >
+                    </v-select>
+
+                    <v-select
+                      v-model="selected_components[index]"
+                      :options="allComponents[index]"
+                      style="float: left; width: 300px; max-width: 300px; margin:5px 0 5px 0"
+                     >
+                    </v-select>
+
+
+                    <button
+                      class="btn btn-primary"
+                      @click.prevent="removeRow(index)"
+                      @enter.prevent=""
+                      style="margin: 10px 0 0 10px; display: inline-block"
+                    >X</button>
+
+                    <input :value="selected_names[index]" :id="'smile_products_names['+index+']'" :name="'smile[order][products_names['+index+']]'" type="hidden">
+                    <input v-model="selected_components[index]" :id="'smile_products_components['+index+']'" :name="'smile[order][products_components['+index+']]'" type="hidden">
+                  </li>
+
+                </ul>
+
+                <div class="clearfix"></div>
+                <div>
+                  <button class="btn btn-primary" @click.prevent="addProductInput()">Добавить продукт</button>
+                  <button class="btn btn-primary" @click.prevent="removeAll() "@enter.prevent="">Удалить все</button>
+                </div>
+              </div>
+              `
+
+  });
+  new Vue({
+    el: '#products',
+    components: {'product-data': ProductData},
+    data: function() {
+      return {
+        productComplect: '',
+        options: []
+      }
+    },
+  });

@@ -1,0 +1,25 @@
+<% if @cart.blank? %>
+  <h2>Корзина</h2>
+  <p>Ваша корзина пуста. Перейдите в <a href="/">каталог букетов.</a></p>
+<% else %>
+  <div id=app></div>
+<% end %>
+
+<script type=module src=vue/js/chunk-vendors.a7c244bf.js></script>
+<script type=module src=vue/js/app.c2da5a71.js></script>
+<script>
+  ! function() {
+    var e = document,
+      t = e.createElement("script");
+    if (!("noModule" in t) && "onbeforeload" in t) {
+      var n = !1;
+      e.addEventListener("beforeload", function(e) {
+        if (e.target === t) n = !0;
+        else if (!e.target.hasAttribute("nomodule") || !n) return;
+        e.preventDefault()
+      }, !0), t.type = "module", t.src = ".", e.head.appendChild(t), t.remove()
+    }
+  }();
+</script>
+<script src=vue/js/chunk-vendors-legacy.289ba039.js nomodule></script>
+<script src=vue/js/app-legacy.57f46b3e.js nomodule></script>

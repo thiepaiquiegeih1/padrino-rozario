@@ -1,0 +1,17 @@
+- comment.date.present? ? d = comment.date.strftime("%d.%m.%Y") : d = comment.created_at.strftime("%d.%m.%Y")
+%article.comment-item{ style: 'padding: 8px 0;', :itemscope => "", :itemtype => "http://schema.org/Rating" }
+  %h3.name= comment.name
+  .date=d
+  - if comment.order_eight_digit_id.present?
+    .order-info{style: "font-size: 12px; color: #666; margin: 4px 0;"}
+      %small Отзыв к заказу #{comment.order_eight_digit_id}
+  .body{:itemprop => 'description'}!= comment.body
+  %div
+    %span.star-rating.mini{:content => comment.rating, :itemprop => "ratingValue"}
+      - rate = comment.rating
+      - (0...rate).each do |a|
+        %i
+    %span.star-rating.remainder.mini
+      - rmndr = 5 - rate
+      - (0...rmndr).each do |a|
+        %i

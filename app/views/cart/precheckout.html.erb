@@ -1,0 +1,67 @@
+﻿<h2>Авторизация</h2>
+<% if @cart.blank? %>
+  <p>Ваша корзина пуста.</p>
+<% else %>
+  <% if !current_account %>
+
+    <div id="precheckout" class="">
+      <div cg-busy="{promise:loginPromise,message:'Авторизация',templateUrl:'/busy.html'}"></div>
+      <div cg-busy="{promise:submitPromise,message:'Авторизация',templateUrl:'/busy.html'}"></div>
+      <div class="iboxr">
+        <input type="radio" id="dch1" ng-init="formData.newUser = 0" ng-model="formData.newUser" value="0" name="q">
+        <label for="dch1" style="cursor: pointer;">Я уже зарегистрирован</label>
+      </div>
+
+      <div ng-show="formData.newUser == 0" id="checkout-registered-user" style="margin: 1em 0 2em;">
+        <div class="error" ng-show="formData.loginError">Неверная почта или пароль</div>
+        <form name="loginForm" accept-charset="UTF-8" method="post" class="login form">
+          <div class="login-body modal-body">
+            <fieldset class="control-group">
+              <label for="email" class="login-input-label control-label">Эл. почта</label>
+              <div class="login-controls controls">
+                <input type="email" autofocus="autofocus" ng-model="formData.email" name="email" placeholder="user@yandex.ru" required>
+              </div>
+            </fieldset>
+            <fieldset class="control-group">
+              <label for="password" class="login-input-label control-label">Пароль</label>
+              <div class="login-controls controls">
+                <input type="password" name="password" ng-model="formData.password" placeholder="******" required>
+              </div>
+            </fieldset>
+          </div>
+          <div class="login-footer modal-footer">
+            <a class="btn btn-primary" ng-click="loginFormBack()">Назад</a>
+            <button type="submit" class="btn btn-primary" onclick="ym(21751030,'reachGoal','auth'); return true;"  ng-click="loginFormSubmit(loginForm.$valid)">Далее</button>
+            <a href="/sessions/password_lost" style="margin-left:12px;">Забыли пароль?</a>
+          </div>
+        </form>
+      </div>
+
+      <div class="iboxr">
+        <input type="radio" id="dch2" value="1" ng-model="formData.newUser" name="q">
+        <label for="dch2" style="cursor: pointer;">Я новый пользователь</label>
+      </div>
+      <div ng-show="formData.newUser == 1" id="checkout-new-user">
+        <%= partial 'user_accounts/form1' %>
+      </div>
+
+      <div>
+        <br>
+        <input type="radio" href="javascript:void(0)" onclick="window.location.href = '/cart#/cart/checkouts';">
+        <label for="dch3" style=""><a style="font-size: 16px; color: #43433A;" href="javascript:void(0)" onclick="window.location.href = '/cart#/cart/checkouts';">Пропустить авторизацию</a></label>
+        
+      </div>
+
+    </div>
+
+  <% end %>
+<% end %>
+
+<script>
+$(".iboxr input[type=radio]").on("click", function() {
+  if (!$("#" + $(this).attr("value")).hasClass("v")) {
+    $(".acch").slideUp('fast').removeClass("v");
+    $("#" + $(this).attr("value")).slideDown('fast').addClass("v");
+  }
+});
+</script>

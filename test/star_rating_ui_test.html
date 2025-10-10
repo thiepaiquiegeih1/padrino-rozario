@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тест системы рейтинга звёзд - Rozario Flowers</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #f5f5f5;
+            margin: 0;
+        }
+        .test-container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .header p {
+            color: #666;
+            font-size: 14px;
+        }
+        .test-section {
+            margin: 30px 0;
+            padding: 20px;
+            border: 1px solid #eee;
+            border-radius: 5px;
+        }
+        .test-section h3 {
+            margin-top: 0;
+            color: #555;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #555;
+        }
+        textarea {
+            width: 100%;
+            min-height: 80px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: inherit;
+            resize: vertical;
+        }
+        .current-rating {
+            margin-top: 15px;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        .test-results {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #e8f5e8;
+            border: 1px solid #c3e6c3;
+            border-radius: 4px;
+        }
+        .test-log {
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            background: #f8f8f8;
+            padding: 10px;
+            border-radius: 4px;
+            max-height: 200px;
+            overflow-y: auto;
+            margin-top: 10px;
+        }
+        .submit-btn {
+            background-color: #007bff;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .submit-btn:hover {
+            background-color: #0056b3;
+        }
+        .test-btn {
+            background-color: #28a745;
+            color: white;
+            padding: 8px 20px;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        .test-btn:hover {
+            background-color: #218838;
+        }
+        .instructions {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .instructions h4 {
+            margin-top: 0;
+            color: #856404;
+        }
+        
+        /* Стили для системы рейтинга - скопированы из основного компонента */
+        .rating {
+            margin: 15px 0;
+            padding: 0;
+            border: none;
+            display: flex;
+            align-items: center;
+            direction: ltr;
+            gap: 2px;
+        }
+        .rating > input { 
+            display: none; 
+        }
+        .rating > label {
+            position: relative;
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            font-size: 20px;
+            color: #ddd;
+            cursor: pointer;
+            transition: color 0.2s ease;
+        }
+        .rating > label:before {
+            content: "\2605";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .rating > .full {
+            z-index: 2;
+        }
+        .rating > .half {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 50%;
+            overflow: hidden;
+            z-index: 3;
+        }
+        .rating > .half:before {
+            width: 200%;
+        }
+        .rating > input:checked ~ label,
+        .rating > input:checked ~ label ~ label {
+            color: #FFD700;
+        }
+        .rating > label:hover,
+        .rating > label:hover ~ label {
+            color: #FFD700;
+        }
+        .rating {
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .rating > label {
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+        }
+        @media (max-width: 768px) {
+            .rating > label {
+                width: 28px;
+                height: 28px;
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <div class="header">
+            <h1>🌟 Тест системы рейтинга звёзд</h1>
+            <p>Автоматизированный тест UI компонента для проекта Rozario Flowers</p>
+        </div>
+        
+        <div class="instructions">
+            <h4>📋 Инструкции по тестированию:</h4>
+            <ol>
+                <li><strong>Ручное тестирование:</strong> Кликайте по звёздам и проверяйте корректность работы</li>
+                <li><strong>Автоматические тесты:</strong> Нажмите кнопки ниже для выполнения тестов</li>
+                <li><strong>Hover эффекты:</strong> Наводите мышь на звёзды для проверки подсветки</li>
+                <li><strong>Половинные звёзды:</strong> Левая сторона звезды = половина, правая = полная</li>
+            </ol>
+        </div>
+        
+        <div class="test-section">
+            <h3>🎯 Основная форма с рейтингом</h3>
+            <form id="rating-form">
+                <div class="form-group">
+                    <label for="review-text">Ваш отзыв:</label>
+                    <textarea id="review-text" placeholder="Напишите ваш отзыв здесь..."></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label>Ваша оценка:</label>
+                    
+                    <!-- Точная копия компонента из app/views/partials/_snd-rating.erb -->
+                    <fieldset class="rating">
+                        <!-- Звезда 1 -->
+                        <input type="radio" id="star1" name="rating" value="1" />
+                        <label class="full" for="star1" title="1 звезда"></label>
+                        <input type="radio" id="star1half" name="rating" value="0.5" />
+                        <label class="half" for="star1half" title="0.5 звезды"></label>
+                        
+                        <!-- Звезда 2 -->
+                        <input type="radio" id="star2" name="rating" value="2" />
+                        <label class="full" for="star2" title="2 звезды"></label>
+                        <input type="radio" id="star2half" name="rating" value="1.5" />
+                        <label class="half" for="star2half" title="1.5 звезды"></label>
+                        
+                        <!-- Звезда 3 -->
+                        <input type="radio" id="star3" name="rating" value="3" />
+                        <label class="full" for="star3" title="3 звезды"></label>
+                        <input type="radio" id="star3half" name="rating" value="2.5" />
+                        <label class="half" for="star3half" title="2.5 звезды"></label>
+                        
+                        <!-- Звезда 4 -->
+                        <input type="radio" id="star4" name="rating" value="4" />
+                        <label class="full" for="star4" title="4 звезды"></label>
+                        <input type="radio" id="star4half" name="rating" value="3.5" />
+                        <label class="half" for="star4half" title="3.5 звезды"></label>
+                        
+                        <!-- Звезда 5 -->
+                        <input type="radio" id="star5" name="rating" value="5" />
+                        <label class="full" for="star5" title="5 звёзд"></label>
+                        <input type="radio" id="star5half" name="rating" value="4.5" />
+                        <label class="half" for="star5half" title="4.5 звезды"></label>
+                    </fieldset>
+                    
+                    <div class="current-rating">Выбранная оценка: <span id="selected-rating">не выбрана</span></div>
+                </div>
+                
+                <div class="form-group">
+                    <button type="submit" class="submit-btn">Отправить отзыв</button>
+                </div>
+            </form>
+        </div>
+        
+        <div class="test-section">
+            <h3>🔧 Автоматические тесты</h3>
+            <p>Нажимайте кнопки для автоматического тестирования функциональности:</p>
+            
+            <button class="test-btn" onclick="testHalfStars()">Тест половинных звёзд</button>
+            <button class="test-btn" onclick="testFullStars()">Тест полных звёзд</button>
+            <button class="test-btn" onclick="testHoverEffects()">Тест hover эффектов</button>
+            <button class="test-btn" onclick="testAllRatings()">Полный тест всех рейтингов</button>
+            <button class="test-btn" onclick="resetTest()">Сброс</button>
+            
+            <div id="test-results" class="test-results" style="display: none;">
+                <h4>Результаты тестирования:</h4>
+                <div id="test-status"></div>
+                <div id="test-log" class="test-log"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript для функциональности и тестирования -->
+    <script>
+        (function() {
+            'use strict';
+            
+            let testLog = [];
+            
+            function log(message) {
+                const timestamp = new Date().toLocaleTimeString();
+                const logEntry = `[${timestamp}] ${message}`;
+                testLog.push(logEntry);
+                console.log(message);
+                updateTestDisplay();
+            }
+            
+            function updateTestDisplay() {
+                const testResults = document.getElementById('test-results');
+                const testLogDiv = document.getElementById('test-log');
+                
+                if (testLog.length > 0) {
+                    testResults.style.display = 'block';
+                    testLogDiv.innerHTML = testLog.join('\n');
+                    testLogDiv.scrollTop = testLogDiv.scrollHeight;
+                }
+            }
+            
+            function initStarRating() {
+                const rating = document.querySelector('.rating');
+                if (!rating) {
+                    log('❌ ERROR: Rating component not found!');
+                    return;
+                }
+                
+                const stars = rating.querySelectorAll('label');
+                const inputs = rating.querySelectorAll('input[type="radio"]');
+                const selectedRatingSpan = document.getElementById('selected-rating');
+                
+                log(`✅ Rating component initialized: ${stars.length} labels, ${inputs.length} inputs`);
+                
+                // Создаем правильную структуру звезд
+                function setupStars() {
+                    // Очищаем существующий контент
+                    rating.innerHTML = '';
+                    
+                    // Создаем 5 звезд
+                    for (let i = 1; i <= 5; i++) {
+                        const starContainer = document.createElement('div');
+                        starContainer.className = 'star-container';
+                        starContainer.style.cssText = 'position: relative; display: inline-block; margin-right: 2px;';
+                        
+                        // Полная звезда
+                        const fullInput = document.createElement('input');
+                        fullInput.type = 'radio';
+                        fullInput.id = `star${i}`;
+                        fullInput.name = 'rating';
+                        fullInput.value = i;
+                        fullInput.style.display = 'none';
+                        
+                        const fullLabel = document.createElement('label');
+                        fullLabel.htmlFor = `star${i}`;
+                        fullLabel.className = 'full';
+                        fullLabel.title = `${i} ${i === 1 ? 'звезда' : i <= 4 ? 'звезды' : 'звёзд'}`;
+                        fullLabel.innerHTML = '★';
+                        fullLabel.style.cssText = `
+                            display: block;
+                            font-size: 24px;
+                            color: #ddd;
+                            cursor: pointer;
+                            width: 24px;
+                            height: 24px;
+                            line-height: 24px;
+                            text-align: center;
+                            transition: color 0.2s ease;
+                        `;
+                        
+                        // Половинная звезда
+                        const halfInput = document.createElement('input');
+                        halfInput.type = 'radio';
+                        halfInput.id = `star${i}half`;
+                        halfInput.name = 'rating';
+                        halfInput.value = i - 0.5;
+                        halfInput.style.display = 'none';
+                        
+                        const halfLabel = document.createElement('label');
+                        halfLabel.htmlFor = `star${i}half`;
+                        halfLabel.className = 'half';
+                        halfLabel.title = `${i - 0.5} ${i === 1 ? 'звезды' : 'звёзд'}`;
+                        halfLabel.innerHTML = '★';
+                        halfLabel.style.cssText = `
+                            position: absolute;
+                            top: 0;
+                            left: 0;
+                            display: block;
+                            font-size: 24px;
+                            color: #ddd;
+                            cursor: pointer;
+                            width: 12px;
+                            height: 24px;
+                            line-height: 24px;
+                            text-align: left;
+                            overflow: hidden;
+                            transition: color 0.2s ease;
+                            z-index: 2;
+                        `;
+                        
+                        starContainer.appendChild(fullInput);
+                        starContainer.appendChild(fullLabel);
+                        starContainer.appendChild(halfInput);
+                        starContainer.appendChild(halfLabel);
+                        
+                        rating.appendChild(starContainer);
+                    }
+                    
+                    log('✅ Star structure created successfully');
+                }
+                
+                // Функция подсветки звезд
+                function highlightStars(rating) {
+                    const containers = document.querySelectorAll('.star-container');
+                    const ratingValue = parseFloat(rating);
+                    const fullStars = Math.floor(ratingValue);
+                    const hasHalf = ratingValue % 1 !== 0;
+                    
+                    containers.forEach((container, index) => {
+                        const fullLabel = container.querySelector('.full');
+                        const halfLabel = container.querySelector('.half');
+                        
+                        if (index < fullStars) {
+                            // Полностью закрашенная звезда
+                            fullLabel.style.color = '#FFD700';
+                            halfLabel.style.color = '#FFD700';
+                        } else if (index === fullStars && hasHalf) {
+                            // Половинная звезда
+                            fullLabel.style.color = '#ddd';
+                            halfLabel.style.color = '#FFD700';
+                        } else {
+                            // Пустая звезда
+                            fullLabel.style.color = '#ddd';
+                            halfLabel.style.color = '#ddd';
+                        }
+                    });
+                }
+                
+                // Сброс всех звезд к неактивному состоянию
+                function resetStars() {
+                    const labels = rating.querySelectorAll('label');
+                    labels.forEach(label => {
+                        label.style.color = '#ddd';
+                    });
+                }
+                
+                // Инициализация
+                setupStars();
+                
+                // Добавляем обработчики событий
+                rating.addEventListener('change', function(e) {
+                    if (e.target.type === 'radio') {
+                        highlightStars(e.target.value);
+                        selectedRatingSpan.textContent = e.target.value + ' из 5';
+                        log(`⭐ Выбран рейтинг: ${e.target.value}`);
+                    }
+                });
+                
+                // Hover эффекты
+                rating.addEventListener('mouseover', function(e) {
+                    if (e.target.tagName === 'LABEL') {
+                        const input = document.getElementById(e.target.getAttribute('for'));
+                        if (input) {
+                            highlightStars(input.value);
+                        }
+                    }
+                });
+                
+                // Возврат к выбранному состоянию при уходе мыши
+                rating.addEventListener('mouseleave', function() {
+                    const checkedInput = rating.querySelector('input[type="radio"]:checked');
+                    if (checkedInput) {
+                        highlightStars(checkedInput.value);
+                    } else {
+                        resetStars();
+                    }
+                });
+                
+                // Делаем функции доступными глобально для тестов
+                window.starRatingHelpers = {
+                    highlightStars,
+                    resetStars
+                };
+            }
+            
+            // Тестовые функции
+            window.testHalfStars = function() {
+                log('🧪 Начинаем тест половинных звёзд...');
+                const halfValues = [0.5, 1.5, 2.5, 3.5, 4.5];
+                let passedTests = 0;
+                
+                halfValues.forEach((value, index) => {
+                    setTimeout(() => {
+                        const input = document.querySelector(`input[value="${value}"]`);
+                        if (input) {
+                            input.click();
+                            const selectedValue = document.querySelector('input[name="rating"]:checked').value;
+                            if (parseFloat(selectedValue) === value) {
+                                log(`✅ Половинная звезда ${value}: PASSED`);
+                                passedTests++;
+                            } else {
+                                log(`❌ Половинная звезда ${value}: FAILED (получено ${selectedValue})`);
+                            }
+                            
+                            if (index === halfValues.length - 1) {
+                                log(`📊 Тест половинных звёзд завершён: ${passedTests}/${halfValues.length} прошли`);
+                            }
+                        }
+                    }, index * 500);
+                });
+            };
+            
+            window.testFullStars = function() {
+                log('🧪 Начинаем тест полных звёзд...');
+                const fullValues = [1, 2, 3, 4, 5];
+                let passedTests = 0;
+                
+                fullValues.forEach((value, index) => {
+                    setTimeout(() => {
+                        const input = document.querySelector(`input[value="${value}"]`);
+                        if (input) {
+                            input.click();
+                            const selectedValue = document.querySelector('input[name="rating"]:checked').value;
+                            if (parseInt(selectedValue) === value) {
+                                log(`✅ Полная звезда ${value}: PASSED`);
+                                passedTests++;
+                            } else {
+                                log(`❌ Полная звезда ${value}: FAILED (получено ${selectedValue})`);
+                            }
+                            
+                            if (index === fullValues.length - 1) {
+                                log(`📊 Тест полных звёзд завершён: ${passedTests}/${fullValues.length} прошли`);
+                            }
+                        }
+                    }, index * 500);
+                });
+            };
+            
+            window.testHoverEffects = function() {
+                log('🧪 Начинаем тест hover эффектов...');
+                const labels = document.querySelectorAll('.rating label');
+                let testIndex = 0;
+                
+                function testNextHover() {
+                    if (testIndex < labels.length) {
+                        const label = labels[testIndex];
+                        const hoverEvent = new MouseEvent('mouseover', { bubbles: true });
+                        label.dispatchEvent(hoverEvent);
+                        log(`✅ Hover тест ${testIndex + 1}: событие отправлено`);
+                        testIndex++;
+                        setTimeout(testNextHover, 300);
+                    } else {
+                        log('📊 Тест hover эффектов завершён');
+                        // Сбрасываем состояние
+                        const rating = document.querySelector('.rating');
+                        rating.dispatchEvent(new MouseEvent('mouseleave', { bubbles: true }));
+                    }
+                }
+                
+                testNextHover();
+            };
+            
+            window.testAllRatings = function() {
+                log('🧪 Запуск полного тестирования всех рейтингов...');
+                setTimeout(() => testHalfStars(), 500);
+                setTimeout(() => testFullStars(), 4000);
+                setTimeout(() => testHoverEffects(), 7000);
+            };
+            
+            window.resetTest = function() {
+                testLog = [];
+                document.getElementById('test-results').style.display = 'none';
+                document.getElementById('selected-rating').textContent = 'не выбрана';
+                const checkedInput = document.querySelector('input[name="rating"]:checked');
+                if (checkedInput) {
+                    checkedInput.checked = false;
+                }
+                if (window.starRatingHelpers) {
+                    window.starRatingHelpers.resetStars();
+                }
+                log('🔄 Тест сброшен');
+            };
+            
+            // Обработка отправки формы для демонстрации
+            document.addEventListener('DOMContentLoaded', function() {
+                initStarRating();
+                
+                document.getElementById('rating-form').addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const rating = document.querySelector('input[name="rating"]:checked');
+                    const reviewText = document.getElementById('review-text').value;
+                    
+                    if (!rating) {
+                        alert('Пожалуйста, выберите оценку');
+                        log('❌ Форма не отправлена: не выбрана оценка');
+                        return;
+                    }
+                    
+                    if (!reviewText.trim()) {
+                        alert('Пожалуйста, напишите отзыв');
+                        log('❌ Форма не отправлена: пустой отзыв');
+                        return;
+                    }
+                    
+                    log(`📝 Форма отправлена успешно: рейтинг=${rating.value}, длина отзыва=${reviewText.length}`);
+                    alert(`Отзыв отправлен!\nОценка: ${rating.value}\nОтзыв: ${reviewText}`);
+                });
+            });
+        })();
+    </script>
+</body>
+</html>

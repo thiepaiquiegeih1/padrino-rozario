@@ -1,0 +1,9 @@
+---
+:orm: activerecord
+:test: none
+:mock: none
+:script: jquery
+:renderer: haml
+:stylesheet: none
+:namespace: Rozario
+:admin_renderer: haml

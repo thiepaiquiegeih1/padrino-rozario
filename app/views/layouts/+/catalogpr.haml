@@ -1,0 +1,185 @@
+- # encoding: utf-8
+!!!
+%html#canvas1
+  %head
+    %meta{:charset => 'utf-8'}
+    %meta{:name => :viewport, :content => 'width=device-width,initial-scale=1'}
+    -get_seo_data('default', nil, true) if @seo.nil?
+    %title= @seo[:title]
+    %meta{:name => "description", :content => @seo[:description]}/
+    -# %meta{:name => "keywords", :content => @seo[:keywords]}/
+    %meta{:property => "og:type", :content => @seo[:og_type]}/
+    %meta{:property => "og:title", :content => @seo[:og_title]}/
+    %meta{:property => "og:description", :content => @seo[:og_description]}/
+    %meta{:property => "og:image", :content => @seo[:og_image]}/
+    -# %meta{:property => "og:image:width", :content => "1920", }/
+    -# %meta{:property => "og:image:height", :content => "1200"}/
+    %meta{:property => "og:url", :content => "https://www.#{CURRENT_DOMAIN}/"}/
+    %meta{:property => "og:site_name", :content => "Розарио.Цветы"}/
+    %meta{:property => "og:locale", :content => "ru_RU"}/
+    %meta{:property => "twitter:title", :content => @seo[:twitter_title]}/
+    %meta{:property => "twitter:description", :content => @seo[:twitter_description]}/
+    %meta{:property => "twitter:site", :content => "Розарио.Цветы"}
+    %meta{:property => "twitter:image", :content => @seo[:twitter_image]}/
+    %meta{:property => "twitter:image:alt", :content => "rozarioflowers logo"}/
+    - if defined?(@canonical) && @canonical
+      %link{:rel => "canonical", :href => @canonical}/
+    - unless defined?(@seo[:index]) && @seo[:index] === true
+      %meta{content: 'noindex, nofollow', name: 'robots'}/
+
+    %meta{:content => "983F459D4DD5FFF1E29711226770B655", :name => "msvalidate.01"}/
+
+    / =javascript_include_tag 'https://cdnjs.cloudflare.com/ajax/libs/es6-shim/0.35.3/es6-sham.min.js'
+    / =javascript_include_tag 'https://cdnjs.cloudflare.com/ajax/libs/es6-shim/0.35.3/es6-shim.min.js'
+    / =javascript_include_tag 'https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.2/html5shiv.min.js'
+    / =javascript_include_tag 'https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.2/html5shiv-printshiv.min.js'
+    / =javascript_include_tag 'https://cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.min.js'
+
+    %link{:href => "/icons/apple-icon-57x57.png", :rel => "apple-touch-icon", :sizes => "57x57"}/
+    %link{:href => "/icons/apple-icon-60x60.png", :rel => "apple-touch-icon", :sizes => "60x60"}/
+    %link{:href => "/icons/apple-icon-72x72.png", :rel => "apple-touch-icon", :sizes => "72x72"}/
+    %link{:href => "/icons/apple-icon-76x76.png", :rel => "apple-touch-icon", :sizes => "76x76"}/
+    %link{:href => "/icons/apple-icon-114x114.png", :rel => "apple-touch-icon", :sizes => "114x114"}/
+    %link{:href => "/icons/apple-icon-120x120.png", :rel => "apple-touch-icon", :sizes => "120x120"}/
+    %link{:href => "/icons/apple-icon-144x144.png", :rel => "apple-touch-icon", :sizes => "144x144"}/
+    %link{:href => "/icons/apple-icon-152x152.png", :rel => "apple-touch-icon", :sizes => "152x152"}/
+    %link{:href => "/icons/apple-icon-180x180.png", :rel => "apple-touch-icon", :sizes => "180x180"}/
+    %link{:href => "/icons/android-icon-192x192.png", :rel => "icon", :sizes => "192x192", :type => "image/png"}/
+    %link{:href => "/icons/favicon-32x32.png", :rel => "icon", :sizes => "32x32", :type => "image/png"}/
+    %link{:href => "/icons/favicon-96x96.png", :rel => "icon", :sizes => "96x96", :type => "image/png"}/
+    %link{:href => "/icons/favicon-16x16.png", :rel => "icon", :sizes => "16x16", :type => "image/png"}/
+    %link{:href => "/icons/manifest.json", :rel => "manifest"}/
+    %meta{:content => "#ffffff", :name => "msapplication-TileColor"}/
+    %meta{:content => "/icons/ms-icon-144x144.png", :name => "msapplication-TileImage"}/
+    %meta{:content => "#ffffff", :name => "theme-color"}/
+    =stylesheet_link_tag 'main3.css?v=1.2.5'
+    = organization_florist_schema
+
+    =javascript_include_tag 'es6-promise.min.js'
+    =javascript_include_tag 'hdr_plugins.js'
+
+    -# =javascript_include_tag 'vue.min.js'
+
+    -# =javascript_include_tag 'test.js'
+    -# =javascript_include_tag '//rawgit.com/kawanet/msgpack-lite/master/dist/msgpack.min.js'
+    -# =javascript_include_tag 'jquery.fancybox.pack'
+    -# =javascript_include_tag 'jquery.slides.min'
+
+    = yield_content :head
+    / Global site tag (gtag.js) - Google Analytics
+    -# %script{:async => "", :src => "https://www.googletagmanager.com/gtag/js?id=UA-48316319-1"}
+    %script{:async => "", :src => "https://www.googletagmanager.com/gtag/js?id=G-5TX37461LC"}
+    :javascript
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      // gtag('config', 'UA-48316319-1');
+      gtag('config', 'G-5TX37461LC');
+
+
+  %body{'ng-app' => 'catalog', :id => 'vpp'}
+
+    -# %noscript
+      -# %iframe{:height => "0", :src => "https://www.googletagmanager.com/ns.html?id=GTM-K5GZQ8", :style => "display:none;visibility:hidden", :width => "0"}
+    <!--[if lt IE 7]>
+
+    %p.chromeframe Вы используете <strong>устаревший</strong> браузер. Пожалуйста <a href="http://browsehappy.com/">установите актуальную версию</a> или <a href="http://www.google.com/chromeframe/?redirect=true">активируйте Google Chrome Frame</a> для верного отображения сайта.
+    <![endif]-->
+    %canvas#canvas
+    #wr{'ng-controller' => 'itemsController'}
+      {{ message }}
+      .container.text-center{ style: "max-width: 1000px" }
+        = partial 'layouts/parts/site-header'
+        = partial 'layouts/parts/site-menu'
+        / = partial 'layouts/parts/slideshow'
+        .row.colored#mainnn
+
+          = partial 'layouts/parts/sidebarrr'
+
+          .col-md-8.text-left#content{style:'margin-bottom:8px; '}
+            %div#HDR-INDENT{style:'height: 44px'}
+
+
+        #ftr-txt.row.colored.hidden-xs.hidden-sm{style:'text-align:left;padding:48px;'}
+          %img{src: '/uploads/wherewework.png', style: 'width: 100%; max-width: 400px; float: left; margin-right: 8px;'}
+          /!= @subdomain.about_us
+
+
+          %h2 Цветы с доставкой - удивите своих близких ярким букетом!
+
+          %p Цветочный язык появился очень давно и до сих пор является единственным средством выражения искренних отношений между людьми. Прелесть его в том, что каждая роза, хризантема, лилия или тюльпан что-то обозначают и имеют невидимый секрет. Зашифрованное послание, в котором будет говориться об испытываемых романтических настроениях или о призыве к действию можно проявить только с помощью букета. Огромной популярностью у влюбленных, особенно на день святого Валентина пользуются большие и пышные композиции в красных, белых или розовых тонах. Правильно созданная цветовая гамма полностью передает намерения и любовь и будет нести скрытый в ней смысл.
+          %p В интернет-магазине "Розарио" можно заказать и доставить цветы в #{@subdomain.city} круглосуточно всего за несколько кликов. А значит вы быстро и оригинально поздравите любимого человека! Флористы помогут выбрать идеальный подарок с учетом всех пожеланий и точно выразить ваши чувства, а адресат гарантированно получит самую красивую и свежую флористическую миниатюру. Вежливые курьеры вручат ваш сюрприз согласно дате и времени, указанному в заказе. Сразу же после вручения менеджеры проинформируют вас. Нам ежедневно доверяют тысячи людей, мы получаем положительные отзывы от счастливых заказчиков и получателей.
+
+        = partial 'layouts/parts/smiles.ftr'
+        = partial 'layouts/parts/latest_news.ftr'
+        = partial 'layouts/parts/comments.ftr'
+        = partial 'layouts/parts/faq.ftr'
+
+        .row.text-left#footer{:itemscope => true, :itemtype => 'http://schema.org/Florist'}
+          .col-md-4.copy.hidden-xs
+            - morph_predl = @subdomain.get_morph('loc2')
+            - if morph_predl.nil? || morph_predl == ''
+              = "© 2011-#{Time.now.year} «Розарио - Доставка цветов №1»"
+            - else
+              = "© 2011-#{Time.now.year} «Надежная доставка цветов в #{morph_predl} — Розарио.Цветы»"
+          - org_data = organization_microdata_attributes
+          %meta{:content => org_data[:address], :itemprop => 'address'}/
+          %meta{:content => org_data[:telephone], :itemprop => 'telephone'}/
+          %meta{:content => org_data[:name], :itemprop => 'name'}/
+          %meta{:content => org_data[:opening_hours], :itemprop => 'openingHours'}/
+          %meta{:content => org_data[:payment_accepted], :itemprop => 'paymentAccepted'}/
+          %meta{:content => org_data[:email], :itemprop => 'email'}/
+          %meta{:itemprop => "image", :itemscope => true, :itemtype => "https://schema.org/Url"}
+          %meta{:itemprop => "priceRange", :content => "RUB"}
+            %img{:src => "/images/logo.svg", loading: "lazy"}
+            %link{:itemprop => "url", :href => "/images/logo.svg"}
+          .col-md-8.addr.hidden-xs
+            ОГРН 1115190005699
+            %p тел.: 8 (800) 250-64-70<br>эл. почта: <a href="mailto:info@rozariofl.ru">info@rozariofl.ru</a>
+          .col-md-4.col-xs-12.copy.visible-xs.text-center
+            - morph_predl = @subdomain.get_morph('loc2')
+            - if morph_predl.nil? || morph_predl == ''
+              = "© 2011-#{Time.now.year} «Розарио - Доставка цветов №1»"
+            - else
+              = "© 2011-#{Time.now.year} «Надежная доставка цветов в #{morph_predl} — Розарио.Цветы»"
+          .col-md-8.col-xs-12.addr.visible-xs.text-center{ style: "width:100%" }
+            ОГРН 1115190005699
+            %p  тел.: 8 (800) 250-64-70<br>эл. почта: <a href="mailto:info@rozariofl.ru">info@rozariofl.ru</a>
+
+    %link{ rel: "stylesheet", href: "/javascripts/jquery-ui-1.11.4.custom/jquery-ui.min.css" }
+    %link{ rel: "stylesheet", href: "/javascripts/jquery-ui-1.11.4.custom/jquery-ui.theme.min.css" }
+    %script{ src: '/javascripts/jquery-ui-1.11.4.custom/jquery-ui.min.js' }
+    =javascript_include_tag 'phonecode'
+    =javascript_include_tag 'city_select'
+    =javascript_include_tag 'site'
+    %script{ src: '/javascripts/meow.js' }
+
+    <script type="text/javascript">var ID73941098=setInterval(function(){if($("#ftr-txt").is("div")){for(var t=0;t<$("#ftr-txt > p").length;t++)if($("#ftr-txt > p:eq("+t+") > strong:eq(0)").is("strong")&&t%2==0){var r=$("#ftr-txt > p:eq("+t+") > strong:eq(0)").text();$("#ftr-txt > p:eq("+t+") > strong:eq(0)").remove(),$("#ftr-txt > p:eq("+t+")").append("<h2>"+r+"</h2>")}clearInterval(ID73941098)}},100);</script>
+
+    <script type="text/javascript">document.write('<script type="text/javascript" charset="utf-8" async="true" id="onicon_loader" src="https://cp.onicon.ru/js/simple_loader.js?site_id=52ca8cfc72d22ca11f00000d&srv=1&' + (new Date).getTime() + '"></scr' + 'ipt>');</script>
+
+    -#<!-- Yandex.Metrika counter --><script type="text/javascript">(function (d, w, c) { (w[c] = w[c] || []).push(function() { try { w.yaCounter24765725 = new Ya.Metrika({id:24765725, webvisor:true, clickmap:true, accurateTrackBounce:true}); w.yaCounter21751030 = new Ya.Metrika({id:21751030, webvisor:true, clickmap:true, trackLinks:true, accurateTrackBounce:true}); } catch(e) { } }); var n = d.getElementsByTagName("script")[0], s = d.createElement("script"), f = function () { n.parentNode.insertBefore(s, n); }; s.type = "text/javascript"; s.async = true; s.src = (d.location.protocol == "https:" ? "https:" : "http:") + "//mc.yandex.ru/metrika/watch.js"; if (w.opera == "[object Opera]") { d.addEventListener("DOMContentLoaded", f, false); } else { f(); } })(document, window, "yandex_metrika_callbacks");</script><noscript><div><img src="//mc.yandex.ru/watch/24765725" style="position:absolute; left:-9999px;" alt="" /></div></noscript><!-- /Yandex.Metrika counter -->
+
+    / Yandex.Metrika counter
+    :javascript
+      (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+      m[i].l=1*new Date();
+      for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+      k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+      (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+
+      ym(21751030, "init", {
+           clickmap:true,
+           trackLinks:true,
+           accurateTrackBounce:true,
+           webvisor:true,
+           ecommerce:"dataLayer"
+      });
+    / /Yandex.Metrika counter
+
+    -#<script type="text/javascript"> var _paq=_paq||[];_paq.push(["trackPageView"]),_paq.push(["enableLinkTracking"]),function(){var e="//piwik.#{CURRENT_DOMAIN}/";_paq.push(["setTrackerUrl",e+"piwik.php"]),_paq.push(["setSiteId","1"]);var a=document,r=a.createElement("script"),p=a.getElementsByTagName("script")[0];r.type="text/javascript",r.async=!0,r.defer=!0,r.src=e+"piwik.js",p.parentNode.insertBefore(r,p)}(); </script> <noscript><p><img src="//piwik.#{CURRENT_DOMAIN}/piwik.php?idsite=1" style="border:0;" alt="" /></p></noscript>
+    <script type="text/javascript">(window.Image ? (new Image()) : document.createElement('img')).src = '/images/rtrg.gif';</script>
+
+:javascript
+  console.log('app/views/catalogpr.haml')
+  $('input.cities').val('#{@subdomain.city}')

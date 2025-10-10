@@ -1,0 +1,56 @@
+- # encoding: utf-8
+
+%h2 Оформление заказа
+
+- if @cart.blank?
+
+  %p Ваша корзина пуста.
+
+- else
+
+  -if !current_account
+
+    #precheckout
+
+      = [:error, :warning, :notice].map { |type| flash_tag(type, :class => "alert alert-#{type}") }.join.html_safe
+
+      .iboxr{style: "margin-left: 150px;"}
+        =input_tag :radio, name: "q", value: "checkout-registered-user", id: "dch1"
+        %label{for: "dch1", style: "cursor: pointer;"} Я уже зарегистрирован
+
+      #checkout-registered-user.h.acch{style: "margin: 1em 0 2em;"}
+
+        %h3 Вход
+        - form_tag url(:sessions, :create), :class=>'login form' do
+          .login-body.modal-body
+            %fieldset.control-group
+              %label.login-input-label.control-label{:for => :email}= pat('login.email')
+              .login-controls.controls=email_field_tag :email, :value => params[:email], :autofocus => true, :required => "required"
+            %fieldset.control-group
+              %label.login-input-label.control-label{:for => :password}= pat('login.password')
+              .login-controls.controls=password_field_tag :password, :value => params[:password], :required => "required"
+          .login-footer.modal-footer
+            =submit_tag(pat('login.sign_in'), :class => 'btn btn-primary')
+            =link_to "Забыли пароль?", url(:sessions, :password_lost), style: "margin-left:12px;"
+          =hidden_field_tag :redirect_url, :value => url(:cart, :checkout)
+
+      .iboxr{style: "margin-left: 150px;"}
+        =input_tag :radio, name: "q", value: "checkout-new-user", id: "dch2"
+        %label{for: "dch2", style: "cursor: pointer;"} Я новый пользователь
+
+      #checkout-new-user.h.acch
+        -form_for :user_account, url(:user_accounts, :create) + "?emb=1", :class => 'form register' do |f|
+          =partial 'user_accounts/form', :locals => { :f => f }
+
+
+
+:plain
+
+  <script>
+   $(".iboxr input[type=radio]").on("click", function() {
+     if (!$("#" + $(this).attr("value")).hasClass("v")) {
+       $(".acch").slideUp('fast').removeClass("v");
+       $("#" + $(this).attr("value")).slideDown('fast').addClass("v");
+     }
+   });
+  </script>

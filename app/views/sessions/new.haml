@@ -1,0 +1,33 @@
+- # encoding: utf-8
+%div#crutch-indent{style:'height:80px'}
+%h1.regtitle Мои заказы
+= [:error, :warning, :notice].map { |type| flash_tag(type, :class => "row well alerttt alert-#{type}") }.join.html_safe
+.row.well{style: 'margin: 0px;'}
+  .col-md-6
+    - form_tag url(:sessions, :create), :class=>'login form' do
+      .login-body.modal-body
+        %fieldset.control-group
+          %label.login-input-label.control-label{:for => :email}= pat('login.email')
+          .login-controls.controls=email_field_tag :email, :value => params[:email], :autofocus => true, :required => "required"
+        %fieldset.control-group
+          %label.login-input-label.control-label{:for => :password}= pat('login.password')
+          .login-controls.controls=password_field_tag :password, :value => params[:password], :required => "required"
+          =link_to "Забыли пароль?", url(:sessions, :password_lost), style: "white-space:nowrap"
+        %br
+        =submit_tag(pat('login.sign_in'), :class => 'btn btn-primary pull-left', :style => "margin-left:10px; font-weight: normal;")
+        
+  .col-md-6
+    .modal-body
+      %div{style:'padding: .35em .625em .75em;'}
+        %p Впервые на нашем сайте?
+        %p
+          =link_to "Зарегистрируйтесь!", url(:user_accounts, :new), :target => "_blank", :style => 'cursor: pointer'
+:plain
+  <style>
+    @media only screen and (max-width: 992px) {
+      .delivery-lg { display: none; }
+      #crutch-indent { height: 10px !important; }
+    }
+    .smiles, .feedback, .subscr { display: none; }
+    .alerttt { margin: 24px 0px; }
+  </style>

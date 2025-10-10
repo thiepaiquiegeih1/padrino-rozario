@@ -1,0 +1,97 @@
+- # encoding: utf-8
+-@title = @subdomain.title.present? ? @subdomain.title : "Розарио Доставка цветов №1. Восхитительных букетов и свежих цветов г. #{@subdomain.city}"
+-@address = "г. #{@subdomain.city}"
+/ -@keywords = @subdomain.keywords.present? ? @subdomain.keywords : "доставка цветов #{@subdomain.city}  доставка букетов заказ цветов цветы букеты"
+-@description = @subdomain.description.present? ? Sanitize.fragment(@subdomain.description).strip : "Цветочный центр Розарио - доставка цветов #{@subdomain.city}, доставка букетов, оформление праздничных и свадебных букетов, огромный выбор комнатных цветов и рассады."
+- content_for :head do
+  :plain
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "#{@title.gsub('"', '\\"')}",
+      "url": "#{@canonical}/",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "#{@canonical}/search?query={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    }
+    </script>
+  
+:ruby
+  # Enhanced Schema.org markup
+  if defined?(@canonical) && @canonical && defined?(@title) && @title
+    canonical_url = @canonical.to_s + "/"
+    title_str = @title.to_s
+    description_str = @description ? @description.to_s : title_str
+    
+    breadcrumbs = [
+      { name: "Главная", url: canonical_url },
+      { name: title_str, url: @canonical.to_s + "/#catalog" }
+    ]
+    
+    collection_options = {
+      name: title_str,
+      description: description_str,
+      url: canonical_url,
+      breadcrumbs: breadcrumbs,
+      items: (defined?(@items) ? @items : []),
+      date_published: Date.current.strftime("%Y-%m-%d"),
+      website_name: title_str
+    }
+  end
+
+- if defined?(collection_options)
+  = collection_page_schema(collection_options)
+  -# =javascript_include_tag 'jquery.zoom.min'
+  =javascript_include_tag 'ang/angular4.min'
+  =javascript_include_tag 'ang/lodash.underscore.min'
+  =javascript_include_tag 'ang/restangular.min'
+  =javascript_include_tag 'ang/angular-busy.min'
+  =javascript_include_tag 'ang/navigator'
+
+  =javascript_include_tag 'ang/catalog'
+  -# =javascript_include_tag 'jquery.datetimepicker'
+  -# =stylesheet_link_tag 'angular-busy'
+
+/ = partial("category/filters.html", :engine => :erb)
+- if !@category.products.empty?
+  .row{style: 'top:-48px;position:absolute;right:8px;'}
+    .col-md-12.hidden-xs.hidden-sm{ style: "padding-left:48px;" }
+      .filter
+
+        .line3{ style: "text-align: left;" }
+
+
+          - if params[:all].blank?
+            .dropdown{ style: "text-align: right; padding-top: 4px;" }
+              %a.dropdown-toggle.KS92KD0V{"data-toggle" => "dropdown", :href => "#"}
+                Сортировка товаров
+                %b.caret
+              %ul.dropdown-menu{ style: "right: 0; left: auto;" }
+                %li
+                  =link_to "по алфавиту", "javascript:void(0)", { :'ng-click' => 'navigator.toggleSort("title")', :'ng-class' => '{selected: navigator.sortBy === "title"}' }
+                %li
+                  =link_to "по возрастанию цены", "javascript:void(0)", { :'ng-click' => 'navigator.toggleSort("price-asc")', :'ng-class' => '{selected: navigator.sortBy === "price-asc"}' }
+                %li
+                  =link_to "по убыванию цены", "javascript:void(0)", { :'ng-click' => 'navigator.toggleSort("price-desc")', :'ng-class' => '{selected: navigator.sortBy === "price-desc"}' }
+
+- if !@category.products.empty?
+  .autop-wrapper
+    .row.text-center{style: 'padding: 0 16px;'}
+      #category-list
+        = partial 'product/cardplace'
+    /= partial("category/item_modal.html", :engine => :erb)
+
+.row
+  .col-md-12.text-center#morebtn
+    %button.btn.btn-default.moremoremore{ :'ng-hide' => 'navigator.auto', :'ng-click' => 'navigator.startAuto()', :style => 'margin-top: 24px; display: inline-block !important;' } Показать ещё
+    %img.block-center{ :'ng-show' => 'navigator.inProcess', src: "/images/preloader.gif", style: 'width:50px' }
+
+%br
+%br
+
+-#=javascript_include_tag 'test'
+:javascript
+  console.log('app/views/subdomain.haml');

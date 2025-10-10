@@ -1,0 +1,24 @@
+-#coding: utf-8
+=partial 'seo/tabs', :locals => {:entity => :sitemap_generator, :action => :list}
+-tab_list = [{entity:'sitemap_general'}, {entity: 'pages'},{entity: 'categories'}, {entity: 'products'}, {entity: 'articles'}, {entity: 'news'}, {entity: 'smiles'}]
+
+-entity = entity.to_s
+-action = action.to_s
+-p entity.to_s
+-p action
+-unless entity =='sitemap_general'
+  =partial 'seo/sitemap_generator/search', locals: {data: @data, title: @title}
+%ul.nav.nav-tabs
+  -tab_list.each  do |tab_name|
+    -icon_name = :list
+    -icon_name = tab_name[:icon] unless tab_name[:icon].nil?
+    -if tab_name[:entity] == "sitemap_general"
+      %li{:class => ('active' if entity == tab_name[:entity] && action == 'list')}=link_to tag_icon(icon_name, pat(tab_name[:entity])), url(:"seo/sitemap_generator", :index)
+    -else
+      %li{:class => ('active' if entity == tab_name[:entity] && action == 'list')}=link_to tag_icon(icon_name, pat(tab_name[:entity])), url(:"seo/sitemap_generator/#{tab_name[:entity]}", :index)
+-unless entity == 'sitemap_general'
+  .tabs-content
+    %table#list.table.table-striped.table-hover.table-condensed
+      =partial 'seo/sitemap_generator/tab_header'
+      =partial 'seo/sitemap_generator/tab_body', locals: {data: @data}
+  !=will_paginate @data

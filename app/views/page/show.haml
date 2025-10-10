@@ -1,0 +1,8 @@
+- # encoding: utf-8
+%div.hidden-xs.hidden-sm{style:"height: 55px"}
+.page{style: 'margin-top: 0'}
+  %h1{:style => "font-size:20px;margin-top: 8px;"}=@seo[:h1].html_safe
+  %h2{style:"margin-top:0"}= @page.header
+  .body!= @page.body
+
+<style type="text/css">@media only screen and (max-width: 992px) {.delivery-lg{display:none;}}.page{margin-top:24px;}</style>

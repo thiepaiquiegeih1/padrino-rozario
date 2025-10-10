@@ -1,0 +1,35 @@
+:ruby
+  # Generate FAQ data dynamically using the helper method
+  faq_data = get_default_faq_data
+
+/ Generate FAQ Schema.org JSON-LD markup
+= generate_faq_schema(faq_data)
+
+.row.colored
+  %noindex
+    #sh-about.text-left{ style: 'padding: 16px; margin-bottom: 24px;' }
+      .cat-description{ style: 'background: #FAF2E9; padding: 16px; border-radius: 8px; '}
+        .finfo
+          %h2= faq_data[:title]
+          .hideforh2
+            %p= faq_data[:description]
+            - faq_data[:questions].each do |q|
+              %div{itemscope: true, itemtype: "https://schema.org/Question"}
+                %h3{itemprop: "name"}= q[:question]
+                .hideforh3
+                  %div{itemprop: "acceptedAnswer", itemscope: true, itemtype: "https://schema.org/Answer"}
+                    %p{itemprop: "text"}!= q[:answer]
+        .finfo
+          .clear-both
+        .clear-both
+
+:javascript
+
+  $(document).ready(function() {
+    $("#sh-about").on('click', '.finfo h2', function() {
+      $(this).next('.hideforh2').slideToggle();
+    });
+    $("#sh-about").on('click', 'h3', function() {
+      $(this).next('.hideforh3').slideToggle();
+    });
+  });

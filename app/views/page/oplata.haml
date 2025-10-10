@@ -1,0 +1,41 @@
+- # encoding: utf-8
+
+- @title= @page.title
+.page
+	%h2= @page.header
+	.body!= @page.body
+	#feedback-form
+		%h1 Задать вопрос
+		-form_tag url(:page, :index, @page.uri), :method => 'post', :class => 'form feedback' do |f|
+			= flash_tag(:notice)
+			= flash_tag(:error)
+			- field_set_tag do
+				= label_tag :name, :caption => 'Имя'
+				= text_field_tag :name, :value => params[:name], :required => ''
+			- field_set_tag do
+				= label_tag :email, :caption => 'Эл. почта'
+				= text_field_tag :email, :value => params[:email]
+			- field_set_tag do
+				= label_tag :msg, :caption => 'Ваш вопрос'
+				= text_area_tag :msg, :value => params[:msg], :required => ''
+			= recaptcha_tag(:challenge).html_safe
+			- field_set_tag(:class => 'buttons') do
+				= submit_tag 'Отправить', :class => 'btn'
+
+<br>
+
+<table border="0" align="right">
+<tr>
+<td width="300">
+</td>
+<td>
+<script type="text/javascript" src="//vk.com/js/api/openapi.js?105"></script>
+
+<!-- VK Widget -->
+<div id="vk_groups"></div>
+<script type="text/javascript">
+VK.Widgets.Group("vk_groups", {mode: 0, width: "230", height: "290"}, 56610692);
+</script>
+</td>
+</tr>
+</table>

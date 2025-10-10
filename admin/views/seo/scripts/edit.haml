@@ -1,0 +1,6 @@
+- # encoding: utf-8
+=partial 'seo/tabs', :locals => {:entity => :scripts, :action => :edit}
+
+.tabs-content
+  -form_for :script, url(:'seo/scripts', :update, :id => @script.id), :method => :put, :class => 'form-horizontal' do |f|
+    =partial 'seo/scripts/form', :locals => { :f => f }

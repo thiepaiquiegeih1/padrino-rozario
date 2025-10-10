@@ -1,0 +1,57 @@
+- # encoding: utf-8
+=partial 'discounts/tabs', :locals => {:entity => :discount_periods, :action => :list}
+
+%ul.nav.nav-tabs
+  %li.active=link_to tag_icon(:list, pat(:list)), url(:'discounts/discount_periods', :index)
+  %li=link_to tag_icon(:plus, pat(:new)), url(:'discounts/discount_periods', :new)
+
+.tabs-content
+  %table#list.table.table-striped.table-hover.table-condensed
+    %thead
+      %tr
+        %th.header.list-menu
+          .dropdown
+            %a.list-menu-toggle.dropdown-toggle{:href => '#', :'data-toggle' => :dropdown}
+              =tag_icon :magic
+              %span.caret
+            %ul.list-menu.dropdown-menu{:role => :menu}
+              %li.list-menu-wrapper=link_to tag_icon(:check, pat(:select_all)), '#', :id => 'select-all', :class => 'list-menu-link'
+              %li.list-menu-wrapper.list-menu-wrapper-disabled
+                =link_to tag_icon(:'check-empty', pat(:deselect_all)), '#', :id => 'deselect-all', :class => 'list-menu-link list-menu-link-disabled'
+              %li.list-menu-divider.divider
+              %li.list-menu-wrapper.list-menu-wrapper-disabled
+                =link_to tag_icon(:trash, pat(:delete_selected)), '#', :id => 'delete-selected', :class => 'list-menu-link list-menu-link-disabled'
+                .list-menu-popover-delete-selected.popover.right
+                  .arrow
+                  %h3.popover-title=pat(:delete_selected_title)
+                  .popover-content
+                    -form_tag url(:'discounts/discount_periods', :destroy_many), :method => :delete do
+                      =hidden_field_tag :discount_periods_ids, :'data-delete-many-ids' => true
+                      =submit_tag pat(:delete), :class =>'list-menu-popover-delete-selected-btn btn btn-danger btn-small'
+                      .btn.btn-small.cancel=pat(:cancel)
+        %th.header= :id
+        %th.header= :title
+        %th.header= :start_date
+        %th.header= :end_date
+        %th.header.list-row-action-header
+
+    %tbody
+      -@discount_periods.each do |discount_periods|
+        %tr.list-row
+          %td.list-column.list-selectable
+            =check_box_tag 'discount_periods_ids[]', :value => discount_periods.id, :class => 'list-selectable-checkbox'
+          %td.list-column=discount_periods.id
+          %td.list-column=discount_periods.title
+          %td.list-column=discount_periods.start_date
+          %td.list-column=discount_periods.end_date
+          %td.list-column.list-row-action
+            .list-row-action-wrapper
+              =link_to tag_icon(:edit), :href => url(:'discounts/discount_periods', :edit, :id => discount_periods.id), :rel => :tooltip, :title => "#{pat(:edit)} discount_periods", :class => 'list-row-action-wrapper-link'
+              =link_to tag_icon(:trash), :rel => :tooltip, :title => "#{pat(:delete)} discount_periods", :class => 'list-row-action-delete-one list-row-action-wrapper-link'
+              .popover.list-row-action-popover-delete-one.left
+                .arrow
+                %h3.popover-title=pat(:delete, :model => "discount_periods")
+                .popover-content
+                  -form_tag url(:'discounts/discount_periods', :destroy, :id => discount_periods.id), :method => :delete do
+                    =submit_tag pat(:delete), :class =>'list-row-action-popover-delete-one-btn btn btn-danger btn-small'
+                    .btn.btn-small.cancel=pat(:cancel)

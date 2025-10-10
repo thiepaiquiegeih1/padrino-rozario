@@ -1,0 +1,22 @@
+
+<div class="row">
+  <div id="crutch-indent" style="height:44px"></div>
+  <div ng-show="formData.showLinks" id="status-buttons" class="text-center hidden-xs">
+    <div ng-class="{active: $state.current.url == '/delivery'}" ng-click="changeState('cart.delivery')"><span>1</span> Доставка</div>
+    <div ng-class="{active: $state.current.url == '/auth', disabled: !authIsReady}" ng-click="changeState('cart.auth')"><span>2</span> Авторизация</div>
+    <div ng-class="{active: $state.current.url == '/checkouts', disabled: !checkoutIsReady}" ng-click="changeState('cart.checkouts')"><span>3</span> Заказ</div>
+    <div ng-class="{active: $state.current.url == '/payments' || $state.current.url == '/thanks', disabled: !payloadIsReady}" ng-click="changeState('cart.payments')"><span>4</span> Оплата</div>
+  </div>
+  <div ng-show="formData.showLinks" id="status-buttons" class="text-center visible-xs">
+    <div ng-class="{active: $state.current.url == '/delivery'}" ng-click="changeState('cart.delivery')"><span>1</span></div>
+    <div ng-class="{active: $state.current.url == '/auth', disabled: !authIsReady}" ng-click="changeState('cart.auth')"><span>2</span></div>
+    <div ng-class="{active: $state.current.url == '/checkouts', disabled: !checkoutIsReady}" ng-click="changeState('cart.checkouts')"><span>3</span></div>
+    <div ng-class="{active: $state.current.url == '/payments' || $state.current.url == '/thanks', disabled: !payloadIsReady}" ng-click="changeState('cart.payments')"><span>4</span></div>
+  </div>
+  <div id="form-views" ui-view></div>
+  <style type="text/css">
+    #status-buttons {
+      margin-top: 48px;
+    }
+  </style>
+</div>

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta content='width=device-width,initial-scale=1' name='viewport'>
+    <% get_seo_data('default', nil, true) if @seo.nil? %>
+    <title><%= @seo[:title] %></title>
+    <meta content="<%= @seo[:description] %>" name="description"/>
+    <%# <meta content="<%= @seo[:keywords] >" name="keywords"/> %>
+    <meta content="<%= @seo[:og_type] %>" property="og:type"/>
+    <meta content="<%= @seo[:og_title] %>" property="og:title"/>
+    <meta content="<%= @seo[:og_description] %>" property="og:description"/>
+    <meta content="<%= @seo[:og_image] %>" property="og:image"/>
+    <meta content="https://www.<%=CURRENT_DOMAIN%>/" property="og:url"/>
+    <meta content="Розарио.Цветы" property="og:site_name"/>
+    <meta content="ru_RU" property="og:locale"/>
+    <meta content="<%= @seo[:twitter_title] %>" property="twitter:title"/>
+    <meta content="<%= @seo[:twitter_description] %>" property="twitter:description"/>
+    <meta content="Розарио.Цветы" property="twitter:site"/>
+    <meta content="<%= @seo[:twitter_image] %>" property="twitter:image"/>
+    <meta content="rozarioflowers logo" property="twitter:image:alt"/>
+    <% if defined?(@canonical) && @canonical %>
+      <link href="<%= @canonical %>" rel="canonical">/</link>
+    <% end %>
+    <% unless defined?(@seo[:index]) && @seo[:index] === true %>
+      <meta content="noindex, nofollow" name="robots" />
+    <% end %>
+
+    <link rel="apple-touch-icon" sizes="57x57" href="/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192"  href="/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/manifest.json">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
+    <meta name="theme-color" content="#ffffff">
+    <link href="/stylesheets/main4.css?v=1.2.5" media="screen" rel="stylesheet" type="text/css" />
+    <script src="/javascripts/es6-promise.min.js" type="text/javascript"></script>
+    <script src="/javascripts/hdr_plugins.js" type="text/javascript"></script>
+    <script src="/javascripts/site.js" type="text/javascript"></script>
+    <!-- <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js" type="text/javascript"></script> -->
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js" type="text/javascript"></script> -->
+    <!-- /=javascript_include_tag 'jquery-migrate-1.2.1.min' -->
+    <!-- <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js" type="text/javascript"></script> -->
+    <!-- <script src="/javascripts/ang/angular4.min.js" type="text/javascript"></script> -->
+    <script src="/javascripts/ang/lodash.underscore.min.js" type="text/javascript"></script>
+    <script src="/javascripts/ang/restangular.min.js"       type="text/javascript"></script>
+    <script src="/javascripts/ang/angular-busy.min.js"      type="text/javascript"></script>
+    <script src="/javascripts/ang/navigator.js"             type="text/javascript"></script>
+
+    <link rel="stylesheet" type="text/css" href="/stylesheets/smiles.2.css" />
+
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/packery/2.1.1/packery.pkgd.min.js"></script>
+
+    <!-- :javascript -->
+    <!-- (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start': -->
+    <!-- new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0], -->
+    <!-- j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src= -->
+    <!-- 'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f); -->
+    <!-- })(window,document,'script','dataLayer','GTM-K5GZQ8'); -->
+  </head>
+  <body ng-app="catalog"  style="background-color: rgb(244, 231, 216);">
+    <div id="SVELTE_HEADER" style="position: absolute; right: 0; left: 0; z-index: 10000;"></div>
+    <noscript>
+      <!-- %iframe{:height => "0", :src => "https://www.googletagmanager.com/ns.html?id=GTM-K5GZQ8", :style => "display:none;visibility:hidden", :width => "0"} -->
+    </noscript>
+    <!--[if lt IE 7]>
+    <p class='chromeframe'>Вы используете <strong>устаревший</strong> браузер. Пожалуйста <a href="http://browsehappy.com/">установите актуальную версию</a> или <a href="http://www.google.com/chromeframe/?redirect=true">активируйте Google Chrome Frame</a> для верного отображения сайта.</p>
+    <![endif]-->
+    <div id='wr' ng-controller='itemsController'>
+      <% if @seo[:h1] %><h1 id="h1"><%=@seo[:h1].html_safe %></h1><% else %><div id="h1"></div><% end %>
+      <div class='container text-center' style='max-width: 1000px; position: relative;'>
+        <%#= render "layouts/parts/_site-header", :handlers => [:haml], layout: false %>
+        <%#= render "layouts/parts/_site-menu", :handlers => [:haml], layout: false %>
+        <%#= partial 'layouts/parts/site-header'%>
+        <%#= partial 'layouts/parts/site-menu'%>
+        <%#= partial 'layouts/parts/slideshow'%>
+        <div class='row colored' id='mainnn'>
+          <%= render "layouts/parts/_sidebarrr", :handlers => [:haml], layout: false %>
+          <div class='col-md-8 text-left' id='content' style='margin-bottom:8px;'>

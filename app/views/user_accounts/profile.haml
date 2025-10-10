@@ -1,0 +1,93 @@
+- # encoding: utf-8
+/=javascript_include_tag 'bootstrap.js'
+
+
+#user-profile
+  %div#crutch-indent{style:'height:80px'}
+
+  .row{style: 'margin-bottom: 20px;'}
+    .col-md-8
+      %h1{style:'font-size:20px'} Ваш профиль
+    .col-md-4{style: 'text-align: right; padding-top: 10px;'}
+      =link_to "Выйти", url(:sessions, :destroy), class: "btn btn-sm btn-secondary"
+
+  =[:error, :warning, :success, :notice].map { |type| flash_tag(type, :class => "alert alert-#{type}") }.join.html_safe
+
+  .iboxr{style: ""}
+    =input_tag :radio, name: "q", value: "priv-data", id: "dch1", :checked => ''
+    %label{for: "dch1", style: "cursor: pointer;"} Личная информация
+
+  #priv-data.h.v.acch{:style => "display: block;"}
+    %p
+      %strong Ф.И.О.:
+      =current_account.surname
+    %p
+      %strong Эл. почта:
+      =current_account.email
+    %p
+      %strong Номер телефона:
+      =current_account.tel
+    - if !current_account.discount_code.blank?
+      %p
+        %strong Номер дисконтной карты:
+        =current_account.discount_code
+    %p
+      %strong Дата регистрации:
+      =current_account.created_at.in_time_zone.strftime("%d.%m.%Y, %H:%M")
+    %p
+      =link_to "Редактировать данные", url(:user_accounts, :edit_profile), class: "btn"
+
+
+  - if (@active_orders.count + @old_orders.count) != 0
+    .iboxr{style: ""}
+      =input_tag :radio, name: "q", value: "orders-data", id: "dch2"
+      %label{for: "dch2", style: "cursor: pointer;"} Заказы
+    #orders-data.h.acch
+      %div{style: "margin-bottom: 12px;"}      
+        =link_to "Моя корзина", url(:cart, :index), class: "btn"
+      %h2 Мои заказы
+      = partial("user_accounts/orders.html", :engine => :erb)
+  .iboxr{style: ""}
+    =input_tag :radio, name: "q", value: "request-data", id: "dch3"
+    %label{for: "dch3", style: "cursor: pointer;"} Отправить сообщение
+  #request-data.h.acch
+    = partial("user_accounts/message.html", :engine => :erb)
+  -if !current_account.subscribe
+    .iboxr{style: ""}
+      =input_tag :radio, name: "q", value: "subscribe-data", id: "dch4"
+      %label{for: "dch4", style: "cursor: pointer;"} Рассылка
+    #subscribe-data.h.acch
+      = partial("user_accounts/subscribe.html", :engine => :erb)
+
+
+:plain
+
+  <script>
+    var link_anchor = window.location.href.split("#")[1];
+    if (link_anchor) {
+      $("#" + link_anchor).show();
+      if (link_anchor.indexOf("order-") >= 0) {
+        $("#orders-data").show();
+        $("#" + link_anchor + " .odata").show();
+      }
+    }
+    $(".otitle").on("click", function() {
+      $(this).parent().siblings(".odata").slideToggle("fast");
+    });
+   $(".iboxr input[type=radio]").on("click", function() {
+     if (!$("#" + $(this).attr("value")).hasClass("v")) {
+       $(".acch").slideUp('fast').removeClass("v");
+       $("#" + $(this).attr("value")).slideDown('fast').addClass("v");
+     }
+   });
+   $('a.paylink').tooltip();
+   
+   // Отмечаем, что пользователь только что авторизовался
+   localStorage.setItem('user_just_authenticated', 'true');
+   
+  </script>
+
+  <style>
+    @media only screen and (max-width: 992px) { .delivery-lg { display: none; } #crutch-indent { height: 10px !important; } }
+    .subscr, .smiles, .feedback { display: none; }
+  </style>

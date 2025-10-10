@@ -1,0 +1,58 @@
+- # encoding: utf-8
+=partial 'regions/tabs', :locals => {:entity => :subdomains, :action => :list}
+-form_tag url(:'regions/subdomains', :search), :method => :get, :class => 'form-horizontal' do
+  %fieldset.control-group
+    =text_field_tag :query, :class => 'search_field', :placeholder => 'поиск'
+
+.tabs-content
+  %table#list.table.table-striped.table-hover.table-condensed
+    %thead
+      %tr
+        %th.header.list-menu
+          .dropdown
+            %a.list-menu-toggle.dropdown-toggle{:href => '#', :'data-toggle' => :dropdown}
+              =tag_icon :magic
+              %span.caret
+            %ul.list-menu.dropdown-menu{:role => :menu}
+              %li.list-menu-wrapper=link_to tag_icon(:check, pat(:select_all)), '#', :id => 'select-all', :class => 'list-menu-link'
+              %li.list-menu-wrapper.list-menu-wrapper-disabled
+                =link_to tag_icon(:'check-empty', pat(:deselect_all)), '#', :id => 'deselect-all', :class => 'list-menu-link list-menu-link-disabled'
+              %li.list-menu-divider.divider
+              %li.list-menu-wrapper.list-menu-wrapper-disabled
+                =link_to tag_icon(:trash, pat(:delete_selected)), '#', :id => 'delete-selected', :class => 'list-menu-link list-menu-link-disabled'
+                .list-menu-popover-delete-selected.popover.right
+                  .arrow
+                  %h3.popover-title=pat(:delete_selected_title)
+                  .popover-content
+                    -form_tag url(:'regions/subdomains', :destroy_many), :method => :delete do
+                      =hidden_field_tag :subdomains_ids, :'data-delete-many-ids' => true
+                      =submit_tag pat(:delete), :class =>'list-menu-popover-delete-selected-btn btn btn-danger btn-small'
+                      .btn.btn-small.cancel=pat(:cancel)
+        %th.header= :id
+        %th.header URL
+        %th.header Заголовок
+        %th.header Адрес
+        %th.header.list-row-action-header
+
+    %tbody
+      -@subdomains.each do |subdomain|
+        %tr.list-row
+          %td.list-column.list-selectable
+            =check_box_tag 'subdomain_ids[]', :value => subdomain.id, :class => 'list-selectable-checkbox'
+          %td.list-column=subdomain.id
+          %td.list-column=subdomain.url
+          %td.list-column=subdomain.city
+          %td.list-column=subdomain.ya_address
+          %td.list-column.list-row-action
+            .list-row-action-wrapper
+              =link_to tag_icon(:edit), :href => url(:'regions/subdomains', :edit, :id => subdomain.id), :rel => :tooltip, :title => "#{pat(:edit)} subdomain", :class => 'list-row-action-wrapper-link'
+              =link_to tag_icon(:trash), :rel => :tooltip, :title => "#{pat(:delete)} subdomain", :class => 'list-row-action-delete-one list-row-action-wrapper-link'
+              .popover.list-row-action-popover-delete-one.left
+                .arrow
+                %h3.popover-title=pat(:delete, :model => "subdomain")
+                .popover-content
+                  -form_tag url(:'regions/subdomains', :destroy, :id => subdomain.id), :method => :delete do
+                    =submit_tag pat(:delete), :class =>'list-row-action-popover-delete-one-btn btn btn-danger btn-small'
+                    .btn.btn-small.cancel=pat(:cancel)
+- if !@search
+  !=will_paginate @subdomains

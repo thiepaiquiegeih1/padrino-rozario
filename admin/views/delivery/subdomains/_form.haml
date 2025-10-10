@@ -1,0 +1,34 @@
+-# coding: utf-8
+- error = @subdomain.errors.include?(:city)
+%fieldset.control-group{:class => error ? 'has-error' : ''}
+  =f.label "Город", :class => 'control-label'
+  .controls
+    =f.text_field :city, :class => 'input-xlarge input-with-feedback', :disabled => "disabled"
+    %span.help-inline=error ? f.error_message_on(:city, :class => 'text-error') : 'Город'
+
+- error = @subdomain.errors.include?(:price)
+%fieldset.control-group{:class => error ? 'has-error' : ''}
+  =f.label 'Стоимость доставки', :class => 'control-label'
+  .controls
+    =f.text_field :price, :class => 'input-xlarge input-with-feedback'
+    %span.help-inline=error ? f.error_message_on(:price, :class => 'text-error') : pat("Введите цену")
+
+%fieldset.control-group
+  =f.label 'Бесплатная доставка', :class => 'control-label'
+  .controls
+    =f.check_box :free_delivery, :class => 'input-xlarge input-with-feedback'
+    %span.help-inline= 'Включить бесплатную доставку'
+
+- error = @subdomain.errors.include?(:freedelivery_summ)
+%fieldset.control-group{:class => error ? 'has-error' : ''}
+  =f.label 'Условие', :class => 'control-label'
+  .controls
+    =f.text_field :freedelivery_summ, :class => 'input-xlarge input-with-feedback'
+    %span.help-inline=error ? f.error_message_on(:price, :class => 'text-error') : pat("Сумма в корзине, необходимая для бесплатной доставки")
+
+.form-actions
+  =f.submit pat(:save), :class => 'btn btn-primary'
+  &nbsp;
+  =f.submit pat(:save_and_continue), :class => 'btn btn-info', :name => 'save_and_continue'
+  &nbsp;
+  =link_to pat(:cancel), url(:'delivery/subdomains', :index), :class => 'btn'

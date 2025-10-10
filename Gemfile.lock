@@ -1,0 +1,328 @@
+PATH
+  remote: /srv/gems/multi_captcha
+  specs:
+    multi_captcha (0.1.0)
+      altcha
+      commonmarker
+      connection_pool (~> 2.2)
+      haml
+      hamster
+      ipaddress
+      ipcat
+      json
+      logstash-logger
+      maxmind-db
+      rack
+      rack-attack
+      redis
+      sanitize
+      uri
+      user_agent_parser
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+    RubyInline (3.14.1)
+      ZenTest (~> 4.3)
+    ZenTest (4.12.2)
+    activemodel (3.2.13)
+      activesupport (= 3.2.13)
+      builder (~> 3.0.0)
+    activerecord (3.2.13)
+      activemodel (= 3.2.13)
+      activesupport (= 3.2.13)
+      arel (~> 3.0.2)
+      tzinfo (~> 0.3.29)
+    activesupport (3.2.13)
+      i18n (= 0.6.1)
+      multi_json (~> 1.0)
+    addressable (2.3.8)
+    airbrussh (1.0.2)
+      sshkit (>= 1.6.1, != 1.7.0)
+    akami (1.3.1)
+      gyoku (>= 0.4.0)
+      nokogiri
+    altcha (0.2.1)
+    arel (3.0.2)
+    bcrypt (3.1.20)
+    builder (3.0.4)
+    byebug (9.0.6)
+    capistrano (3.5.0)
+      airbrussh (>= 1.0.0)
+      capistrano-harrow
+      i18n
+      rake (>= 10.0.0)
+      sshkit (>= 1.9.0)
+    capistrano-bundler (1.1.4)
+      capistrano (~> 3.1)
+      sshkit (~> 1.2)
+    capistrano-harrow (0.5.1)
+    capistrano-passenger (0.2.0)
+      capistrano (~> 3.0)
+    capistrano-rvm (0.1.2)
+      capistrano (~> 3.0)
+      sshkit (~> 1.2)
+    carrierwave (0.8.0)
+      activemodel (>= 3.2.0)
+      activesupport (>= 3.2.0)
+    carrierwave-imageoptimizer (1.3.0)
+      carrierwave (~> 0.8)
+      image_optimizer (~> 1.6)
+    commonmarker (0.21.1)
+      ruby-enum (~> 0.5)
+    concurrent-ruby (1.1.5)
+    connection_pool (2.2.2)
+    crass (1.0.1)
+    cyrillizer (0.2.3)
+    daemons (1.2.6)
+    domainatrix (0.0.11)
+      addressable
+    eventmachine (1.2.7)
+    fuzzy-string-match (1.0.1)
+      RubyInline (>= 3.8.6)
+    gyoku (1.3.1)
+      builder (>= 2.1.2)
+    haml (4.0.1)
+      tilt
+    hamster (3.0.0)
+      concurrent-ruby (~> 1.0)
+    hiredis (0.6.1)
+    http_router (0.11.0)
+      rack (>= 1.0.0)
+      url_mount (~> 0.2.1)
+    httpi (2.4.2)
+      rack
+      socksify
+    i18n (0.6.1)
+    iconv (1.0.4)
+    image_optimizer (1.6.1)
+    ipaddress (0.8.3)
+    ipcat (2.0.23)
+    jquery (0.0.1)
+    json (1.8.6)
+    logstash-event (1.2.02)
+    logstash-logger (0.26.1)
+      logstash-event (~> 1.2)
+    mail (2.5.4)
+      mime-types (~> 1.16)
+      treetop (~> 1.4.8)
+    maxmind-db (1.0.0)
+    mime-types (1.23)
+    mini_magick (5.0.1)
+    mini_portile (0.6.0)
+    minitest (5.15.0)
+    msgpack (1.1.0)
+    multi_json (1.7.3)
+    mysql2 (0.3.21)
+    navvy (0.3.2)
+    net-scp (1.2.1)
+      net-ssh (>= 2.6.5)
+    net-ssh (3.1.1)
+    nio4r (2.5.2)
+    nokogiri (1.6.3.1)
+      mini_portile (= 0.6.0)
+    nokogumbo (1.2.0)
+      nokogiri
+    nori (2.6.0)
+    padrino (0.11.1)
+      padrino-admin (= 0.11.1)
+      padrino-cache (= 0.11.1)
+      padrino-core (= 0.11.1)
+      padrino-gen (= 0.11.1)
+      padrino-helpers (= 0.11.1)
+      padrino-mailer (= 0.11.1)
+    padrino-admin (0.11.1)
+      padrino-core (= 0.11.1)
+      padrino-helpers (= 0.11.1)
+    padrino-cache (0.11.1)
+      padrino-core (= 0.11.1)
+      padrino-helpers (= 0.11.1)
+    padrino-cookies (0.1.2)
+      padrino-core
+    padrino-core (0.11.1)
+      activesupport (>= 3.1.0)
+      http_router (~> 0.11.0)
+      rack-protection (>= 1.5.0)
+      sinatra (~> 1.4.2)
+      thor (~> 0.17.0)
+      tilt (~> 1.3.0)
+    padrino-gen (0.11.1)
+      bundler (~> 1.0)
+      padrino-core (= 0.11.1)
+    padrino-helpers (0.11.1)
+      i18n (~> 0.6)
+      padrino-core (= 0.11.1)
+    padrino-mailer (0.11.1)
+      mail (~> 2.5.3)
+      padrino-core (= 0.11.1)
+    passenger (5.0.23)
+      rack
+      rake (>= 0.8.1)
+    pdfkit (0.6.2)
+    phony (2.20.14)
+    polyglot (0.3.3)
+    puma (5.6.9)
+      nio4r (~> 2.0)
+    rack (1.5.2)
+    rack-attack (6.3.1)
+      rack (>= 1.0, < 3)
+    rack-cache (1.15.0)
+      rack (>= 0.4)
+    rack-cors (1.0.2)
+    rack-mini-profiler (2.0.2)
+      rack (>= 1.2.0)
+    rack-protection (1.5.0)
+      rack
+    rack-recaptcha (0.6.6)
+      json
+    rack-session-redis (0.0.3)
+      redis (>= 2.0.0)
+    rake (10.5.0)
+    recaptcha (4.3.1)
+      json
+    redis (3.3.5)
+    redis-rack (2.0.6)
+      rack (>= 1.5, < 3)
+      redis-store (>= 1.2, < 2)
+    redis-rack-cache (2.2.1)
+      rack-cache (>= 1.10, < 2)
+      redis-store (>= 1.6, < 2)
+    redis-store (1.6.0)
+      redis (>= 2.2, < 5)
+    reverse_markdown (3.0.0)
+      nokogiri
+    rmagick (2.13.4)
+    roo (1.13.2)
+      nokogiri
+      rubyzip
+      spreadsheet (> 0.6.4)
+    ruby-enum (0.9.0)
+      i18n
+    ruby-ole (1.2.11.7)
+    rubyzip (1.1.6)
+    sanitize (3.1.2)
+      crass (~> 1.0.1)
+      nokogiri (>= 1.4.4)
+      nokogumbo (= 1.2.0)
+    savon (2.11.2)
+      akami (~> 1.2)
+      builder (>= 2.1.2)
+      gyoku (~> 1.2)
+      httpi (~> 2.3)
+      nokogiri (>= 1.4.0)
+      nori (~> 2.4)
+      wasabi (~> 3.4)
+    sidekiq (4.2.10)
+      concurrent-ruby (~> 1.0)
+      connection_pool (~> 2.2, >= 2.2.0)
+      rack-protection (>= 1.5.0)
+      redis (~> 3.2, >= 3.2.1)
+    simple-navigation (4.0.3)
+      activesupport (>= 2.3.2)
+    sinatra (1.4.2)
+      rack (~> 1.5, >= 1.5.2)
+      rack-protection (~> 1.4)
+      tilt (~> 1.3, >= 1.3.4)
+    sinatra-simple-navigation (4.0.0)
+      simple-navigation (>= 4.0.0)
+      sinatra (~> 1.0)
+    sitemap_generator (5.1.0)
+      builder
+    socksify (1.7.1)
+    spreadsheet (1.0.0)
+      ruby-ole (>= 1.0)
+    sshkit (1.10.0)
+      net-scp (>= 1.1.2)
+      net-ssh (>= 2.8.0)
+    thin (1.7.2)
+      daemons (~> 1.0, >= 1.0.9)
+      eventmachine (~> 1.0, >= 1.0.4)
+      rack (>= 1, < 3)
+    thor (0.17.0)
+    tilt (1.3.7)
+    time_difference (0.3.2)
+      activesupport
+    treetop (1.4.12)
+      polyglot
+      polyglot (>= 0.3.1)
+    tzinfo (0.3.42)
+    uri (0.10.3)
+    url_mount (0.2.1)
+      rack
+    user_agent_parser (2.5.1)
+    wasabi (3.5.0)
+      httpi (~> 2.0)
+      nokogiri (>= 1.4.2)
+    will_paginate (3.0.4)
+    wkhtmltopdf-binary (0.9.9.1)
+    xml-sitemap (1.3.3)
+      builder (>= 2.0)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  activerecord (~> 3.1)
+  activesupport
+  bcrypt
+  byebug
+  capistrano (~> 3.4)
+  capistrano-bundler
+  capistrano-passenger
+  capistrano-rvm
+  carrierwave
+  carrierwave-imageoptimizer
+  commonmarker
+  connection_pool (~> 2.2)
+  cyrillizer (~> 0.2.3)
+  domainatrix
+  fuzzy-string-match
+  haml
+  hiredis
+  iconv
+  jquery
+  json (~> 1.6, >= 1.6.5)
+  mini_magick
+  minitest (~> 5.15)
+  msgpack
+  multi_captcha!
+  mysql2 (~> 0.3.14)
+  navvy
+  nokogiri
+  padrino (= 0.11.1)
+  padrino-cache
+  padrino-cookies
+  padrino-core
+  padrino-mailer
+  passenger
+  pdfkit
+  phony
+  puma
+  rack-cache
+  rack-cors
+  rack-mini-profiler
+  rack-recaptcha
+  rack-session-redis
+  recaptcha
+  redis
+  redis-rack
+  redis-rack-cache
+  redis-store
+  reverse_markdown
+  rmagick (= 2.13.4)
+  roo
+  sanitize
+  savon
+  sidekiq (= 4.2.10)
+  sinatra (= 1.4.2)
+  sinatra-simple-navigation (= 4.0.0)
+  sitemap_generator
+  thin
+  time_difference
+  tzinfo (= 0.3.42)
+  will_paginate (~> 3.0)
+  wkhtmltopdf-binary
+  xml-sitemap
+
+BUNDLED WITH
+   1.17.3

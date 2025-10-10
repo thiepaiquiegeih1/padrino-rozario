@@ -1,0 +1,9 @@
+class AddSliderFlagToSmiles < ActiveRecord::Migration
+  def self.up
+    add_column :smiles, :sidebar, :boolean, :default => false
+  end
+
+  def self.down
+    remove_column :smiles, :sidebar
+  end
+end

@@ -1,0 +1,219 @@
+<!DOCTYPE html><html><head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="imagetoolbar" content="no" />
+  <meta name="viewport" content="width=device-width, initial scale=1.0" />
+  <title>Благодарим Вас за заказ на RozarioFlowers.Ru!</title>
+</head>
+<body bgcolor="#ffffff" leftmargin="0" rightmargin="0" topmargin="0" bottommargin="0">
+
+<style type="text/css">
+
+  @viewport {width: device-width; zoom: auto;}
+  a:visited[class="buttonLink"] {color: #ffffff;}
+
+  * {
+    box-sizing: border-box;
+    margin: 0; padding: 0;
+  }
+
+  a:visited { color: #FFF; }
+
+  body {
+    font-family:Verdana;
+    font-size:10pt;
+  }
+
+  table { border-collapse: collapse; }
+
+  #MD3KS9JD thead th { background: #FF9933; }
+  #MD3KS9JD tbody td { background: #faf7f3; }
+
+  #MD3KS9JD {
+    width: 800px; margin: 0 auto;
+  }
+
+  #MD3KS9JD thead th,
+  #MD3KS9JD tbody td { padding: 16px; }
+  #MD3KS9JD thead th.a { text-align: left; }
+  #MD3KS9JD thead th.b { text-align: right; }
+  #MD3KS9JD thead th.b a { font-weight: normal; }
+  #MD3KS9JD thead th a { color: #FFF; }
+  #MD3KS9JD thead a,
+  #MD3KS9JD tbody { padding: 24px; }
+
+  #JDE83J5D td { padding: 12px; }
+</style>
+
+<center>
+<table id="MD3KS9JD" cellspacing="0" cellpadding="0">
+  <thead style="border-radius:5px;">
+    <tr>
+      <th class="a">
+        <a href="https://<%=@subdomain.url%>.<%=CURRENT_DOMAIN%>/" target="_blank">
+          <img width="175" src="https://<%=@subdomain.url%>.<%=CURRENT_DOMAIN%>/images/logo.svg">
+        </a>
+      </th>
+      <th class="b">
+        <a href="https://<%=@subdomain.url%>.<%=CURRENT_DOMAIN%>/user_accounts/profile" target="_blank">Войти в личный кабинет</a>
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td colspan="2" align="left">
+        <div style="width:580px; margin:0 auto;">
+
+          <div style="color:#f26522;font-size:16pt;margin-bottom:22px;text-align:center;">Спасибо за Ваш заказ!</div>
+          <p style="margin-bottom:22px;"><b><%= @name %></b>, благодарим Вас за заказ <b>№ <%= @order_id %></b>, который Вы сделали в интернет-магазине <a href="https://<%= @subdomain.url %>.<%=CURRENT_DOMAIN%>/" target="_blank" style="text-decoration:none;"><span style="font-weight:bold;font-size:14pt;color:#ff9933;">Rozario<span style="color:#00b050;">Flowers</span>.Ru</span></a>. Сообщаем Вам, что заказ принят, и мы с удовольствием начинаем его обработку!</p>
+          <p style="margin-bottom:22px;">Информацию о статусе Вашего заказа Вы можете получить в любой момент! Для этого нужно просто <b><a href="https://<%= @subdomain.url %>.<%=CURRENT_DOMAIN%>/sessions/new" target="_blank" style="color:#ff9933;">авторизоваться</a></b> на сайте <a href="https://<%= @subdomain.url %>.<%=CURRENT_DOMAIN%>/" target="_blank" style="text-decoration:none;"><span style="font-weight:bold;font-size:14pt;color:#ff9933;">Rozario<span style="color:#00b050;">Flowers</span>.Ru</span></a> и перейти в раздел <b>«<a href="https://<%= @subdomain.url %>.<%=CURRENT_DOMAIN%>/user_accounts/profile#orders-data" target="_blank" style="color:#ff9933;">Заказы</a>»</b>. Кроме того, мы оповестим Вас о доставке заказа с помощью электронной почты. </p>
+          <p style="margin-bottom:22px;"><b><a href="https://<%= @subdomain.url %>.<%=CURRENT_DOMAIN%>/user_accounts/profile#order-<%= @order_id %>" target="_blank" style="color:#ff9933;">Перейти к отслеживанию заказа »</a></b></p>
+          <p style="margin-bottom:22px;"><b>Параметры Вашего заказа:</b></p>
+
+          <p>Адрес доставки: <span style="color:#ff9933;"><b><%= "#{@city_text}, #{@district_text}, #{@delivery_address}" %></b></span></p>
+          дом:<% if !@deldom.blank? %><%= @deldom %><% end %>, корпус:
+          <% if !@delkorpus.blank? %><%= @delkorpus %><% end %>, кв:<% if !@delkvart.blank? %><%= @delkvart %><% end %>
+          <p>
+            Дополнительная информация:<br>   
+          
+            Телефон: <span style="color:#ff9933;"><b><%= @dtel %></b></span><br>
+            Получатель: <span style="color:#ff9933;"><b><%= @dname %></b></span>
+          </p>
+          <p style="margin-bottom:22px;">
+            Способ оплаты: <span style="color:#ff9933;"><b><%= @payment_type_text.length > 0 ? @payment_type_text : 'Оплатить на сайте' %></b></span><br>
+            Способ доставки: <span style="color:#ff9933;">
+              <b><%= @dt_txt %></b>
+              <% if (@dcall==1&&@dt_txt!='Забрать в магазине (самовывоз)') %> | Позвонить получателю для уточнения времени доставки<% if (@surprise) %> (не говорить по телефону, что это цветы)<%end%><%end%>
+              <% if (@dcall==2&&@dt_txt!='Забрать в магазине (самовывоз)') %> | Везти без звонка в указанный промежуток времени:<%=@d2_date + ' ' + @d2_date_tFr + ' ' + @d2_date_tTo %><%end%>
+            </span>
+          </p>
+
+          <% if @cart %>
+
+            <p><b>Состав заказа:</b></p>
+
+            <table width="100%" cellpadding="0" cellspacing="0" style="border-bottom:1px solid #bbb; border-left: 1px solid #bbb; padding:12px;">
+              <tr>
+                <th style="font-weight:normal; border:1px solid #bbb;" align="center">Товар</th>
+                <th style="font-weight:normal; border:1px solid #bbb;">Изображение</th>
+                <th style="font-weight:normal; border:1px solid #bbb;" align="center">Кол-во</th>
+                <th style="font-weight:normal; border:1px solid #bbb;" align="center">Цена</th>
+              </tr>
+              <% @cart.each do |item| %>
+                <%
+                  product = Product.find_by_id(item["id"])
+                  type_id = Complect.find_by_title(item["type"]).id
+                  cmplct_id = ProductComplect.where(product_id: item["id"], complect_id: type_id).order(created_at: :desc)[0].id
+                %>
+                <tr>
+                  <th style="border:1px solid #bbb;" align="center"><b><span style="color:#ff9933;text-decoration:underline;"><a href="https://<%= @subdomain.url %>.<%=CURRENT_DOMAIN%>/product/<%= item["id"] %>" style="color:#ff9933;" target="_blank"><%= product_item2title(item) %></a></span></b></th>
+                  <th style="border:1px solid #bbb;">
+                    <!-- <img width="150" src="https://<%= @subdomain.url %>.<%=CURRENT_DOMAIN%><%= product.thumb_image() %>"> -->
+                    <img width="150" src="https://<%= @subdomain.url %>.<%=CURRENT_DOMAIN%><%=get_prdct_tn_img(item["id"].to_i, item["type"])%>">
+                  </th>
+                  <th style="border:1px solid #bbb; font-weight: normal;" align="center"><%= item["quantity"] %></th>
+                  <th style="border:1px solid #bbb; font-weight: normal;" align="center">
+                    <%
+
+                      price = product.get_cmplct_price(cmplct_id, @subdomain.discount_pool_id, true)
+                      discount = @subdsc[0] ? @subdsc[0] : 0
+                      if @subdsc.include?(item["id"].to_i); discount += @subdsc[item["id"].to_i][item["type"]]; end
+
+                    %>
+
+                    <%=(price+discount).round()%> руб.
+                  </th>
+                </tr>
+              <% end %>
+            </table>
+            <br />
+            <table width="100%" cellpadding="0" cellspacing="0">
+              <% if !@card_text.blank? %><tr>
+                <td style="border:1px solid #bbb;">Текст открытки</td>
+                <td style="border:1px solid #bbb;"><%= @card_text %></td>
+              </tr><% end %>
+              <% if !@comment.blank? %><tr>
+                <td style="border:1px solid #bbb;">Комментарий</td>
+                <td style="border:1px solid #bbb;"><%= @comment %></td>
+              </tr><% end %>
+            </table>
+
+            <table id="JDE83J5D" width="100%" style="font-size:9pt;" cellspacing="0" cellpadding="0">
+              <tr>
+                <td width="404" style="padding:12px;"></td>
+                <td width="100" style="white-space:nowrap; padding:12px;" align="left">Товары:</td>
+                <td width="100" style="white-space:nowrap; padding:12px;" align="right">
+                  <% if !@delivery_price.blank? %>
+                    <%= (@total_summ.to_f - @delivery_price.to_f).round() %> руб.
+                  <% else %>
+                    <%= @total_summ.to_f.round() %> руб.
+                  <% end %>
+                </td>
+              </tr>
+              <% if !@delivery_price.blank? %>
+                <tr>
+                  <td width="404" style="padding:12px;"></td>
+                  <td width="100" style="white-space:nowrap; padding:12px;" align="left">Доставка:</td>
+                  <td width="100" style="white-space:nowrap; padding:12px;" align="right"><%= @delivery_price %> руб.</td>
+                </tr>
+              <% end %>
+              <tr>
+                <td width="404" style="padding:12px;"></td>
+                <td width="100" style="white-space:nowrap; padding:12px;" align="left"><b>К оплате:</b></td>
+                <td width="100" style="white-space:nowrap; padding:12px;" align="right"><b><%= @total_summ.to_f.round(2) %> руб.</b></td>
+              </tr>
+            </table>
+
+          <% end %>
+
+          <p><b>Служба поддержки</b><br>
+          Данное письмо отправлено автоматически и не требует ответа. Если у Вас остались вопросы, пожалуйста, задайте их через форму <b><a href="https://<%= @subdomain.url %>.<%=CURRENT_DOMAIN%>/user_accounts/profile" style="color:#ff9933;">"отправить сообщение"</a></b> в личном кабинете.</p>
+
+          <p>Вы также можете обратиться в нашу службу по работе с клиентами по телефону:<br>
+          8 (800) 250-64-70 (бесплатно по России)
+          </p>
+
+          <!-- <div>
+              <% slideshow = Slideshow.where(:default => true).first %>
+              <% slide = slideshow.slides.first %>
+              <% if !slide.uri.empty? %>
+                <%= link_to (image_tag ("https://" + request.host + slide.image.to_s), style: "width:100%;"), url(slide.uri), target: "_blank" %>
+              <% else %>
+                <%= image_tag ("https://" + request.host + slide.image.to_s), style: "width:100%;" %>
+              <% end %>
+          </div> -->
+        </div>
+      </td>
+    </tr>
+  </tbody>
+  <tfoot>
+    <tr>
+      <td colspan="2">
+        <table id="FOOTER" width="100%" bgcolor="#FF9933">
+          <style type="text/css">
+            #FOOTER { background: #FF9933; }
+            #FOOTER td {
+              background: #FF9933;
+              text-align: center;
+              padding: 16px;
+            }
+          </style>
+          <tr style="color:#FFF;">
+            <td style="background: #FF9933;"><img width="55" src="https://<%= @subdomain.url %>.<%=CURRENT_DOMAIN%>/images/mailorder2user/01.png"></td>
+            <td style="background: #FF9933;" width="50">Доставка букетов</td>
+            <td style="background: #FF9933;"><img width="55" src="https://<%= @subdomain.url %>.<%=CURRENT_DOMAIN%>/images/mailorder2user/02.png"></td>
+            <td style="background: #FF9933;" width="50">Бесплатная открытка</td>
+            <td style="background: #FF9933;"><img width="55" src="https://<%= @subdomain.url %>.<%=CURRENT_DOMAIN%>/images/mailorder2user/03.png"></td>
+            <td style="background: #FF9933;padding:0;" width="300"><span style="white-space:nowrap;background: #FF9933;">Фото момента</span> вручения</td>
+            <td style="background: #FF9933;padding:0;" width="500">
+              <a href="tel:88002506470" style="white-space:nowrap;font-size:16px;background:#FF9933;font-weight:bold;color:#FFF;">8 800 250 64 70</a><br />
+              <span style="white-space:nowrap;background: #FF9933;">Бесплатно по России</span>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </tfoot>
+</table>
+</center>
+</body>
+</html>

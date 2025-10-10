@@ -1,0 +1,110 @@
+﻿<!DOCTYPE html><html><head>
+  <meta charset="utf-8" />
+  <title>test</title>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <style type="text/css">
+    body { background: url('/images/horizon-wide.jpg'); background-size: cover; padding: 48px; background-attachment: fixed; }
+    main { margin: 0 auto; max-width: 1280px; min-height: 600px; padding: 24px; background: rgba(0,0,0,0.75); color: #FFF; border-radius: 12px; }
+    main section { padding: 24px; border: 1px solid #FFF; font-family: monospace; }
+    main section a { background: #000; padding: 2px; }
+  </style>
+</head><body><main>
+
+  <section>
+
+    <%
+
+      @out = true
+      @sd_cats_ls = [66, 733, 750, 118, 738, 737, 736, 739, 730, 728, 729, 65, 64, 63, 55, 751]
+
+      begin
+
+        def prdct_chk(pid)
+          cats = CategoriesProducts.where(product_id: pid); cndtns = []
+          cats.each { |x| cndtns << @sd_cats_ls.include?(x.category_id) }
+          return cndtns.include?(true)
+        end
+
+        def catgr_chk(cid)
+          return @sd_cats_ls.include?(cid)
+        end
+
+        def get_data_from_db_to_jsonfile(stuff, section_alphabetic_code, output_filename, add_image=false)
+
+          @data = []
+
+          cndtn1 = stuff.each { |item| cndtn1_1 = true
+
+            if section_alphabetic_code == 'page'; case item.uri # page exclusion filter
+              when -> (x) { x.downcase == 'unsibscribe'   } then cndtn1_1 = false
+              when -> (x) { x.downcase == 'company-short' } then cndtn1_1 = false
+              when -> (x) { x.downcase == 'test'          } then cndtn1_1 = false
+              when -> (x) { x.downcase == 'dostavka_old'  } then cndtn1_1 = false
+              when -> (x) { x.downcase == 'map'           } then cndtn1_1 = false
+              when -> (x) { x.downcase == 'vacancy'       } then cndtn1_1 = false
+            end; end
+
+            case section_alphabetic_code
+              when -> (x) { x == 'page' } then page_alphabetic_code = item.uri
+              else page_alphabetic_code = item.id
+            end
+
+            if section_alphabetic_code == 'page' && page_alphabetic_code == 'comment'
+              uri = "/#{page_alphabetic_code}"
+            else
+              uri = "/#{section_alphabetic_code}/#{page_alphabetic_code}"
+            end
+
+            if add_image
+              img = item.image; img = img.class != String ? img.url : img # ебанутый пиздец
+              if cndtn1_1; @data.push({ 'id' => item.id, 'uri' => uri, 'lastmod' => item.updated_at, 'image' => img, 'title' => item.header }); end
+            else
+              if cndtn1_1; @data.push({ 'id' => item.id, 'uri' => uri, 'lastmod' => item.updated_at }); end
+            end
+          }
+
+          if cndtn1
+            output_filepath = File.join(Padrino.root('tmf/sitemap/'), output_filename)
+            if File::exist?(output_filepath); File::delete(output_filepath); end
+            File.open(output_filepath, 'w') { |file| file.puts @data.to_json }
+          else; return false; end
+
+          if @out; %><section><% @data.each { |item| %><%=item%><br /><% } %></section><%; end
+
+          return File::exist?(output_filepath)
+
+        end
+
+        # filter
+        ctgrs = Category.all.reject { |x| !catgr_chk(x.id) }
+        prdcs = Product.all.reject  { |x| !prdct_chk(x.id) }
+        pages = Page.all.select     { |x| x.uri != 'index' }
+
+        x1 = get_data_from_db_to_jsonfile(pages,       'page',     '01_page.json',     false)
+        x2 = get_data_from_db_to_jsonfile(News.all,    'news',     '02_news.json',     false)
+        x3 = get_data_from_db_to_jsonfile(ctgrs,       'category', '03_category.json', false)
+        x4 = get_data_from_db_to_jsonfile(Article.all, 'article',  '04_article.json',  false)
+        x5 = get_data_from_db_to_jsonfile(prdcs,       'product',  '05_product.json',   true)
+        x6 = get_data_from_db_to_jsonfile(Smile.all,  'smiles',   '06_smiles.json',   false)
+
+        %><section><%
+          if x1 && x2 && x3 && x4 && x5 && x6; %><p>SCCSS</p><%
+          else;                          %><p>NOSCS</p><%; end
+        %></section><%
+
+      rescue Exception => err
+
+        %><section>
+          <p>ERROR</p>
+          <ul>
+            <li><%=err.message%></li>
+            <li><%=err.backtrace.inspect%></li>
+          </ul>
+        </section><%
+
+      end
+    %>
+
+  </section>
+
+</main></body></html>

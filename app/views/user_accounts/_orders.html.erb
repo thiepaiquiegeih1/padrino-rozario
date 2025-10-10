@@ -1,0 +1,107 @@
+<div role="tabpanel" style="margin-bottom: 32px;">
+
+  <!-- Nav tabs -->
+  <ul class="nav nav-tabs" role="tablist">
+    <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">Активные</a></li>
+    <li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">Завершенные</a></li>
+  </ul>
+
+  <!-- Tab panes -->
+  <div class="tab-content">
+    <div role="tabpanel" class="tab-pane active" id="home">
+      <% for order in @active_orders %>
+      <% puts 'ORDER', Order.find_by_sql("SELECT * FROM order_products WHERE id = " + order.id.to_s + ""), 'ORDER' %>
+        <div id="order-<%= order.eight_digit_id %>">
+          <h3>
+            <span class="otitle d" style="line-height: 48px;">Заказ № <%= order.eight_digit_id.to_s %> от <%= order.created_at.strftime('%d.%m.%Y') %></span>
+            <span class="ostatus otitle"><%= order.status.title.to_s %></span>
+            <%= link_to "Оплатить", "/user_accounts/payment?order=#{order.id}", class: 'paylink', 'data-toggle' => "tooltip", 'data-placement' => "right", title: "Если оплата вашего заказа прошла успешно, не нажимайте кнопку Оплатить" %>
+          </h3>
+          <div class="odata h">
+            <table class="orders" width="100%">
+              <tr>
+                <th width="60%">Дата/время</th>
+                <th>Сумма</th>
+                <th>Доставка</th>
+              </tr>
+              <tr>
+                <td><%= order.created_at.in_time_zone.strftime("%d.%m.%Y, %H:%M") %></td>
+                <td class="text-center"><%= order.total_summ.to_s %></td>
+                <td class="text-center"><%= order.delivery_price.to_s %></td>
+              </tr>
+            </table>
+            <table class="orders" width="100%">
+              <thead>
+                <tr>
+                  <th class="header" width="60%">Наименование</th>
+                  <th class="header">Цена</th>
+                  <th class="header">Кол-во</th>
+                  <th class="header">Стоимость</th>
+                </tr>
+              </thead>
+              <tbody>
+              <% Order_product.find_by_sql("SELECT * FROM order_products WHERE id = " + order.id.to_s + "").each { |item|  %>
+                  <tr>
+                    <td><%= item["title"] %></td>
+                    <td class="text-center"><%= if (item["price"]!=nil)
+                      '%.2f' % item["price"]
+                    end %></td>
+                    <td class="text-center"><%= item["quantity"] %></td>
+                    <td class="text-center"><%= '%.2f' % (item["price"].to_f * item["quantity"].to_i) %></td>
+                  </tr>
+              <% } %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      <% end %>
+    </div>
+    <div role="tabpanel" class="tab-pane" id="profile">
+      <% for order in @old_orders %>
+        <div id="order-<%= order.id %>">
+          <h3>
+            <span class="otitle d">Заказ № <%= order.eight_digit_id %> от <%= order.created_at.strftime('%d.%m.%Y') %></span>
+            <span class="ostatus otitle"><%= order.status.title %></span>
+          </h3>
+          <div class="odata h">
+            <table class="orders" width="100%">
+              <tr>
+                <th width="60%">Дата/время</th>
+                <th>Сумма</th>
+                <th>Доставка</th>
+              </tr>
+              <tr>
+                <td><%= order.created_at.in_time_zone.strftime("%d.%m.%Y, %H:%M") %></td>
+                <td class="text-center"><%= order.total_summ %></td>
+                <td class="text-center"><%= order.delivery_price %></td>
+              </tr>
+            </table>
+            <table class="orders" width="100%">
+              <thead>
+                <tr>
+                  <th class="header" width="60%">Наименование</th>
+                  <th class="header">Цена</th>
+                  <th class="header">Кол-во</th>
+                  <th class="header">Стоимость</th>
+                </tr>
+              </thead>
+              <tbody>
+              <% Order_product.find_by_sql("SELECT * FROM order_products WHERE id = " + order.id.to_s + "").each { |item|  %>
+                  <tr>
+                    <td><%= item["title"] %></td>
+                    <td class="text-center"><%= if (item["price"]!=nil)
+                      '%.2f' % item["price"]
+                    end %></td>
+                    <td class="text-center"><%= item["quantity"] %></td>
+                    <td class="text-center"><%= '%.2f' % (item["price"].to_f * item["quantity"].to_i) %></td>
+                  </tr>
+              <% } %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
+<style>@media (max-width: 443px) { .otitle.d { padding-bottom: 48px; } }</style>

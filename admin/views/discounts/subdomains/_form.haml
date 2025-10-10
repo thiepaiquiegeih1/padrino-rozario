@@ -1,0 +1,37 @@
+-# coding: utf-8
+
+%fieldset.control-group
+  .tabs-content
+    %table#list.table.table-striped.table-hover.table-condensed
+      %thead
+        %tr
+          %th.header= :id
+          %th.header Заголовок
+          %th.header Активность
+          %th.header Период действия
+          %th.header Переоценка в рублях
+          %th.header Переоценка в процентах
+
+      %tbody
+        - f.fields_for :categories_subdomains, @subdomain.cat_connections do |builder|
+          %tr.list-row
+            - category = builder.object.category
+            %td.list-column
+              = category.id
+              = builder.hidden_field :category_id, :value => category.id
+            %td.list-column=category.title
+            %td.list-column
+              = builder.check_box :discount_status, :autofocus => true, :value => builder.object.discount_status, :class => "list-selectable-checkbox"
+            %td.list-column
+              = builder.select :discount_period_id, :options => DiscountPeriods.all.collect { |s| [s.title, s.id] },  :value => builder.object.discount_period_id
+            %td.list-column
+              = builder.text_field :discount_in_rubles, :class => 'input-with-feedback', :autofocus => true, :value => builder.object.discount_in_rubles
+            %td.list-column
+              = builder.text_field :discount_in_percents, :class => 'input-with-feedback', :autofocus => true, :value => builder.object.discount_in_percents
+
+.form-actions
+  =f.submit pat(:save), :class => 'btn btn-primary'
+  &nbsp;
+  =f.submit pat(:save_and_continue), :class => 'btn btn-info', :name => 'save_and_continue'
+  &nbsp;
+  =link_to pat(:cancel), url('regions/subdomains', :index), :class => 'btn'

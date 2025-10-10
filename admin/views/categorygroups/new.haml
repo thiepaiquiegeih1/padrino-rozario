@@ -1,0 +1,8 @@
+- # encoding: utf-8
+%ul.nav.nav-tabs
+  %li=link_to tag_icon(:list, pat(:list)), url(:categorygroups, :index)
+  %li.active=link_to tag_icon(:plus, pat(:new)), url(:categorygroups, :new)
+
+.tabs-content
+  -form_for :categorygroup, url(:categorygroups, :create), :class => 'form-horizontal' do |f|
+    =partial 'categorygroups/form', :locals => { :f => f }

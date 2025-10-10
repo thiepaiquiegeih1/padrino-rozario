@@ -1,0 +1,14 @@
+﻿development:
+  host: 127.0.0.1
+  port: 6379
+  password: foobared
+
+test:
+  host: 127.0.0.1
+  port: 6379
+  password: foobared
+
+production:
+  host: 127.0.0.1
+  port: 6379
+  password: foobared

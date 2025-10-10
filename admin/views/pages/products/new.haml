@@ -1,0 +1,10 @@
+- # encoding: utf-8
+%ul.nav.nav-tabs
+  %li=link_to tag_icon(:list, pat(:list)), url(:products, :index)
+  %li.active=link_to tag_icon(:plus, pat(:new)), url(:products, :new)
+
+.tabs-content
+  -form_for :product, url(:products, :create), multipart: true, :class => 'form-horizontal' do |f|
+    =partial 'products/form', :locals => { :f => f, :categories =>  @categories, :complects => @complects }
+=javascript_include_tag 'knockout-3.3.0.js'
+=javascript_include_tag 'form.js'

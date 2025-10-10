@@ -1,0 +1,25 @@
+- # encoding: utf-8
+
+#crutch-indent{style: 'height: 80px'}
+
+%article.news-item
+  .date= @news.created_at.strftime("%d.%m.%Y")
+  %h1{:style => "font-size:20px;"}=@news.title
+  .clearfix
+    -#.image=image_tag(@news.image)
+    .body
+      / .image= link_to image_tag(@news.image, :alt => @news.title), @news.image, :title => @news.title, :class => 'fancybox'
+      != @news.body
+  %p.more= link_to 'Все новости', url_for(:news, :index)
+
+-# VideoObject Schema.org markup for videos in content
+= generate_video_schemas_from_content(@news.body, @news.title, @news.created_at)
+
+:css
+  .news-item .body {
+    margin-left: 0;
+  }
+
+  .news-item .body img { width: 100% !important; height: auto !important; }
+
+  .news-item .body .image { margin-right: 8px; }

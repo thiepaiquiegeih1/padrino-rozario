@@ -1,0 +1,123 @@
+- # encoding: utf-8
+!!!
+%html#canvas1
+  %head
+    %meta{:charset => 'utf-8'}
+    %meta{:name => :viewport, :content => 'width=device-width,initial-scale=1'}
+    -# %meta{:name => "keywords", :content => @keywords.present? ? @keywords : "Доставка букетов, заказ цветов, цветы, букет, магазин цветов, купить цветы" }
+    %meta{:name => "description", :content => @description.present? ? @description : "Розарио - Доставка цветов №1 недорогих букетов и живых цветов по Мурманску, России, миру. Заказать доставку букетов цветов на дом, в офис"}
+    %title= @title.present? ? "#{@title}" : @header.present? ? "#{@header}" : @subdomain.present? ? @subdomain.title : "Цветы с доставкой │ Привезем букет даже за полярный круг"
+    %meta{:content => "4aznVz6NELzN_FdpeUqYu01fkjkvPvTv3UujA-fgfDA", :name => "google-site-verification"}/
+    %meta{:content => "Цветы с доставкой в  #{@subdomain.city} │ Привезем букет даже за полярный круг", :property => "og:title"}/
+    %meta{:content => "website", :property => "og:type"}/
+    %meta{:content => "https://www.#{CURRENT_DOMAIN}/", :property => "og:url"}/
+    %meta{:content => "/uploads/blur.jpg", :property => "og:image"}/
+    %meta{:content => "HbgVyQwJlXC675RAvtRycHT3supIqevkUkm1ZWBv2oc", :name => "google-site-verification"}/
+    %meta{:content => "uRCjMCXaPD5owVzTt_Vvr7unM8IM4XSZB85TMY6oyxw", :name => "google-site-verification"}/
+    %meta{:content => "1920", :property => "og:image:width"}/
+    %meta{:content => "1200", :property => "og:image:height"}/
+    %meta{:content => "Розарио.Цветы", :property => "og:site_name"}/
+    %meta{:content => "Дарите живые цветы, несмотря на расстояние: Розарио доставит букет в любую точку города и области. Цветы с доставкой за 1 час или к назначенной дате", :property => "og:description"}/
+    %meta{:content => "ru_RU", :property => "og:locale"}/
+    %meta{:content => "summary", :name => "twitter:card"}
+    %meta{:content => "Розарио.Цветы", :name => "twitter:site"}
+    %meta{:content => "Цветы с доставкой в #{@subdomain.city} │ Привезем букет даже за полярный круг", :name => "twitter:title"}>/
+    %meta{:content => "Дарите живые цветы, несмотря на расстояние: Розарио доставит букет в любую точку города и области. Цветы с доставкой за 1 час или к назначенной дате", :name => "twitter:description"}
+    %meta{:content => "https://www.#{CURRENT_DOMAIN}/images/logo2.svg", :name => "twitter:image"}/
+    %meta{:content => "983F459D4DD5FFF1E29711226770B655", :name => "msvalidate.01"}/
+
+    %link{:href => "/icons/apple-icon-57x57.png", :rel => "apple-touch-icon", :sizes => "57x57"}/
+    %link{:href => "/icons/apple-icon-60x60.png", :rel => "apple-touch-icon", :sizes => "60x60"}/
+    %link{:href => "/icons/apple-icon-72x72.png", :rel => "apple-touch-icon", :sizes => "72x72"}/
+    %link{:href => "/icons/apple-icon-76x76.png", :rel => "apple-touch-icon", :sizes => "76x76"}/
+    %link{:href => "/icons/apple-icon-114x114.png", :rel => "apple-touch-icon", :sizes => "114x114"}/
+    %link{:href => "/icons/apple-icon-120x120.png", :rel => "apple-touch-icon", :sizes => "120x120"}/
+    %link{:href => "/icons/apple-icon-144x144.png", :rel => "apple-touch-icon", :sizes => "144x144"}/
+    %link{:href => "/icons/apple-icon-152x152.png", :rel => "apple-touch-icon", :sizes => "152x152"}/
+    %link{:href => "/icons/apple-icon-180x180.png", :rel => "apple-touch-icon", :sizes => "180x180"}/
+    %link{:href => "/icons/android-icon-192x192.png", :rel => "icon", :sizes => "192x192", :type => "image/png"}/
+    %link{:href => "/icons/favicon-32x32.png", :rel => "icon", :sizes => "32x32", :type => "image/png"}/
+    %link{:href => "/icons/favicon-96x96.png", :rel => "icon", :sizes => "96x96", :type => "image/png"}/
+    %link{:href => "/icons/favicon-16x16.png", :rel => "icon", :sizes => "16x16", :type => "image/png"}/
+    %link{:href => "/icons/manifest.json", :rel => "manifest"}/
+    %meta{:content => "#ffffff", :name => "msapplication-TileColor"}/
+    %meta{:content => "/icons/ms-icon-144x144.png", :name => "msapplication-TileImage"}/
+    %meta{:content => "#ffffff", :name => "theme-color"}/
+    =stylesheet_link_tag 'main3'
+    = organization_florist_schema
+
+  %body{'ng-app' => 'catalog'}
+
+    -# %noscript
+      -# %iframe{:height => "0", :src => "https://www.googletagmanager.com/ns.html?id=GTM-K5GZQ8", :style => "display:none;visibility:hidden", :width => "0"}
+
+    <!--[if lt IE 7]>
+    %p.chromeframe Вы используете <strong>устаревший</strong> браузер. Пожалуйста <a href="http://browsehappy.com/">установите актуальную версию</a> или <a href="http://www.google.com/chromeframe/?redirect=true">активируйте Google Chrome Frame</a> для верного отображения сайта.
+    <![endif]-->
+
+    %canvas#canvas
+    #wr{'ng-controller' => 'itemsController'}
+      .container.text-center{ style: "max-width: 1000px" }
+        = partial 'layouts/parts/site-header'
+        = partial 'layouts/parts/site-menu'
+
+        .row.colored#mainnn
+          = partial 'layouts/parts/sidebarrr'
+
+          .col-md-8.text-left#content{style:'margin-bottom:8px; '}
+
+            
+        #ftr-txt.row.colored.hidden-xs.hidden-sm{style:'text-align:left;padding:48px;'}
+          %img{src: '/uploads/wherewework.png', style: 'width: 100%; max-width: 400px; float: left; margin-right: 8px;'}
+          /!= @subdomain.about_us
+          %h2 <b>ЦвеТОЧНЫЙ сервис </b>
+          %p Сделать сюрприз, и заказать букет с доставкой – просто. Вы оплачиваете покупку, остальное – за нами! Составим цветочную композицию, отправим заказ с курьером по назначенному адресу, подарим, сфотографируем момент вручения.  
+          %p Чтобы вы и получатель были довольны, компания «Розарио» подготовила заботливый сервис:
+          %li <b>Круглосуточный магазин.</b> Заказать живые цветы можно 24 часа в сутки, в выходные и праздники.
+          %li <b>Свежесть в приоритете.</b> Закупаем только что срезанные растения у производителей, храним при специальном температурном режиме.
+          %li <b> Доставка куда угодно.</b> На дом, в офис или общественное место – привозим букет прямо к адресату. 
+          %li <b> Семь способов оплаты.</b> Принимаем оплату картой, наличными, по расчетному счету и не только.
+          %li <b> Фотоотчеты.</b> Фотографируем для заказчика составленную композицию до отправки и после получения.
+          %li <b> Гарантия к заказу.</b> Оставляем за вами право отказаться от букета в первые 24 часа.             
+          %p{style: 'margin-top:50px; text-indent: 10px;'}    Россия протянулась на 10 000 км, и расстояние становится непреодолимым, когда нужно поздравить человека, рассказать о сокровенных чувствах.  <br><b>Мы решили исправить ситуацию</b>. Теперь каждый человек, где бы он не находился: в Мурманске, Краснодаре или Калининграде, может подарить букет. 
+          %p{style: 'text-indent: 6px;'} «Розарио» – цветы с доставкой в любой населенный пункт. Все, что понадобится: выбрать букет и согласовать дату его вручения. Подарок нужен сегодня и срочно? Скажите об этом – <i>привезем заказ в течение часа</i>!  
+          %div{style: 'text-align:center'}
+            %span Поможем купить цветы в интернете, доставим букет «как на картинке».
+            %br 
+            %br 
+            %span{style: 'text-align:center'} <b>Чтобы дарить эмоции любимым, не обязательно быть рядом.</b>
+            %br 
+            %span{style: 'text-align:center'} <b>Достаточно позвонить нам. </b>
+
+
+        = partial 'layouts/parts/smiles.ftr'
+        = partial 'layouts/parts/latest_news.ftr'
+        = partial 'layouts/parts/comments.ftr'
+        = partial 'layouts/parts/faq.ftr'
+
+        .row.text-center#footer{:itemscope => true, :itemtype => 'http://schema.org/Florist'}
+          .col-md-12.col-sm-12.col-xs-12
+            = "© 2011-#{Time.now.year} «Розарио - Доставка цветов №1»"
+          - org_data = organization_microdata_attributes
+          %meta{:content => org_data[:address], :itemprop => 'address'}/
+          %meta{:content => org_data[:telephone], :itemprop => 'telephone'}/
+          %meta{:content => org_data[:name], :itemprop => 'name'}/
+          %meta{:content => org_data[:opening_hours], :itemprop => 'openingHours'}/
+          %meta{:content => org_data[:payment_accepted], :itemprop => 'paymentAccepted'}/
+          %meta{:content => org_data[:email], :itemprop => 'email'}/
+          %meta{:itemprop => "image", :itemscope => true, :itemtype => "https://schema.org/Url"}
+          %meta{:itemprop => "priceRange", :content => "RUB"}
+            /%img{:src => "/images/logo.svg", loading: "lazy"} 
+            %link{:itemprop => "url", :href => "/images/logo.svg"}
+          .col-md-12.col-sm-12.col-xs-12
+          .col-md-12.col-sm-12.col-xs-12
+            тел.: 8 (800) 250-64-70
+          .col-md-12.col-sm-12.col-xs-12
+            эл. почта: <a href="mailto:info@rozariofl.ru">info@rozariofl.ru</a>
+
+    %link{ rel: "stylesheet", href: "/javascripts/jquery-ui-1.11.4.custom/jquery-ui.min.css" }
+    %link{ rel: "stylesheet", href: "/javascripts/jquery-ui-1.11.4.custom/jquery-ui.theme.min.css" }
+    %script{ src: '/javascripts/jquery-ui-1.11.4.custom/jquery-ui.min.js' }
+    =javascript_include_tag 'phonecode'
+    =javascript_include_tag 'city_select'
+    =javascript_include_tag 'site'

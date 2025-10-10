@@ -1,0 +1,101 @@
+﻿.row.colored.site_menu
+  .hidden-lg.hidden-md
+    .main.col-sm-4.col-xs-4{ style: "cursor: pointer;z-index:100;background-color: #ef845b; line-height: 43px; color: #fff; font-weight: 800;" }
+      %span.glyphicon.glyphicon-menu-hamburger{ :"aria-hidden" => true }
+      Меню
+    .ctlg.col-sm-4.col-xs-4.text-center{ style: "cursor: pointer;z-index:100;background-color: #ef845b; line-height: 43px; color: #fff; font-weight: 800;" }
+      %i.fa.fa-gift{ style:"font-size: 16px;" } 
+      Каталог
+    .call.col-sm-4.col-xs-4.text-center{ style: "cursor: pointer;z-index:100;background-color: #ef845b; line-height: 43px; color: #fff; font-weight: 800; min-height:43px;white-space:nowrap;" }
+      %span.glyphicon.glyphicon-phone-alt{ :"aria-hidden" => true }
+        %a{ href: "/page/contacts", style: "cursor: pointer;z-index:100; color: #fff; font-weight: 800;white-space:nowrap; font-size: 12px; font-family: Arial, Helvetica, sans-serif;line-height: 43px"}Контакты
+    
+
+  .col-md-12.col-sm-12.col-xs-12.main-menu{style:'display:none'}
+    .row
+      .col-md-6.col-sm-6.col-xs-12.menu_item.visible-sm.visible-xs
+        %a{ href: "/feedback" } Отзывы
+      .col-md-6.col-sm-6.col-xs-12.menu_item.visible-sm.visible-xs
+        %a{ href: "/page/discount" } Скидки
+      .col-md-6.col-sm-6.col-xs-12.menu_item.visible-sm.visible-xs
+        %a{ href: "/page/dostavka" } Доставка
+      .col-md-6.col-sm-6.col-xs-12.menu_item.visible-sm.visible-xs
+        %a{ href: "/page/company" } О компании
+      .col-md-6.col-sm-6.col-xs-12.menu_item.visible-sm.visible-xs
+        %a{ href: "/page/contacts" } Контакты
+      .col-md-6.col-sm-6.col-xs-12.menu_item.visible-sm.visible-xs
+        %a{ href: "/article" } Блог
+      .col-md-6.col-sm-6.col-xs-12.menu_item.visible-sm.visible-xs
+        %a{ href: "/page/confidentiality" } Политика конфиденциальности
+
+  = partial 'layouts/parts/menu/main'
+
+  .col-md-12.col-sm-12.col-xs-12.hidden-xs.hidden-sm.main_menu
+    .row
+      .col-md-2.menu_item.real_item.hidden-sm.hidden-xs.first
+        %a{ href: "/feedback" } Отзывы
+      .col-md-2.menu_item.real_item.hidden-sm.hidden-xs
+        %a{ href: "/page/discount" } Скидки
+      .col-md-2.drop_main_menu
+        %a{ class: 'dropdown-toggle', :"data-toggle" => 'dropdown', href: '/' }
+          Каталог
+          %span{ class: 'caret' }
+
+        %ul.dropdown-menu
+          = partial 'partials/left_menu'
+      .col-md-2.menu_item.real_item.hidden-sm.hidden-xs
+        %a{ href: "/category/korobki-s-tsvetami" } Коробки с цветами
+      .col-md-2.menu_item.real_item.hidden-sm.hidden-xs
+        %a{ href: "/page/dostavka" } Доставка
+      .col-md-2.menu_item.real_item.hidden-sm.hidden-xs.last
+        %a{ href: "/page/contacts" } Контакты
+
+:plain
+  <script>
+    $(function() {
+      var ID18475839 = setTimeout(function() {
+        if ($('.site_menu').is('div')) {
+          $('.site_menu .main').on('click', function() {
+            if ($('.ctlg-menu').is(":visible")) {
+              $('.ctlg-menu').slideToggle('fast', function() {
+                $('.main-menu').slideToggle('slow', function() {});
+              });
+            } else if ($('.phone-button').is(":visible")) {
+              $('.phone-button').slideToggle('fast', function() {
+                $('.main-menu').slideToggle('slow', function() {});
+              });
+            } else {
+              $('.main-menu').slideToggle('fast', function() {});
+            }
+          });
+          $('.site_menu .ctlg').on('click', function() {
+            if ($('.main-menu').is(":visible")) {
+              $('.main-menu').slideToggle('fast', function() {
+                $('.ctlg-menu').slideToggle('slow', function() {});
+              });
+            } else if ($('.phone-button').is(":visible")) {
+              $('.phone-button').slideToggle('fast', function() {
+                $('.ctlg-menu').slideToggle('slow', function() {});
+              });
+            } else {
+              $('.ctlg-menu').slideToggle('fast', function() {});
+            }
+          });
+          $('.site_menu .call').on('click', function() {
+            if ($('.main-menu').is(":visible")) {
+              $('.main-menu').slideToggle('fast', function() {
+                $('.phone-button').slideToggle('slow', function() {});
+              });
+            } else if ($('.ctlg-menu').is(":visible")) {
+              $('.ctlg-menu').slideToggle('fast', function() {
+                $('.phone-button').slideToggle('slow', function() {});
+              });
+            } else {
+              $('.phone-button').slideToggle('fast', function() {});
+            }
+          });
+          clearInterval(ID18475839);
+        }
+      }, 100);
+    });
+  </script>

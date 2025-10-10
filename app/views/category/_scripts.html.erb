@@ -1,0 +1,69 @@
+<script>
+$( document ).ready(function() {
+  // отправим ajax-запрос на сервер, чтобы он сохранил данные в сессию
+	 $(".tocartf").submit(function() {
+    	
+		var form = $(this);
+		// input type="number"
+		// получим количество товара
+		var quantity = parseInt($(this).children("input.quantity").val());
+		if (isNaN(quantity) || quantity <= 0) {
+			$(this).children("input.quantity").css("background-color", "#ffcccc").focus().select();
+			alert("Товар не добавлен. Пожалуйста, укажите верное значение количества добавляемого товара (целое число).");
+			return false;
+		}
+
+		// отправим ajax-запрос на сервер, чтобы он сохранил данные в сессию
+		$.get($(this).attr("action"), {
+            quantity: quantity
+          })
+          .done(function(data) {
+                        u = window.location.href.split("/")
+                        if (u[u.length-1] == "cart") {
+                          location.reload();
+                          return;
+                        }
+			// показываем попап
+			$.fancybox($("#cart-popup"), {
+				padding: 0,
+				closeEffect: "none",
+				helpers: {
+					overlay: {
+						locked: false,
+						css: {
+							"background": "rgba(255, 255, 255, 0)"
+						},
+                        closeClick: false
+					},
+					title: null
+				},
+				beforeShow: function() {
+					// загрузим данные со страницы в попап
+					form.parent(".tocart").siblings(".image").find("img").clone().appendTo(this.inner.find(".item-image").empty());
+					
+					var item_title = form.parent(".tocart").siblings(".title").text();
+					if (item_title.length == 0) item_title = form.parent(".tocart").parent().siblings(".title").text();
+					this.inner.find(".pname").empty().append(item_title);
+					
+					this.inner.find(".pquant").empty().append(quantity);
+					this.inner.find(".psumm").empty().append(parseFloat(form.parent(".tocart").siblings(".price").find(".currprice").text().replace(/[^0-9.]/g, "")).toFixed(2));
+					$(".fancybox-skin").css("backgroundColor", "transparent");
+					$(".fancybox-skin").css("box-shadow", "0 0 24px 0 rgba(104, 187, 6, .5)");
+				},
+				afterShow: function() {
+					// обновим данные в шапке страницы
+					refresh_cart_stat();
+				},
+				afterClose: function() {
+					clearTimeout(1);
+				}
+			});
+          })
+          .fail(function() {
+            alert("Произошла внутренняя ошибка сервера. Товар не добавлен в корзину. Приносим свои извинения.")
+          });
+
+    	return false;
+    });
+});
+</script>

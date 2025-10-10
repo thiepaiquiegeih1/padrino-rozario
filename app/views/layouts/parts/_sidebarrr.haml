@@ -1,0 +1,114 @@
+- # encoding: utf-8
+.col-md-4.text-left#sidebarrr
+  .row.a
+    .col-md-12{ :class => 'col-md-offset-0' }
+      -# - begin
+      -#   = partial('layouts/parts/chng-city', :engine => :erb)
+      -# - rescue
+      -#   = ';)'
+      -# .delivery.delivery-lg.visible-lg.visible-md{ style: 'border-radius:4px;margin-top: 45px; margin-bottom: 0px; padding-bottom: 0px; text-align: center; '}
+      -#   %strong{ style: 'text-align: center; font-family:"PT Sans",sans-serif; font-size:14px; font-weight:normal; font-color:black;' } Куда доставить букет?
+      -#   .input-block
+      -#     %input.input.cities{  style: 'font-size:14px; text-align: center; ', placeholder: "Введите адрес доставки", onfocus: "if (this.value == this.defaultValue) { this.select(); }", onchange: "$('.ui-menu-item.ui-state-focus').click()", value: @subdomain ? @subdomain.city : '' }
+      -#     .preloader
+      -#       /%img{ src: "/images/preloader.gif" }
+      -#     .line3{ style: "text-align: center;" }
+      -#       %strong{ style: 'text-align: center; font-family:"PT Sans",sans-serif; font-size:14px; font-weight:normal;' } Когда?
+      -#       -form_tag url(:index1), :id => 'formID', :method => 'post' do |f|
+      -#         = flash_tag(:error)
+      -#         %input.input{name: :name,  :id => 'pick0', :autocomplete => 'off', :class => 'datetimepicker', placeholder: request.session[:mdata], :style => "font-size:14px; text-align: center; background-color:#fff;  " }
+      -#   .error
+      -#     Населенный пункт не найден. Свяжитесь, пожалуйста, с нами для уточнения стоимости доставки
+      -#     %strong 8 800 250 64 70
+      -# .delivery.delivery-sm.visible-sm.visible-xs
+      -#   %input.input.cities{ placeholder: "Введите город доставки" }
+  .row.b
+    .col-md-12.hidden-xs.hidden-sm
+      %section.smiles{ style: "margin-left: 30px" }
+        %a.ttl{href: '/smiles/', rel: 'nofollow'}
+          %div{:class => 'h2-seo-crutch'} Улыбки получателей
+        %br
+        - # @posts = Smile.order("created_at DESC").limit(2)
+        .row
+          - arr_smiles = Smile.where(sidebar: true).pluck(:id)
+          - range = arr_smiles.size
+          - if(range >= 2)
+            - a = rand(range)
+            - b = rand(range)
+            - tst = lambda do |a, b, range|
+              - if    a==b && a != range-1; b += 1; tst.call(a, b, range)
+              - elsif a==b && a == range-1; b -= 1; tst.call(a, b, range)
+              - else; return b
+            - b = tst.call(a, b, range)
+            - a = arr_smiles[a]
+            - b = arr_smiles[b]
+          - else
+            - a = Smile.first.id
+            - b = Smile.last.id
+          .col-md-6{:itemscope => true, :itemtype => 'http://schema.org/ImageObject'}
+            - @post = Smile.find_by_id(a)
+            = partial 'layouts/parts/sidebarrr/smile'
+          .col-md-6{:itemscope => true, :itemtype => 'http://schema.org/ImageObject', style:'padding-left:4px;'}
+            - @post = Smile.find_by_id(b)
+            = partial 'layouts/parts/sidebarrr/smile'
+        %hr
+        = link_to 'Показать все'.html_safe, host_url('/smiles/'), rel: 'nofollow'
+    .col-md-12.hidden-xs.hidden-sm
+      %section.feedback{style:"margin-left: 30px"}
+        - @cmts = Comment.all(:order => 'created_at desc')
+        %a.ttl{href: '/feedback', rel: 'nofollow'}
+        %img{ src: '/uploads/o%20nas/fedbacks.png', style: 'width: 100%', loading: "lazy" }
+        %a{href: '/feedback#comment-form', style: 'width: 100%; border-radius: 2px; padding: 8px; background: #ef845b; color: #fff; display: block; text-align: center;', rel: 'nofollow'} Оставить отзыв
+        %br
+        - @comment = @cmts[0]
+        = partial 'layouts/parts/sidebarrr/comment'
+        %hr
+        - @comment = @cmts[1]
+        = partial 'layouts/parts/sidebarrr/comment'
+        %hr
+        - @comment = @cmts[2]
+        = partial 'layouts/parts/sidebarrr/comment'
+        %hr
+        = link_to 'Показать все'.html_safe, host_url('/feedback')
+        -# Schema.org Reviews markup for sidebar
+        = generate_sidebar_reviews_schema(@cmts.first(3))
+        
+        - count = 0; summ = 0; for x in Comment.all; summ += x.rating; count += 1; end; agrgtn = summ / count
+        %div{:itemscope => 'itemscope', :itemtype => 'http://schema.org/AggregateRating'}
+          %div{itemprop: "itemReviewed", itemscope: 'itemscope', itemtype: "http://schema.org/LocalBusiness"}
+            %meta{content: "Цветочный центр Розарио", itemprop: "name"}/
+            - current_domain = CURRENT_DOMAIN
+            - business_url = @subdomain.url != 'murmansk' ? "https://#{@subdomain.url}.#{current_domain}" : "https://#{current_domain}"
+            %link{href: business_url, itemprop: "url"}/
+            - addr_data = localbusiness_address_data
+            %div{itemprop: "address", itemscope: 'itemscope', itemtype: "http://schema.org/PostalAddress"}
+              %meta{content: addr_data[:country], itemprop: "addressCountry"}/
+              %meta{content: addr_data[:locality], itemprop: "addressLocality"}/
+              - if addr_data[:region]
+                %meta{content: addr_data[:region], itemprop: "addressRegion"}/
+              %meta{content: addr_data[:street_address], itemprop: "streetAddress"}/
+              %meta{content: addr_data[:postal_code], itemprop: "postalCode"}/
+          %meta{:content => "1", :itemprop => 'worstRating'}/
+          %meta{:content => "5", :itemprop => 'bestRating'}/
+          %meta{:content => count.to_s, :itemprop => 'ratingCount'}/
+          %meta{:content => agrgtn.to_s, :itemprop => 'ratingValue'}/
+    .col-md-12.hidden-xs.hidden-sm
+      %section.subscr{style:"margin-left: 30px"}
+        %div{:class => 'h2-seo-crutch'} Подпишитесь!
+        %p{style: 'text-align: center;'}
+          И первыми узнавайте о наших
+          %br акциях и скидках
+        %br
+        %form{action: '/api/subscribe', method: 'post'}
+          %input{required: 'required', name: 'name', placeholder: 'Ваше имя', style:'display: block; width: 100%; padding: 4px; color: black;'}
+          %br
+          %input{required: 'required', type: 'email', name: 'email', placeholder: 'Ваш E-mail', style:'display: block; width: 100%; padding: 4px; color: black;'}
+          %br
+          %input{type:'submit', style: 'border: 0; width: 100%; border-radius: 2px; padding: 8px; background: #ef845b; color: #fff; display: block; text-align: center;', value:'Отправить'}
+
+
+:css
+  #sidebarrr .feedback article .body { font-size: 12px; padding-top: 4px; font-family: "PT Sans", sans-serif; margin-top: 20px; margin-bottom: 10px; font-weight: 500; line-height: 1.1; }
+
+:javascript
+  console.log('_sidebarrr.haml')

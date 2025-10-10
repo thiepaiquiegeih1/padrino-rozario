@@ -1,0 +1,174 @@
+-# coding: utf-8
+=javascript_include_tag 'subdomains.js'
+=javascript_include_tag 'chosen.jquery.min.js'
+=javascript_include_tag 'jquery-chosen-sortable.min.js'
+=stylesheet_link_tag 'chosen.css'
+
+- error = @subdomain.errors.include?(:url)
+%fieldset.control-group{:class => error ? 'has-error' : ''}
+  =f.label "URL", :class => 'control-label'
+  .controls
+    =f.text_field :url, :class => 'input-xlarge input-with-feedback', :autofocus => true
+    %span.help-inline=error ? f.error_message_on(:url, :class => 'text-error') : 'URL'
+- error = @subdomain.errors.include?(:domain_type)
+%fieldset.control-group{:class => error ? 'has-error' : ''}
+  =f.label "Тип", :class => 'control-label'
+  .controls
+    %select{ name: 'subdomain[domain_type]' }
+      %option{ value: 0, selected: @subdomain.domain_type == 0} Регион РФ
+      %option{ value: 1, selected: @subdomain.domain_type == 1} Населенный пункт РФ
+      %option{ value: 2, selected: @subdomain.domain_type == 2} Населенный пункт
+    %span.help-inline=error ? f.error_message_on(:url, :class => 'text-error') : 'Тип'
+- error = @subdomain.errors.include?(:city)
+%fieldset.control-group{:class => error ? 'has-error' : ''}
+  =f.label "Город", :class => 'control-label'
+  .controls
+    =f.text_field :city, :class => 'input-xlarge input-with-feedback', :autofocus => true
+    %span.help-inline=error ? f.error_message_on(:city, :class => 'text-error') : 'Город'
+
+- error = @subdomain.errors.include?(:suffix)
+%fieldset.control-group{:class => error ? 'has-error' : ''}
+  =f.label "Суффикс", :class => 'control-label'
+  .controls
+    =f.text_field :suffix, :class => 'input-xlarge input-with-feedback', :autofocus => true
+    %span.help-inline=error ? f.error_message_on(:suffix, :class => 'text-error') : 'Суффикс'
+
+%fieldset.control-group{:class => error ? 'has-error' : ''}
+  =f.label "Пул поддоменов", :class => 'control-label'
+  .controls
+    =f.select(:subdomain_pool_id, collection: SubdomainPool.all, fields: [:name, :id], :class => 'selectpicker input-xlarge input-with-feedback', :autofocus => true, :data => {:live_search => "true"}, 'data-selected' => [@subdomain.subdomain_pool_id])
+    %span.help-inline='Регион'
+
+- error = @subdomain.errors.include?(:title)
+%fieldset.control-group{:class => error ? 'has-error' : ''}
+  =f.label "Meta Title", :class => 'control-label'
+  .controls
+    =f.text_field :title, :class => 'input-xlarge input-with-feedback', :autofocus => true
+    %span.help-inline=error ? f.error_message_on(:title, :class => 'text-error') : 'Meta Title'
+- error = @subdomain.errors.include?(:keywords)
+%fieldset.control-group{:class => error ? 'has-error' : ''}
+  =f.label "Meta Keywords", :class => 'control-label'
+  .controls
+    =f.text_field :keywords, :class => 'input-xlarge input-with-feedback', :autofocus => true
+    %span.help-inline=error ? f.error_message_on(:title, :class => 'text-error') : 'Meta Keywords'
+- error = @subdomain.errors.include?(:description)
+%fieldset.control-group{:class => error ? 'has-error' : ''}
+  =f.label "Meta Description", :class => 'control-label'
+  .controls
+    =f.text_area :description, :class => 'input-xlarge input-with-feedback'
+    %span.help-inline=error ? f.error_message_on(:description, :class => 'text-error') : 'Meta Description'
+
+- error = @subdomain.errors.include?(:ya_address)
+%fieldset.control-group{:class => error ? 'has-error' : ''}
+  =f.label "Адрес", :class => 'control-label'
+  .controls
+    =f.text_field :ya_address, :class => 'input-xlarge input-with-feedback'
+    %span.help-inline=error ? f.error_message_on(:ya_address, :class => 'text-error') : 'Адрес'
+
+- error = @subdomain.errors.include?(:ya_url)
+%fieldset.control-group{:class => error ? 'has-error' : ''}
+  =f.label "Карта", :class => 'control-label'
+  .controls
+    =f.text_field :ya_url, :class => 'input-xlarge input-with-feedback'
+    %span.help-inline=error ? f.error_message_on(:ya_url, :class => 'text-error') : 'Ссылка на карту'
+
+%fieldset.control-group
+  =f.label 'Включены категории', :class => 'control-label'
+  .controls
+    =f.check_box :enable_categories, :class => 'input-xlarge input-with-feedback'
+    %span.help-inline
+      - if @cat_display != nil
+        %b= 'Подключенные категории поддомена:'
+        - @cat_display.each do |c|
+          %span= c.title + '(' + c.id.to_s + ')' + ', '
+
+%fieldset.control-group
+  =f.label 'Категории', :class => 'control-label'
+  .controls
+    =f.select(:category_ids, collection: Category.all, :fields => [:title, :id], :class => 'selectpicker input-xlarge input-with-feedback', :autofocus => true, :multiple => true, :data => {:live_search => "true"})
+    %span.help-inline= 'Добавить категории из общего списка категорий'
+
+%fieldset.control-group
+  =f.label 'Группы категорий', :class => 'control-label'
+  .controls
+    =f.select(:categorygroup_ids, collection: Categorygroup.all, :fields => [:title, :id], :class => 'selectpicker input-xlarge input-with-feedback', :autofocus => true, :multiple => true, :data => {:live_search => "true"})
+    %span.help-inline= 'Добавить группы категорий из общего списка групп'
+
+%fieldset.control-group
+  =f.label 'Левое меню', :class => 'control-label'
+  .controls
+    =f.select(:leftmenu_id, collection: Leftmenu.all, :fields => [:title, :id], :class => 'selectpicker input-xlarge input-with-feedback', :autofocus => true, :data => {:live_search => "true"}, :include_blank => 'Ничего не выбрано')
+    %span.help-inline= 'Добавить меню на главную из общего списка меню'
+
+%fieldset.control-group{:class => error ? 'has-error' : ''}
+  =f.label "Выбрать категорию по умолчанию", :class => 'control-label'
+  .controls
+    =f.select(:default_category_id, :collection => @cat_display, fields: [:title, :id], :class => 'selectpicker input-xlarge input-with-feedback', :autofocus => true, :data => {:live_search => "true"}, 'data-selected' => [@subdomain.default_category_id], :include_blank => 'Ничего не выбрано')
+    %span.help-inline= 'Выбрать категорию для отображения на главной из списка подключенных категорий'
+
+%fieldset.control-group
+  =f.label 'Ссылка "Коорпоративным клиентам"', :class => 'control-label'
+  .controls
+    =f.check_box :coop_clients, :class => 'input-xlarge input-with-feedback'
+    %span.help-inline
+
+%fieldset.control-group{:class => error ? 'has-error' : ''}
+  =f.label "Слайдшоу на главной", :class => 'control-label'
+  .controls
+    =f.select(:slideshow_main_id, collection: Slideshow.all, fields: [:title, :id], :class => 'selectpicker input-xlarge input-with-feedback', :autofocus => true, :data => {:live_search => "true"}, 'data-selected' => [@subdomain.slideshow_main_id])
+    %span.help-inline='Слайдшоу'
+
+%fieldset.control-group{:class => error ? 'has-error' : ''}
+  =f.label "Слайдшоу в корзине", :class => 'control-label'
+  .controls
+    =f.select(:slideshow_cart_id, collection: Slideshow.all, fields: [:title, :id], :class => 'selectpicker input-xlarge input-with-feedback', :autofocus => true, :data => {:live_search => "true"}, 'data-selected' => [@subdomain.slideshow_cart_id])
+    %span.help-inline='Слайдшоу в корзине'
+
+%fieldset.control-group
+  =f.label 'Включены Слайдшоу', :class => 'control-label'
+  .controls
+    =f.check_box :enable_slideshows, :class => 'input-xlarge input-with-feedback'
+    %span.help-inline
+
+
+-if @subdomain.city == 'Мурманск'
+  - error = @subdomain.errors.include?(:price)
+  %fieldset.control-group{:class => error ? 'has-error' : '',  :disabled => "disabled"}
+    =f.label 'Стоимость доставки', :class => 'control-label'
+    .controls
+      =f.text_field :price, :class => 'input-xlarge input-with-feedback'
+      %span.help-inline
+        %p= link_to 'Перейти в раздел доставки "Улицы Мурманска"', '/admin/delivery/murmanskstreets/', :target => "blank"
+-else
+  - error = @subdomain.errors.include?(:price)
+  %fieldset.control-group{:class => error ? 'has-error' : ''}
+    =f.label 'Стоимость доставки', :class => 'control-label'
+    .controls
+      =f.text_field :price, :class => 'input-xlarge input-with-feedback'
+      %span.help-inline=error ? f.error_message_on(:price, :class => 'text-error') : pat("Стоимость доставки")
+
+%fieldset.control-group
+  =f.label 'Бесплатная доставка', :class => 'control-label'
+  .controls
+    =f.check_box :free_delivery, :class => 'input-xlarge input-with-feedback'
+    %span.help-inline= 'Включить бесплатную доставку'
+
+- error = @subdomain.errors.include?(:freedelivery_summ)
+%fieldset.control-group{:class => error ? 'has-error' : ''}
+  =f.label 'Условие', :class => 'control-label'
+  .controls
+    =f.text_field :freedelivery_summ, :class => 'input-xlarge input-with-feedback'
+    %span.help-inline=error ? f.error_message_on(:price, :class => 'text-error') : pat("Сумма в корзине, необходимая для бесплатной доставки")
+
+%fieldset.control-group
+  =f.label 'Сверхурочные доставки', :class => 'control-label'
+  .controls
+    =f.select(:overtime_delivery_ids, collection: OvertimeDelivery.all, :fields => [:title, :id], :class => 'selectpicker input-xlarge input-with-feedback', :autofocus => true, :multiple => true, :data => {:live_search => "true"}, :include_blank => 'Ничего не выбрано')
+    %span.help-inline= 'Подключить правила сверхурочной доставки'
+
+.form-actions
+  =f.submit pat(:save), :class => 'btn btn-primary'
+  &nbsp;
+  =f.submit pat(:save_and_continue), :class => 'btn btn-info', :name => 'save_and_continue'
+  &nbsp;
+  =link_to pat(:cancel), url('regions/subdomains', :index), :class => 'btn'

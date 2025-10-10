@@ -1,0 +1,58 @@
+-# coding: utf-8
+:plain
+  <script>
+    $(function() {
+      $('.selectpicker').selectpicker();
+      $('.selectpicker').selectpicker('val', #{@leftmenu.category_ids});
+      $('.selectpicker').selectpicker('render');
+    });
+  </script>
+
+- error = @leftmenu.errors.include?(:title)
+%fieldset.control-group{:class => error ? 'has-error' : ''}
+  =f.label :title, :class => 'control-label'
+  .controls
+    =f.text_field :title, :class => 'input-xlarge input-with-feedback', :autofocus => true
+    %span.help-inline=error ? f.error_message_on(:title, :class => 'text-error') : pat(:example)
+
+%fieldset.control-group
+  =f.label :Категории, :class => 'control-label'
+  .controls
+    =f.select(:category_ids, collection: Category.all, :fields => [:title, :id], :class => 'selectpicker input-xlarge input-with-feedback', :autofocus => true, :multiple => true, :data => {:live_search => "true"})
+    %span.help-inline='Добавить категорию'
+
+- error = @leftmenu.errors.include?(:default)
+%fieldset.control-group{:class => error ? 'has-error' : ''}
+  .controls
+    =f.check_box :default, :class => 'input-xlarge input-with-feedback'
+    %span.help-inline=error ? f.error_message_on(:default, :class => 'text-error') : 'Использовать по-умолчанию'
+
+.tabs-content
+  %table#list.table.table-striped.table-hover.table-condensed
+    %thead
+      %tr
+        %th.header= :id
+        %th.header= :title
+        %th.header Родительская категория
+        %th.header Порядок отображения
+
+    %tbody
+      -if @tst != nil
+        - @tst.each_with_index do |cat, index|
+          - fields_for @tst[index] do |builder|
+            %tr.list-row
+              %td.list-column
+                = cat.category.id
+                = builder.hidden_field "#{index}][category_id", :value => cat.category.id
+              %td.list-column=cat.category.title
+              %td.list-column
+                = builder.text_field "#{index}][parentcat_id", :autofocus => true, :value => cat.parentcat_id
+              %td.list-column
+                = builder.number_field "#{index}][sequence", :class => 'input-xlarge input-with-feedback', :value => cat.sequence            
+
+.form-actions
+  =f.submit pat(:save), :class => 'btn btn-primary'
+  &nbsp;
+  =f.submit pat(:save_and_continue), :class => 'btn btn-info', :name => 'save_and_continue'
+  &nbsp;
+  =link_to pat(:cancel), url(:'menus_on_main/leftmenus', :index), :class => 'btn'

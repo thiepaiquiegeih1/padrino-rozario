@@ -1,0 +1,267 @@
+-# coding: utf-8
+
+#accordion.panel-group
+  .panel.panel-default
+    .panel-heading
+      %h4.panel-title
+        %a{"data-parent" => "#accordion", "data-toggle" => "collapse", :href => "#collapseOne", style: "display: block; width: 100%; height: 100%;"}
+          %span.glyphicon.glyphicon-plus{style: "font-size: 18px;"}
+          SEO НАСТРОЙКИ
+    #collapseOne.panel-collapse.collapse
+      .panel-body
+        =f.fields_for :seo do |s|
+          %fieldset.control-group
+            .seo-check
+              =s.check_box :index, :id => "chk01"
+              %label{for: 'chk01'} Разрешить поисковикам индексировать сраницу.
+
+          - error = data.seo.errors.include?(:title)
+          %fieldset.control-group{class: error ? 'has-error' : ''}
+            =s.label :title, class: 'control-label'
+            .controls
+              =s.text_area(:title, class: 'input-xlarge input-with-feedback',
+                           rows: 1, autofocus: true,
+                           oninput: "$(this).siblings('.counter').html($(this).val().length)")
+              %span.help-inline=error ? s.error_message_on(:title, class: 'text-error') : 'Заголовок (title), до 60 символов'
+              %span.counter.help-inline{style: 'position: absolute; right:0'}= data.seo.title ? data.seo.title.length : 0
+          - if h1
+            - error = data.seo.errors.include?(:h1)
+            %fieldset.control-group{class: error ? 'has-error' : ''}
+              =s.label :h1, class: 'control-label'
+              .controls
+                =s.text_area(:h1, class: 'input-xlarge input-with-feedback', rows: 1,
+                             oninput: "$(this).siblings('.counter').html($(this).val().length)")
+                %span.help-inline=error ? s.error_message_on(:h1, class: 'text-error') : 'Заголовок (h1)'
+                %span.counter.help-inline{style: 'position: absolute; right:0'}= data.seo.h1 ? data.seo.h1.length : 0
+
+          - error = data.seo.errors.include?(:description)
+          %fieldset.control-group{class: error ? 'has-error' : ''}
+            =s.label :description, class: 'control-label'
+            .controls
+              =s.text_area(:description, class: 'input-xlarge input-with-feedback', rows: 2,
+                           oninput: "$(this).siblings('.counter').html($(this).val().length)")
+              %span.help-inline=error ? s.error_message_on(:description, class: 'text-error') : 'Описание (description), до 160 символов'
+              %span.counter.help-inline{style: 'position: absolute; right:0'}= data.seo.description ? data.seo.description.length : 0
+
+          - error = data.seo.errors.include?(:keywords)
+          %fieldset.control-group{class: error ? 'has-error' : ''}
+            =s.label :keywords, class: 'control-label'
+            .controls
+              =s.text_area(:keywords, class: 'input-xlarge input-with-feedback', rows: 1)
+              %span.help-inline=error ? s.error_message_on(:keywords, class: 'text-error') : 'Ключевые слова (keywords), можно не использовать'
+
+          - error = data.seo.errors.include?(:og_type)
+          %fieldset.control-group{class: error ? 'has-error' : ''}
+            =s.label :og_type, class: 'control-label'
+            .controls
+              =s.text_area(:og_type, class: 'input-xlarge input-with-feedback', rows: 1)
+              %span.help-inline=error ? s.error_message_on(:og_type, class: 'text-error') : 'og:type описывает тип объекта на странице (веб-сайт, блог, книга, фильм и т.д.), по-умолчанию: website'
+
+          - error = data.seo.errors.include?(:og_title)
+          %fieldset.control-group{class: error ? 'has-error' : ''}
+            =s.label :og_title, class: 'control-label'
+            .controls
+              =s.text_area(:og_title, class: 'input-xlarge input-with-feedback', rows: 1,
+                           oninput: "$(this).siblings('.counter').html($(this).val().length)")
+              %span.help-inline=error ? s.error_message_on(:og_title, class: 'text-error') : 'Заголовок fb, vk и т. п. (og:title), до 65 символов'
+              %span.counter.help-inline{style: 'position: absolute; right:0'}= data.seo.og_title ? data.seo.og_title.length : 0
+
+          - error = data.seo.errors.include?(:og_description)
+          %fieldset.control-group{class: error ? 'has-error' : ''}
+            =s.label :og_description, class: 'control-label'
+            .controls
+              =s.text_area(:og_description, class: 'input-xlarge input-with-feedback', rows: 2,
+                           oninput: "$(this).siblings('.counter').html($(this).val().length)")
+              %span.help-inline=error ? s.error_message_on(:og_description, class: 'text-error') : 'Описание fb, vk и т.п. (og:description), до 300 символов'
+              %span.counter.help-inline{style: 'position: absolute; right:0'}= data.seo.og_description ? data.seo.og_description.length : 0
+
+          - error = data.seo.errors.include?(:og_image)
+          %fieldset.control-group{:class => error ? 'has-error' : ''}
+            =s.label "Og image", :class => 'control-label'
+
+            %div=image_tag(data.seo.og_image, :class => 'img-rounded', :style => 'max-height:200px; margin: 10px 30px;') if data.seo.og_image.present?
+            .img_preview{style: 'display:none; max-height:200px; margin-bottom: 15px;'}
+              %img#img_preview{style: 'margin: 10px 30px;'}/
+            .controls
+              %span.btn.btn-file
+                Загрузить
+                =s.file_field :og_image, :class => 'input-xlarge input-with-feedback', onchange: 'previewImg(this)'
+              %span.help-inline=error ? s.error_message_on(:og_image, :class => 'text-error') : 'картинка для fb, vk и т.п., рекомедованное размер 1200 x 630, до 5 МБ  '
+
+          - error = data.seo.errors.include?(:twitter_title)
+          %fieldset.control-group{class: error ? 'has-error' : ''}
+            =s.label :twitter_title, class: 'control-label'
+            .controls
+              =s.text_area(:twitter_title, class: 'input-xlarge input-with-feedback', rows: 1,
+                           oninput: "$(this).siblings('.counter').html($(this).val().length)")
+              %span.help-inline=error ? s.error_message_on(:twitter_title, class: 'text-error') : 'Twitter заголовок (twitter_title), до 70 символов'
+              %span.counter.help-inline{style: 'position: absolute; right:0'}= data.seo.twitter_title ? data.seo.twitter_title.length : 0
+
+          - error = data.seo.errors.include?(:twitter_description)
+          %fieldset.control-group{class: error ? 'has-error' : ''}
+            =s.label :twitter_description, class: 'control-label'
+            .controls
+              =s.text_area(:twitter_description, class: 'input-xlarge input-with-feedback', rows: 2,
+                           oninput: "$(this).siblings('.counter').html($(this).val().length)")
+              %span.help-inline=error ? s.error_message_on(:twitter_description, class: 'text-error') : 'Twitter описание (twitter_description), до 200 символов'
+              %span.counter.help-inline{style: 'position: absolute; right:0'}= data.seo.twitter_description ? data.seo.twitter_description.length : 0
+
+          - error = data.seo.errors.include?(:twitter_image)
+          %fieldset.control-group{:class => error ? 'has-error' : ''}
+            =s.label "Twitter image", :class => 'control-label'
+
+            %div=image_tag(data.seo.twitter_image, :class => 'img-rounded', :style => 'max-height:200px; margin: 10px 30px;') if data.seo.twitter_image.present?
+            .img_preview{style: 'display:none; max-height:200px; margin-bottom: 15px;'}
+              %img#img_preview{style: 'margin: 10px 30px;'}/
+            .controls
+              %span.btn.btn-file
+                Загрузить
+                =s.file_field :twitter_image, :class => 'input-xlarge input-with-feedback', onchange: 'previewImg(this)'
+              %span.help-inline=error ? s.error_message_on(:twitter_image, :class => 'text-error') : 'картинка для twitter, соотношение сторон 2:1, минимальный размер: 300x157, макс.: 4096x4096, до 5 МБ'
+          
+          %hr
+          %h4 Микроразметка Schema.org (для smiles)
+          %p.help-block Настройки микроразметки для страниц с фото доставки. Оставьте пустыми для использования значений по умолчанию.
+          
+          %fieldset.control-group
+            =s.label "Текст отзыва (reviewBody)", :class => 'control-label'
+            .controls
+              =s.text_area :h2, :class => 'input-xlarge input-with-feedback', :rows => 2, :placeholder => "Краткое содержание отзыва (5–15 слов)"
+              %span.help-inline Описание отзыва для микроразметки Review. Если пусто - используется значение по умолчанию.
+        - if defined?(@enable_seo_texts) && @enable_seo_texts
+          %fieldset.control-group.seo_texts{ style: 'height: 512px;' }
+            %label.control-label SEO-text:
+            .controls{style: 'height: 100%;'} 
+              %iframe#md-seo-iframe{src: "/admin/seo_texts/edit/#{data.slug}?v=#{(Time.now.to_f * 1000).to_i}", title: "SEO texts editor for categories", width: "100%", height: "100%", frameborder: '0'} Ваш браузер не поддерживает iframe.
+              %span.counter.help-inline
+                %a{href: 'https://github.com/sandino/Markdown-Cheatsheet', target: "_blank"} Cheatsheet
+                |
+                %a{href: 'https://markdowneditor.net/markdown-editor/', target: "_blank"} Alternative
+
+%p.help-block
+  %strong Особая логика для smiles:
+  %br
+  • Поле "H2" используется для текста отзыва в микроразметке Review
+  %br
+  • Поле "H1" может использоваться для переопределения имени автора отзыва
+  %br
+  • Если поля пусты, используются значения по умолчанию
+
+.dropup.tags-info
+  %a{"data-toggle" => "dropdown", :href => "#"}
+    %i{:class => "icon-info-sign", :'data-toggle' => "tooltip", :'data-placement'=> "left", :title => "Доступные теги для seo блока"}
+  %ul.dropdown-menu{"aria-labelledby" => "dLabel", :role => "menu"}
+    %li{:onclick => "copyToClipboard('%city%')", :'data-toggle' => "tooltip", :'data-placement'=> "left", :title => "Нажмите чтобы копировать %city%"}
+      %strong %city% 
+      \- название города (пр.: Мурманск)
+    
+    %li{:onclick => "copyToClipboard('%morph_datel%')", :'data-toggle' => "tooltip", :'data-placement'=> "left", :title => "Нажмите чтобы копировать %morph_datel%"}
+      %strong %morph_datel% 
+      \- дательный падеж (пр.: Мурманску)
+
+    %li{:onclick => "copyToClipboard('%morph_predl%')", :'data-toggle' => "tooltip", :'data-placement'=> "left", :title => "Нажмите чтобы копировать %morph_predl%"}
+      %strong %morph_predl% 
+      \- предложный падеж (пр.: Мурманске)
+
+    %li{:onclick => "copyToClipboard('%morph_rodit%')", :'data-toggle' => "tooltip", :'data-placement'=> "left", :title => "Нажмите чтобы копировать %morph_rodit%"}
+      %strong %morph_rodit% 
+      \- родительный падеж (пр.: Мурманска)
+
+    %li{:onclick => "copyToClipboard('%header%')", :'data-toggle' => "tooltip", :'data-placement'=> "left", :title => "Нажмите чтобы копировать %header%"}
+      %strong %header% 
+      \- заголовок страницы (для smiles - название товара)
+
+:javascript
+
+  function copyToClipboard(value) {
+    var element = $(this).text();
+    var $temp = $("<input>");
+    $("body").append($temp);
+    $temp.val(value).select();
+    document.execCommand("copy");
+    $temp.remove();
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    // Add minus icon for collapse element which is open by default
+    $(".collapse.in").each(function(){
+      $(this).siblings(".panel-heading").find(".glyphicon").addClass("glyphicon-minus").removeClass("glyphicon-plus");
+    });
+
+    // Toggle plus minus icon on show hide of collapse element
+    $(".collapse").on('show.bs.collapse', function(){
+      $(this).parent().find(".glyphicon").removeClass("glyphicon-plus").addClass("glyphicon-minus");
+    }).on('hide.bs.collapse', function(){
+      $(this).parent().find(".glyphicon").removeClass("glyphicon-minus").addClass("glyphicon-plus");
+    });
+  });
+
+- if defined?(@enable_seo_texts) && @enable_seo_texts
+  :javascript
+    let iframeWindow;
+    // let iframeDocument;
+
+    function mdSeoIframeLoaded(attempts = 7, delay = 1000) {
+      let attemptCount = 0;
+      const intervalId = setInterval(() => {
+        attemptCount++;
+        let iframeElement = document.getElementById('md-seo-iframe');
+        if (iframeElement && iframeElement.contentWindow && iframeElement.contentWindow.document.readyState === 'complete') {
+          iframeWindow = iframeElement.contentWindow;
+          // iframeDocument = iframeElement.contentDocument;
+          clearInterval(intervalId); // Остановить интервал
+          console.log('Iframe загружен и доступен.');
+        }
+        if (attemptCount >= attempts) {
+          clearInterval(intervalId); // Остановить интервал
+          console.error(`Не удалось найти iframe с ID "md-seo-iframe" после ${attempts} попыток.`);
+        }
+      }, delay);
+    }
+
+    function mdSeocallIframeFunction() {
+      if (iframeWindow && iframeWindow.save) { iframeWindow.save(); }
+      else { console.error('Функция `save()` не найдена или iframe не загружен.'); }
+    }
+
+    function pollForElement(elementId, callback, attempts = 7, delay = 1000) {
+      let attemptCount = 0;
+      const intervalId = setInterval(() => {
+        attemptCount++;
+        const element = document.getElementById(elementId);
+
+        if (element) {
+          clearInterval(intervalId);
+          console.log(`Элемент с ID "${elementId}" найден.`);
+          callback(element);
+          return;
+        }
+
+        if (attemptCount >= attempts) {
+          clearInterval(intervalId);
+          console.error(`Не удалось найти элемент с ID "${elementId}" после ${attempts} попыток.`);
+          callback(null); // Передаем null, если элемент не найден
+        }
+      }, delay);
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+
+      mdSeoIframeLoaded();
+
+      pollForElement('SAVE', function(saveButton) {
+        if (saveButton) {
+          saveButton.addEventListener('click', async function() { // Добавляем обработчик события для кнопки сохранения
+            mdSeocallIframeFunction();
+          });
+        }
+      });
+
+      pollForElement('SAVE_AND_CONTINUE', function(saveContinueButton) {
+        if (saveContinueButton) {
+          saveContinueButton.addEventListener('click', async function() { // Добавляем обработчик события для кнопки сохранения
+            mdSeocallIframeFunction();
+          });
+        }
+      });
+    });

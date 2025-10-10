@@ -1,0 +1,9 @@
+- # encoding: utf-8
+%ul.nav.nav-tabs
+  %li=link_to tag_icon(:list, pat(:list)), url(:'delivery/overtime_deliveries', :index)
+  %li=link_to tag_icon(:plus, pat(:new)), url(:'delivery/overtime_deliveries', :new)
+  %li.active=link_to tag_icon(:edit, pat(:edit)), url(:'delivery/overtime_deliveries', :edit, :id => @overtime_delivery.id)
+
+.tabs-content
+  -form_for :overtime_delivery, url(:'delivery/overtime_deliveries', :update, :id => @overtime_delivery.id), :method => :put, :class => 'form-horizontal' do |f|
+    =partial 'delivery/overtime_deliveries/form', :locals => { :f => f }

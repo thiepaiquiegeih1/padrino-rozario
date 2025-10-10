@@ -1,0 +1,149 @@
+-# coding: utf-8
+-if @general.page == true
+  %fieldset.control-group
+    .seo-check
+      =f.check_box :index, :id => "chk01"
+      %label{for: 'chk01'} Разрешить поисковикам индексировать сраницу.
+-if @general.page == true || @general.name == 'categories' || @general.name == 'default'
+  - error = @general.errors.include?(:h1)
+  %fieldset.control-group{class: error ? 'has-error' : ''}
+    =f.label :h1, class: 'control-label'
+    .controls
+      =f.text_area(:h1, class: 'input-xlarge input-with-feedback', rows: 1,
+                   oninput: "$(this).siblings('.counter').html($(this).val().length)")
+      %span.help-inline=error ? f.error_message_on(:h1, class: 'text-error') : 'Заголовок (h1)'
+      %span.counter.help-inline{style: 'position: absolute; right:0'}= @general.h1 ? @general.h1.length : 0
+
+- error = @general.errors.include?(:title)
+%fieldset.control-group{class: error ? 'has-error' : ''}
+  =f.label :title, class: 'control-label'
+  .controls
+    =f.text_area(:title, class: 'input-xlarge input-with-feedback',
+                 rows: 1, autofocus: true,
+                 oninput: "$(this).siblings('.counter').html($(this).val().length)")
+    %span.help-inline=error ? f.error_message_on(:title, class: 'text-error') : 'Заголовок (title), до 60 символов'
+    %span.counter.help-inline{style: 'position: absolute; right:0'}= @general.title ? @general.title.length : 0
+
+- error = @general.errors.include?(:description)
+%fieldset.control-group{class: error ? 'has-error' : ''}
+  =f.label :description, class: 'control-label'
+  .controls
+    =f.text_area(:description, class: 'input-xlarge input-with-feedback', rows: 2,
+                 oninput: "$(this).siblings('.counter').html($(this).val().length)")
+    %span.help-inline=error ? f.error_message_on(:description, class: 'text-error') : 'Описание (description), до 160 символов'
+    %span.counter.help-inline{style: 'position: absolute; right:0'}= @general.description ? @general.description.length : 0
+
+- error = @general.errors.include?(:keywords)
+%fieldset.control-group{class: error ? 'has-error' : ''}
+  =f.label :keywords, class: 'control-label'
+  .controls
+    =f.text_area(:keywords, class: 'input-xlarge input-with-feedback', rows: 1)
+    %span.help-inline=error ? f.error_message_on(:keywords, class: 'text-error') : 'Ключевые слова (keywords), можно не использовать'
+
+- error = @general.errors.include?(:og_type)
+%fieldset.control-group{class: error ? 'has-error' : ''}
+  =f.label :og_type, class: 'control-label'
+  .controls
+    =f.text_area(:og_type, class: 'input-xlarge input-with-feedback', rows: 1)
+    %span.help-inline=error ? f.error_message_on(:og_type, class: 'text-error') : 'og:type описывает тип объекта на странице (веб-сайт, блог, книга, фильм и т.д.), по-умолчанию: website'
+
+- error = @general.errors.include?(:og_title)
+%fieldset.control-group{class: error ? 'has-error' : ''}
+  =f.label :og_title, class: 'control-label'
+  .controls
+    =f.text_area(:og_title, class: 'input-xlarge input-with-feedback', rows: 1,
+                 oninput: "$(this).siblings('.counter').html($(this).val().length)")
+    %span.help-inline=error ? f.error_message_on(:og_title, class: 'text-error') : 'Заголовок fb, vk и т. п. (og_title), до 65 символов'
+    %span.counter.help-inline{style: 'position: absolute; right:0'}= @general.og_title ? @general.og_title.length : 0
+
+- error = @general.errors.include?(:og_description)
+%fieldset.control-group{class: error ? 'has-error' : ''}
+  =f.label :og_description, class: 'control-label'
+  .controls
+    =f.text_area(:og_description, class: 'input-xlarge input-with-feedback', rows: 2,
+                 oninput: "$(this).siblings('.counter').html($(this).val().length)")
+    %span.help-inline=error ? f.error_message_on(:og_description, class: 'text-error') : 'Описание fb, vk и т.п. (og_description), до 300 символов'
+    %span.counter.help-inline{style: 'position: absolute; right:0'}= @general.og_description ? @general.og_description.length : 0
+
+- error = @general.errors.include?(:og_image)
+%fieldset.control-group{:class => error ? 'has-error' : ''}
+  =f.label "Og image", :class => 'control-label'
+
+  %div=image_tag(@general.og_image, :class => 'img-rounded', :style => 'max-height:200px; margin: 10px 30px;') if @general.og_image.present?
+  .img_preview{style: 'display:none; max-height:200px; margin-bottom: 15px;'}
+    %img#img_preview{style: 'margin: 10px 30px;'}/
+  .controls
+    %span.btn.btn-file
+      Загрузить
+      =f.file_field :og_image, :class => 'input-xlarge input-with-feedback', onchange: 'previewImg(this)'
+    %span.help-inline=error ? f.error_message_on(:og_image, :class => 'text-error') : 'картинка для fb, vk и т.п., рекомедованное разрешение 1200 x 630, до 5 МБ  '
+
+- error = @general.errors.include?(:twitter_title)
+%fieldset.control-group{class: error ? 'has-error' : ''}
+  =f.label :twitter_title, class: 'control-label'
+  .controls
+    =f.text_area(:twitter_title, class: 'input-xlarge input-with-feedback', rows: 1,
+                 oninput: "$(this).siblings('.counter').html($(this).val().length)")
+    %span.help-inline=error ? f.error_message_on(:twitter_title, class: 'text-error') : 'Twitter заголовок (twitter_title), до 70 символов'
+    %span.counter.help-inline{style: 'position: absolute; right:0'}= @general.twitter_title ? @general.twitter_title.length : 0
+
+- error = @general.errors.include?(:twitter_description)
+%fieldset.control-group{class: error ? 'has-error' : ''}
+  =f.label :twitter_description, class: 'control-label'
+  .controls
+    =f.text_area(:twitter_description, class: 'input-xlarge input-with-feedback', rows: 2,
+                 oninput: "$(this).siblings('.counter').html($(this).val().length)")
+    %span.help-inline=error ? f.error_message_on(:twitter_description, class: 'text-error') : 'Twitter описание (twitter_description), до 200 символов'
+    %span.counter.help-inline{style: 'position: absolute; right:0'}= @general.twitter_description ? @general.twitter_description.length : 0
+
+- error = @general.errors.include?(:twitter_image)
+%fieldset.control-group{:class => error ? 'has-error' : ''}
+  =f.label "Twitter image", :class => 'control-label'
+
+  %div=image_tag(@general.twitter_image, :class => 'img-rounded2', :style => 'max-height:200px; margin: 10px 30px;') if @general.twitter_image.present?
+  .img_preview2{style: 'display:none; max-height:200px; margin-bottom: 15px;'}
+    %img#img_preview2{style: 'margin: 10px 30px;'}/
+  .controls
+    %span.btn.btn-file
+      Загрузить
+      =f.file_field :twitter_image, :class => 'input-xlarge input-with-feedback', onchange: 'previewImg2(this)'
+    %span.help-inline=error ? f.error_message_on(:twitter_image, :class => 'text-error') : 'картинка для twitter, соотношение сторон 2:1, минимальный размер: 300x157, макс.: 4096x4096, до 5 МБ  '
+
+.form-actions
+  =f.submit pat(:save), :class => 'btn btn-primary'
+  &nbsp;
+  =f.submit pat(:save_and_continue), :class => 'btn btn-info', :name => 'save_and_continue'
+  &nbsp;
+  =link_to pat(:cancel), url(:smiles, :index), :class => 'btn'
+
+:javascript
+  function previewImg(input) {
+    if (input.files && input.files[0]) {
+      var reader = new FileReader();
+      $('.img-rounded').css('display', 'none');
+      $('.img_preview').css('display', 'block');
+      reader.onload = function (e) {
+        $('#img_preview')
+          .attr('src', e.target.result)
+          .width('auto')
+          .height(200);
+      };
+
+      reader.readAsDataURL(input.files[0]);
+    }
+  }
+    function previewImg2(input) {
+      if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        $('.img-rounded2').css('display', 'none');
+        $('.img_preview2').css('display', 'block');
+        reader.onload = function (e) {
+          $('#img_preview2')
+            .attr('src', e.target.result)
+            .width('auto')
+            .height(200);
+        };
+
+        reader.readAsDataURL(input.files[0]);
+      }
+    }

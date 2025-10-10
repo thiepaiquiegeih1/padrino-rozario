@@ -1,0 +1,18 @@
+- # encoding: utf-8
+-@title = @subdomain.title.present? ? @subdomain.title : "Розарио Доставка цветов №1. Восхитительных букетов и свежих цветов г. #{@subdomain.city}"
+-@address = "г. #{@subdomain.city}"
+/ -@keywords = @subdomain.keywords.present? ? @subdomain.keywords : "доставка цветов #{@subdomain.city}  доставка букетов заказ цветов цветы букеты"
+-@description = @subdomain.description.present? ? Sanitize.fragment(@subdomain.description).strip : "Цветочный центр Розарио - доставка цветов #{@subdomain.city}, доставка букетов, оформление праздничных и свадебных букетов, огромный выбор комнатных цветов и рассады."
+- content_for :head do
+  / =javascript_include_tag 'jquery.zoom.min'
+
+  / =stylesheet_link_tag 'angular-busy'
+
+/ = partial("category/filters.html", :engine => :erb)
+
+
+%br
+%br
+
+:javascript
+  console.log('app/views/subdomain2.haml')

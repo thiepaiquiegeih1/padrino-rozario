@@ -1,0 +1,45 @@
+-# coding: utf-8
+
+- error = @slide.errors.include?(:slideshow_id)
+%fieldset.control-group{:class => error ? 'has-error' : ''}
+  =f.label :slideshow_id, :class => 'control-label'
+  .controls
+    =f.select(:slideshow_id, :collection => @slideshows, :fields => [:title, :id], :class => 'input-xlarge input-with-feedback', :autofocus => true)
+    %span.help-inline=error ? f.error_message_on(:slideshow_id, :class => 'text-error') : 'Слайд-шоу'
+
+- error = @slide.errors.include?(:image)
+%fieldset.control-group{:class => error ? 'has-error' : ''}
+  =f.label :image, :class => 'control-label'
+  .controls
+    %span.btn.btn-file
+      Загрузить
+      =f.file_field :image, :class => 'input-xlarge input-with-feedback'
+    %span.help-inline=error ? f.error_message_on(:image, :class => 'text-error') : '.jpg 900х300px'
+
+- error = @slide.errors.include?(:position)
+%fieldset.control-group{:class => error ? 'has-error' : ''}
+  =f.label :position, :class => 'control-label'
+  .controls
+    =f.number_field :position, :class => 'input-xlarge input-with-feedback'
+    %span.help-inline=error ? f.error_message_on(:position, :class => 'text-error') : ''
+
+- error = @slide.errors.include?(:uri)
+%fieldset.control-group{:class => error ? 'has-error' : ''}
+  =f.label :uri, :class => 'control-label'
+  .controls
+    =f.text_field :uri, :class => 'input-xlarge input-with-feedback'
+    %span.help-inline=error ? f.error_message_on(:uri, :class => 'text-error') : 'Например: http://company.yandex.ru/about/'
+
+-#- error = @slide.errors.include?(:text)
+-#%fieldset.control-group{:class => error ? 'has-error' : ''}
+-#  =f.label :text, :class => 'control-label'
+-#  .controls
+-#    =f.text_area :text, :class => 'input-xlarge input-with-feedback ckeditor'
+-#    %span.help-inline=error ? f.error_message_on(:text, :class => 'text-error') : ''
+
+.form-actions
+  =f.submit pat(:save), :class => 'btn btn-primary'
+  &nbsp;
+  =f.submit pat(:save_and_continue), :class => 'btn btn-info', :name => 'save_and_continue'
+  &nbsp;
+  =link_to pat(:cancel), url(:slides, :index), :class => 'btn'

@@ -1,0 +1,5 @@
+- # encoding: utf-8
+=partial 'seo/tabs', :locals => {:entity => :pages, :action => :edit}
+.tabs-content
+  -form_for :page, url(:'seo/pages', :update, :id => @page.id), :method => :put, :class => 'form-horizontal' do |f|
+    =partial 'seo/pages/form', :locals => { :f => f }

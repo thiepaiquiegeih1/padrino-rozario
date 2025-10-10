@@ -1,0 +1,36 @@
+- # encoding: utf-8
+.base-text
+  %p Добро пожаловать в панель администрирования сайта самого лучшего в мире магазина цветов «Розарио»!
+
+.base-icons
+  .btn-group
+    .btn.btn-primary{:title => ""}=tag_icon("icon-2x", "")
+    .btn.btn-success{:title => ""}=tag_icon("icon-2x", "")
+    .btn.btn-info{:title => ""}=tag_icon("icon-2x", "")
+    .btn.btn-warning{:title => ""}=tag_icon("icon-2x", "")
+    .btn.btn-danger{:title => ""}=tag_icon("icon-2x", "")
+
+.base-text
+  - project_modules.each do |project_module|
+    %h2{:style => "display:inline;margin-right:12px;line-height:1.65;margin-right:30px;"}
+      =link_to I18n.t("padrino.admin.menu.#{project_module.name}"), project_module.path('/admin')
+  %h2{:style => "display:inline;margin-right:12px;line-height:1.65;margin-right:30px;"}
+    =link_to "Слайдшоу", url(:slideshows, :index)
+  %h2{:style => "display:inline;margin-right:12px;line-height:1.65;margin-right:30px;"}
+    =link_to "Слайды", url(:slides, :index)
+  %h2{:style => "display:inline;margin-right:12px;line-height:1.65;margin-right:30px;"}
+    =link_to "Заказы", url(:orders,:index)
+  %h2{:style => "display:inline;margin-right:12px;line-height:1.65;margin-right:30px;"}
+    =link_to "Рассылка", url(:mailing, :index)
+  %h2{:style => "display:inline;margin-right:12px;line-height:1.65;margin-right:30px;"}
+    =link_to "Теги", url(:tags, :index)
+  %h2{:style => "display:inline;margin-right:12px;line-height:1.65;margin-right:30px;"}
+    =link_to "Витрина", "/admin/categories/showcase"
+  %h2{:style => "display:inline;margin-right:12px;line-height:1.65;margin-right:30px;"}
+    =link_to "Улыбки", url(:smiles, :index)
+  %h2{:style => "display:inline;margin-right:12px;line-height:1.65;margin-right:30px;"}
+    %a{ href: "/category/oldbukets" } Старая версия букетов
+  %h2{:style => "display:inline;margin-right:12px;line-height:1.65;margin-right:30px;"}
+    =link_to "Календарь (заказы)", url(:disabled_dates, :index)
+  %h2{:style => "display:inline;margin-right:12px;line-height:1.65;margin-right:30px;"}
+    =link_to "Способы оплаты", url(:payment_methods, :index)

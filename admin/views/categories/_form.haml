@@ -1,0 +1,122 @@
+-# coding: utf-8
+
+:plain
+  <script>
+    $(function() {
+      $('.selectpicker').selectpicker();
+      $('.selectpicker').selectpicker('val', [#{@group_ids}]);
+      $('.selectpicker').selectpicker('render');
+    });
+  </script>
+
+- error = @category.errors.include?(:categorygroup_id)
+%fieldset.control-group{:class => error ? 'has-error' : ''}
+  =f.label :categorygroup, :class => 'control-label'
+  .controls
+    =f.select(:categorygroup_id, :collection => Categorygroup.all, :fields => [:title, :id], :class => 'selectpicker input-xlarge input-with-feedback', :autofocus => true, :multiple => true, :data => {:live_search => "true"})
+    %span.help-inline=error ? f.error_message_on(:category_id, :class => 'text-error') : 'Группа категорий'
+
+- error = @category.errors.include?(:parent_id)
+%fieldset.control-group{:class => error ? 'has-error' : ''}
+  =f.label "Родитель", :class => 'control-label'
+  .controls
+    =f.select(:parent_id, :collection => @categories, :fields => [:title, :id], :class => 'input-xlarge input-with-feedback', :selected => @category.parent_id)
+    %span.help-inline=error ? f.error_message_on(:parent_id, :class => 'text-error') : 'Родительская категория'
+
+- error = @category.errors.include?(:level)
+%fieldset.control-group{:class => error ? 'has-error' : ''}
+  =f.label "Уровень вложенности", :class => 'control-label'
+  .controls
+    =f.text_field :level, :class => 'input-xlarge input-with-feedback'
+    %span.help-inline=error ? f.error_message_on(:level, :class => 'text-error') : 'Уровень вложенности'
+
+- error = @category.errors.include?(:title)
+%fieldset.control-group{:class => error ? 'has-error' : ''}
+  =f.label "Заголовок", :class => 'control-label'
+  .controls
+    =f.text_field :title, :class => 'input-xlarge input-with-feedback', :autofocus => true
+    %span.help-inline=error ? f.error_message_on(:title, :class => 'text-error') : 'Заголовок'
+
+- error = @category.errors.include?(:slug)
+%fieldset.control-group{:class => error ? 'has-error' : ''}
+  =f.label :slug, :class => 'control-label'
+  .controls
+    =f.text_field :slug, :class => 'input-xlarge input-with-feedback', :autofocus => true
+    %span.help-inline=error ? f.error_message_on(:slug, :class => 'text-error') : 'URI (по-умолчанию транслитерация поля title, повторения недопустимы)'
+
+- error = @category.errors.include?(:announce)
+%fieldset.control-group{:class => error ? 'has-error' : ''}
+  =f.label "Анонс", :class => 'control-label'
+  .controls
+    =f.text_area :announce, :class => 'input-xlarge input-with-feedback ckeditor'
+    %span.help-inline=error ? f.error_message_on(:announce, :class => 'text-error') : 'Анонс'
+
+- error = @category.errors.include?(:image)
+%fieldset.control-group{:class => error ? 'has-error' : ''}
+  =f.label "Изображение", :class => 'control-label'
+  .controls
+    %span.btn.btn-file
+      Загрузить
+      =f.file_field :image, :class => 'input-xlarge input-with-feedback'
+    %span.help-inline=error ? f.error_message_on(:image, :class => 'text-error') : 'Изображение'
+
+- error = @category.errors.include?(:text)
+%fieldset.control-group{:class => error ? 'has-error' : ''}
+  =f.label "Описание", :class => 'control-label'
+  .controls
+    =f.text_area :text, :class => 'input-xlarge input-with-feedback ckeditor'
+    %span.help-inline=error ? f.error_message_on(:text, :class => 'text-error') : 'Текст полного описания'
+
+- error = @category.errors.include?(:template)
+%fieldset.control-group{:class => error ? 'has-error' : ''}
+  =f.label "Шаблон", :class => 'control-label'
+  .controls
+    =f.text_field :template, :class => 'input-xlarge input-with-feedback'
+    %span.help-inline=error ? f.error_message_on(:template, :class => 'text-error') : 'Шаблон вывода (если не указан, используется по-умолчанию)'
+
+- error = @category.errors.include?(:show_in_index)
+%fieldset.control-group{:class => error ? 'has-error' : ''}
+  =f.label "На главную", :class => 'control-label'
+  .controls
+    =f.check_box :show_in_index, :class => 'input-xlarge input-with-feedback'
+    %span.help-inline=error ? f.error_message_on(:show_in_index, :class => 'text-error') : 'Показывать на главной'
+
+
+- error = @category.errors.include?(:slideshow_id)
+%fieldset.control-group{:class => error ? 'has-error' : ''}
+  =f.label "Слайдшоу", :class => 'control-label'
+  .controls
+    =f.select(:slideshow_id, :collection => @slideshows, :fields => [:title, :id], :class => 'input-xlarge input-with-feedback', :selected => @category.slideshow_id)
+    %span.help-inline=error ? f.error_message_on(:slideshow_id, :class => 'text-error') : 'Слайдшоу категории'
+
+
+- error = @category.errors.include?(:show_in_crosssell)
+%fieldset.control-group{:class => error ? 'has-error' : ''}
+  =f.label "Блоки допродажи", :class => 'control-label'
+  .controls
+    =f.check_box :show_in_crosssell, :class => 'input-xlarge input-with-feedback'
+    %span.help-inline=error ? f.error_message_on(:show_in_crosssell, :class => 'text-error') : 'Отображать в блоках допродажи'
+
+- error = @category.errors.include?(:discount)
+%fieldset.control-group{:class => error ? 'has-error' : ''}
+  =f.label "Скидка", :class => 'control-label'
+  .controls
+    =f.text_field :discount, :class => 'input-xlarge input-with-feedback'
+    %span.help-inline=error ? f.error_message_on(:discount, :class => 'text-error') : 'Скидка на товары категории (в процентах)'
+%fieldset.control-group{:class => error ? 'has-error' : ''}
+  =f.label "Цену в товарах", :class => 'control-label'
+  %div{:class => "controls form-inline"}
+    =select_tag(:change1, :collection => ["Увеличить на", "Уменьшить на"], :fields => [:to_s, :to_s])
+    =text_field_tag(:change2)
+    =select_tag(:change3, :collection => ["процентов", "рублей"], :fields => [:to_s, :to_s])
+
+=partial 'seo/seo_fields', locals: { f: f, data: @category, h1: true}
+
+
+
+.form-actions
+  =f.submit pat(:save), :class => 'btn btn-primary', :id => 'SAVE'
+  &nbsp;
+  =f.submit pat(:save_and_continue), :class => 'btn btn-info', :name => 'save_and_continue', :id => 'SAVE_AND_CONTINUE'
+  &nbsp;
+  =link_to pat(:cancel), url(:categories, :index), :class => 'btn'

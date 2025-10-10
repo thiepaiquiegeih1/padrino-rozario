@@ -1,0 +1,32 @@
+-# coding: utf-8
+- error = @page.errors.include?(:uri)
+%fieldset.control-group{:class => error ? 'has-error' : ''}
+  =f.label :uri, :class => 'control-label'
+  .controls
+    =f.text_field :uri, :class => 'input-xlarge input-with-feedback', :autofocus => true
+    %span.help-inline=error ? f.error_message_on(:uri, :class => 'text-error') : 'Ключевое слово (/page/<uri>)'
+- error = @page.errors.include?(:title)
+%fieldset.control-group{:class => error ? 'has-error' : ''}
+  =f.label :title, :class => 'control-label'
+  .controls
+    =f.text_field :title, :class => 'input-xlarge input-with-feedback'
+    %span.help-inline=error ? f.error_message_on(:title, :class => 'text-error') : 'Заголовок'
+- error = @page.errors.include?(:keywords)
+%fieldset.control-group{:class => error ? 'has-error' : ''}
+  =f.label :keywords, :class => 'control-label'
+  .controls
+    =f.text_field :keywords, :class => 'input-xlarge input-with-feedback'
+    %span.help-inline=error ? f.error_message_on(:keywords, :class => 'text-error') : 'Ключевые слова'
+- error = @page.errors.include?(:description)
+%fieldset.control-group{:class => error ? 'has-error' : ''}
+  =f.label :description, :class => 'control-label'
+  .controls
+    =f.text_field :description, :class => 'input-xlarge input-with-feedback'
+    %span.help-inline=error ? f.error_message_on(:description, :class => 'text-error') : 'Описание'
+
+.form-actions
+  =f.submit pat(:save), :class => 'btn btn-primary'
+  &nbsp;
+  =f.submit pat(:save_and_continue), :class => 'btn btn-info', :name => 'save_and_continue'
+  &nbsp;
+  =link_to pat(:cancel), url(:'seo/pages', :index), :class => 'btn'

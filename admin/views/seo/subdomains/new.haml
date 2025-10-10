@@ -1,0 +1,6 @@
+- # encoding: utf-8
+=partial 'seo/tabs', :locals => {:entity => :subdomains, :action => :new}
+
+.tabs-content
+  -form_for :subdomain, url(:'seo/subdomains', :create), multipart: true, :class => 'form-horizontal' do |f|
+    =partial 'seo/subdomains/form', :locals => { :f => f }

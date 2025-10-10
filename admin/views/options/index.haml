@@ -1,0 +1,22 @@
+- # encoding: utf-8
+
+%h2 Изображение для шапки сайта
+%p
+  Файл используется такой, какой есть, без обработки.
+  %br
+  Требования к файлу: .jpg/.png, ширина: минимум 900 пикселей, высота: 100-300 пикселей. Все, что выходит за эти рамки будет безжалостно обрезано.
+  %br
+  Старый файл удаляется перед загрузкой.
+
+%p
+  Используется сейчас (в масштабе 50%)
+  %br
+  =image_tag("/uploads/options/" + @curr_file, :width => '50%')
+
+-form_tag '/admin/options/upload_image', :method => :put, :multipart => true, :class => 'form' do
+
+  - field_set_tag do
+    =label_tag :file
+    =file_field_tag :file
+
+  =submit_tag 'Загрузить', :class =>'btn btn-small'

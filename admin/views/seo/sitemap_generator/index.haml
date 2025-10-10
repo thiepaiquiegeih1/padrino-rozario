@@ -1,0 +1,11 @@
+- # encoding: utf-8
+=partial 'seo/sitemap_generator/tabs_sitemap', :locals => {:entity => :sitemap_general, :action => :list}
+.tabs-content{:style => 'display: flex; justify-content: space-around;'}
+  =form_tag url(:'seo/sitemap_generator', :generate), method: :post, :class => 'form-inline', :style => 'width: 300px' do
+    =submit_tag pat(:generate), :class => 'btn btn-primary'
+  
+  =form_tag url(:'seo/sitemap_generator', :generate_robots), method: :post, :class => 'form-inline', :style => 'width: 200px' do
+    =submit_tag pat(:generate_robots), :class => 'btn btn-primary'
+  
+  =form_tag url(:'seo/sitemap_generator', :generate_sitemap), method: :post, :class => 'form-inline', :style => 'width: 200px' do
+    =submit_tag pat(:generate_sitemap), :class => 'btn btn-primary'

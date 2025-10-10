@@ -1,0 +1,26 @@
+- # encoding: utf-8
+
+%h3
+  Заказ от
+  =@order.created_at.in_time_zone.strftime("%d.%m.%Y, %H:%M")
+%h5
+  Пользователь:
+  =@order.useraccount.nil? ? "Гость" : @order.useraccount.surname
+
+%table#list.table.table-striped.table-hover.table-condensed
+  %thead
+    %tr
+      %th.header Наименование
+      %th.header Цена
+      %th.header Кол-во
+      %th.header Стоимость
+
+  %tbody
+    -JSON.parse(@order.cart).each do |item|
+      %tr.list-row
+        %td.list-column= item["title"]
+        %td.list-column= '%.0f' % item["price"]
+        %td.list-column= item["quantity"]
+        %td.list-column= '%.0f' % (item["price"].to_f * item["quantity"].to_i)
+
+%h3.text-right Итого: #{'%.0f' % (@order.total_summ - @order.delivery_price.to_i)} руб.

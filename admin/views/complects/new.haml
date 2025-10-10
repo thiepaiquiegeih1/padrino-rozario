@@ -1,0 +1,8 @@
+- # encoding: utf-8
+%ul.nav.nav-tabs
+  %li=link_to tag_icon(:list, pat(:list)), url(:complects, :index)
+  %li.active=link_to tag_icon(:plus, pat(:new)), url(:complects, :new)
+
+.tabs-content
+  -form_for :complect, url(:complects, :create), :class => 'form-horizontal' do |f|
+    =partial 'complects/form', :locals => { :f => f }

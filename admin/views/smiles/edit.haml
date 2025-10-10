@@ -1,0 +1,9 @@
+- # encoding: utf-8
+%ul.nav.nav-tabs
+  %li=link_to tag_icon(:list, pat(:list)), url(:smiles, :index)
+  %li=link_to tag_icon(:plus, pat(:new)), url(:smiles, :new)
+  %li.active=link_to tag_icon(:edit, pat(:edit)), url(:smiles, :edit, :id => @smile.id)
+
+.tabs-content
+  -form_for :smile, url(:smiles, :update, :id => @smile.id), :method => :put, multipart: true, :class => 'form-horizontal' do |f|
+    =partial 'smiles/form', :locals => { :f => f }

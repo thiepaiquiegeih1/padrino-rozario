@@ -1,0 +1,9 @@
+- # encoding: utf-8
+=partial 'seo/tabs', :locals => {:entity => :products, :action => :edit}
+
+.tabs-content
+  -form_for :product, url(:'seo/products', :update, :id => @product.id), :method => :put, multipart: true, :class => 'form-horizontal' do |f|
+    =partial 'seo/products/form', :locals => { :f => f }
+    
+=javascript_include_tag 'knockout-3.3.0.js'
+=javascript_include_tag 'form.js'

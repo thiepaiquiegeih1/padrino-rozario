@@ -1,0 +1,8 @@
+- # encoding: utf-8
+%ul.nav.nav-tabs
+  %li=link_to tag_icon(:list, pat(:list)), url(:'discounts/subdomain_pools', :index)
+  %li.active=link_to tag_icon(:edit, pat(:edit)), url(:'discounts/subdomain_pools', :edit, :id => @subdomain_pool.id)
+
+.tabs-content
+  -form_for :subdomain_pool, url(:'discounts/subdomain_pools', :update, :id => @subdomain_pool.id), :method => :put, :class => 'form-horizontal', :nested_object_id => false do |f|
+    =partial 'discounts/subdomain_pools/form', :locals => { :f => f }

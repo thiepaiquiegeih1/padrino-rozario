@@ -1,0 +1,9 @@
+- # encoding: utf-8
+%ul.nav.nav-tabs
+  %li=link_to tag_icon(:list, pat(:list)), url(:news, :index)
+  %li=link_to tag_icon(:plus, pat(:new)), url(:news, :new)
+  %li.active=link_to tag_icon(:edit, pat(:edit)), url(:news, :edit, :id => @news.id)
+
+.tabs-content
+  -form_for :news, url(:news, :update, :id => @news.id), :method => :put, multipart: true, :class => 'form-horizontal' do |f|
+    =partial 'news/form', :locals => { :f => f }

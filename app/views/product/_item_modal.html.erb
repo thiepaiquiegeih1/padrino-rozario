@@ -1,0 +1,469 @@
+<div class="modal-dialog" ng-init="$event.preventDefault(); show_item(<%= @product.id %>)">
+  <div id="page-preloader"><span class="spinner"></span></div>
+  <div class="modal-content" style="max-width: 1200px; margin: 0 auto;">
+    <div class="modal-body">
+      <div class="row">
+        <div id="brdcrmps" class="col-md-6 col-sm-6 col-xs-12 redirect" style="padding: 0; font-size: 14px; color: #f0951f; font-weight: normal; margin-top: 0.5%; position: relative; right: 0;">
+          <a href="/">Главная</a>
+          <% @brdcrmbs_lvl1 = @brdcrmbs_lvl1.nil? || @brdcrmbs_lvl1 == '' ? @product.category : @brdcrmbs_lvl1 %>
+          <% if @brdcrmbs_lvl1 && @brdcrmbs_lvl1 != '' %>
+            <span class="divider"> • </span><a href="/category/<%=Category.find(@brdcrmbs_lvl1).slug.force_encoding("UTF-8") %>"><%=Category.find(@brdcrmbs_lvl1).title.force_encoding("UTF-8") %></a>
+            <% if @brdcrmbs_lvl2 && @brdcrmbs_lvl2 != '' %><span class="divider"> • </span><a href="/category/<%=Category.find(@brdcrmbs_lvl2).slug.force_encoding("UTF-8") %>"><%=Category.find(@brdcrmbs_lvl2).title.force_encoding("UTF-8") %></a><% end %>
+          <% end %>
+          <script type="application/ld+json">
+            {
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement":
+            [
+            {
+            "@type": "ListItem",
+            "position": 1,
+            "item":
+            {
+            "@id": "https://<%=CURRENT_DOMAIN %>/",
+            "name": "Главная"
+            }
+            }
+            <% if @brdcrmbs_lvl1 && @brdcrmbs_lvl1 != '' %>,{
+            "@type": "ListItem",
+            "position": 2,
+            "item": {
+            "@id": "https://<%=CURRENT_DOMAIN %>/category/<%=Category.find(@brdcrmbs_lvl1).slug.force_encoding("UTF-8") %>",
+            "name": "<%=Category.find(@brdcrmbs_lvl1).title.force_encoding("UTF-8") %>"
+            }}<% if @brdcrmbs_lvl2 && @brdcrmbs_lvl2 != '' %>,{
+            "@type": "ListItem",
+            "position": 3,
+            "item": {
+            "@id": "https://<%=CURRENT_DOMAIN %>/category/<%=Category.find(@brdcrmbs_lvl2).slug.force_encoding("UTF-8") %>",
+            "name": "<%=Category.find(@brdcrmbs_lvl2).title.force_encoding("UTF-8") %>"
+            }}<% end %><% end %>
+            ]
+            }
+          </script>
+          
+          <%
+            # Данные для Product schema.org
+            current_protocol = request.env['HTTP_X_FORWARDED_PROTO'] || (request.env['HTTPS'] ? 'https' : 'http')
+            current_host = request.env['HTTP_HOST']
+            base_url = "#{current_protocol}://#{current_host}"
+            product_url = "#{base_url}/product/#{@product.slug}"
+            
+            # Используем десктопное изображение для основной Product разметки (соответствует ImageObject)
+            product_image_url = "#{base_url}#{@product.thumb_image(false)}"
+            
+            # SEO-оптимизированное описание
+            city_name = @subdomain ? (@subdomain.city || "городе") : "городе"
+            product_description = "Купите букет «#{@product.header}» с доставкой в #{city_name} на дом или в офис. Доставим цветочную композицию за 1 час или к назначенной дате. Свежие цветы от Розарио."
+            
+            # Цена с обработкой ошибок
+            begin
+              first_complect = @product.complects.first
+              product_price = first_complect ? @product.get_cmplct_price_by_title(first_complect.title, @subdomain.discount_pool_id) : 0
+              product_price = product_price.to_i if product_price
+            rescue
+              product_price = 0
+            end
+          %>
+          
+          <script type="application/ld+json">
+          {
+            "@context": "https://schema.org",
+            "@type": "Product",
+            "@id": "<%=product_url%>#product",
+            "name": "<%=@product.header%>",
+            "image": {
+              "@type": "ImageObject",
+              "@id": "<%=product_image_url%>#image",
+              "contentUrl": "<%=product_image_url%>",
+              "width": 900,
+              "height": 650,
+              "name": "<%=@product.header%>",
+              "description": "<%=(@product.alt && @product.alt.strip != '') ? @product.alt : @product.header%>"
+            },
+            "description": "<%=product_description%>",
+            "category": "Цветы и букеты",
+            "brand": {
+              "@type": "Brand",
+              "name": "Rozario Flowers"
+            },
+            "offers": {
+              "@type": "Offer",
+              "@id": "<%=product_url%>#offer",
+              "url": "<%=product_url%>",
+              "priceCurrency": "RUB",
+              "price": "<%=product_price%>",
+              "priceValidUntil": "<%=(Date.current + 1.year).strftime('%Y-%m-%d')%>",
+              "availability": "https://schema.org/InStock",
+              "seller": {
+                "@type": "Organization",
+                "name": "Rozario Flowers"
+              }
+            }
+          }
+          </script>
+        </div>
+        <%# <h1 class="col-md-6 col-sm-6 col-xs-12 name" style="margin-top: 0; font-weight: normal; left: 5%;">{{ product.header }}</h1> %>
+        <h1 class="col-md-6 col-sm-6 col-xs-12 name" style="margin-top: 0; font-weight: normal; left: 5%;"><%=@product.header %></h1>
+      </div>
+      <div class="row">
+        <div class="col-md-12" style='padding: 0;'>
+          <div style="overflow: hidden;">
+            <div class="row">
+            </div>
+            <div class="itemImg visible-md visible-lg">
+              <%# ImageObject теперь включен в Product разметку выше, дублирование устранено %>
+              
+              <img ng-src="{{ image }}" width="100%" alt="<%= @product.alt %>"/>
+            </div>
+            <div class="visible-sm visible-xs" style="position:relative;overflow:hidden;">
+              <%# ImageObject теперь включен в Product разметку выше, дублирование устранено %>
+              
+              <img ng-src="{{ image }}" style="max-height: 100%;max-width:100%;" alt="<%= @product.alt %>"/>
+            </div>
+          </div>
+        </div>
+        <br>
+      </div>
+      <div>
+        <div class="radios">
+          <div id="radios"></div>
+          <div class="order">
+            <!-- <div class="col-xs-6 col-md-6 nopadding">
+              <div class="spin visible-lg visible-md" style="padding-left:0px">
+                <div class="col-md-1 minus text-center" style="padding: 6px 0px;line-height:12px;height:22px;" ng-click="minusQuantity()">
+                  <i class="fa fa-minus"></i>
+                </div>
+                <div class="col-md-3 iqantity" style="top:-2px;height:22px;line-height:22px;">
+                  <input class="quantity text-center" ng-model="quantity" />
+                </div>
+                <div class="col-md-1 plus text-center" style="padding: 6px 0px;line-height:12px;height:22px;left:-5px;" ng-click="plusQuantity()">
+                  <i class="fa fa-plus"></i>
+                </div>
+              </div>
+              <div style="max-width: auto;" class="newB center-block visible-sm visible-xs">
+                <div class="nB" ng-click="minusQuantity()" style="height: 35px;">
+                  <i class="fa fa-minus"></i>
+                </div>
+                <div class="nI">
+                  <input class="quantity text-center" ng-model="quantity" />
+                </div>
+                <div class="nB" ng-click="plusQuantity()" style="height: 35px;">
+                  <i class="fa fa-plus"></i>
+                </div>
+              </div>
+            </div> -->
+
+            <div class="dostavka" style="display: block; position: relative; right: 15px; top: -8px;">
+              <%
+                dlvr = JSON.parse(Subdomain.select("id, price").to_json); id = @subdomain.id
+                for d in dlvr; if (d['id'] == id); dp = d['price'].nil? ? 0 : d['price']; break; end; end
+                dp = dp==0 ? 'БЕСПЛАТНО' : dp.to_s + ' &#8381;'
+              %>
+              <% if id != 4472 %><p align="right">доставка: <b><%=dp%></b></p><% end %>
+            </div>
+
+            <div class="pull-right nopadding hidden-sm hidden-xs">
+              <button type="button" ng-disabled="orderDisabled" class="btn btn-primary" ng-click="addToCard()">Заказать</button>
+              </div>
+
+            <div class="col-xs-6 col-md-6 pull-right visible-sm visible-xs text-right">
+              <button type="button" ng-disabled="orderDisabled" style="width:auto !important;padding:0px 22px;" class="btn btn-primary" ng-click="addToCard()">Заказать</button>
+            </div>
+
+            <br>
+
+          </div>
+        </div>
+      </div>
+      <div class="contains hidden-xs hidden-sm">
+        <div ng-show="showComposition()" class="composition hidden-xs hidden-sm" style="margin:0 auto;">
+          <br>
+          <strong>Состав:</strong>
+            <span ng-bind-html="dangerousComposition()"></span><br>
+            <%
+              product = Product.find(params[:id])
+              product._tags = product.tag_complects.map do |tag|
+                {
+                  title: tag.tag.title,
+                  count: tag.count,
+                  complect: tag.complect.title
+                }
+              end
+              tags = {}
+              product._tags.each { |x|
+                tags[x[:complect]] = tags[x[:complect]].nil? ? [] : tags[x[:complect]]
+                tags[x[:complect]].push({:title => x[:title], :count => x[:count]})
+              }
+              tags.each_with_index { |x, i|
+                %><span class="tags-<%=i%>">
+                  <% x[1].each_with_index { |xx, ii| xx[:count] = 0 %>
+                    <%=xx[:title]%><% if xx[:count]!=0 %> <span name="tags" class="yellow">(<%=xx[:count]%>шт.)</span><% end %><% if (x[1].size-1!=ii) %>,<% end %>
+                  <% } %>
+                </span><% if i == 0; break; end
+              }
+            %>
+          </span><br>
+
+        </div>
+        <div ng-show="showText()" class="about" style="width:100% !important; text-align: justify; margin:0 auto;">
+          <div ng-bind-html="dangerousText()"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row texxxt">
+  <div class="col-md-9">
+    <div class="info">Вы можете позвонить нам:</div>
+    <div class="phone">8 (800) <span class="bold big">250-64-70</span><br /><div style='font-size:16px'>(бесплатно по России)</div></div>
+    <div class="phone">
+      <%=
+        mphone = '8 (815) <span class="bold big">270-64-70</span>';
+        if(@subdomain.url=='murmansk'); mphone; end;
+      %>
+    </div>
+    <%#<div class="pay_type">
+        <h4 class="">Способы оплаты:</h4>
+        <img class="img" src="/uploads/visa.png" alt="Банковская Карта" title="Банковская Карта">
+        <img class="img" src="/uploads/yaMoney.png" alt="Яндекс Деньги" title="Яндекс Деньги">
+        <img class="img" src="/uploads/webMoney.png" alt="Web Money" title="Web Money">
+        <img class="img" src="/uploads/beznal.png" alt="Безналичный Расчё" title="Безналичный Расчёт">
+        <img class="img" src="/uploads/mob.png" alt="Мобильный телефон" title="Мобильный телефон">
+        <img class="img" src="/uploads/qiwi.png" alt="Qiwi кошелёк" title="Qiwi кошелёк">
+        <img class="img" src="/uploads/kurer.png" alt="Наличными курьеру" title="Наличными курьеру">
+    </div>%>
+  </div>
+  <div class="col-md-3">
+    <img src="/images/chelik.png" width="100">
+  </div>
+  <div class="col-md-12 text" style="width: 95%;"><br />
+    <p>Доставим в течение 2-х часов в любую точку города и области!! Открытка с Вашим текстом в подарок!</p>
+    <p>Для нас всегда важно оставить довольным каждого покупателя, но если всё же так произойдёт, что цветы не понравятся и не превзойдут Ваши ожидания, то в течении 24 часов Вы всегда можете оставить свою жалобу и мы заменим товар на новый. Команда службы доставки живых цветов Розарио настолько уверены в качестве своей работы, что даёт такую гарантию любому покупателю.</p>
+  </div>
+</div>
+<div class="row">
+  <!-- <div class="col-xs-12 contains hidden-md hidden-lg">
+    <div ng-show="showComposition()" class="composition hidden-xs hidden-sm" style="width:700px !important;margin:0 auto;">
+      <br>
+      <strong>Состав:</strong>
+      <span ng-bind-html="dangerousComposition()"></span><br>
+    </div>
+
+    <div ng-show="showText()" class="about" style="width:700px;margin:0 auto;padding-right: 80px !important;">
+      <div ng-bind-html="dangerousText()"></div>
+    </div>
+  </div> -->
+  <div class="col-md-5 phones hidden-sm hidden-xs text-right"></div>
+  <div class="col-xs-12 phones hidden-lg hidden-md" style="margin-top:20px !important; font-size: 14px !important">
+    <div style="display: none;">
+      <%
+        dlvr = JSON.parse(Subdomain.select("id, price").to_json); id = @subdomain.id
+        for d in dlvr; if (d['id'] == id); dp = d['price'].nil? ? 0 : d['price']; break; end; end
+        dp = dp==0 ? 'БЕСПЛАТНО' : dp.to_s + ' &#8381;'
+      %>
+      <% if id != 4472 %><p align="right">Доставка: <b><%=dp%></b></p><% end %>
+    </div>
+    <div class="info col-xs-8 col-sm-8">Вы можете позвонить нам:
+      <div class="phone"><span class="bold big"> 8 (800) 250-64-70</span><div class='extra'>(бесплатно по России)</div></div>
+      <div class="phone"><%=@subdomain.url=='murmansk' ? '<span class="bold big"> 8 (815) 270-64-70</span>' : ''%></div>
+    </div>
+    <div class="col-xs-3 col-sm-3 chelik" style='z-index: 89;'><img src="/images/chelik.png"></div>
+    <%#<div class="col-xs-12 col-sm-12 pay_type">
+      <h4 class="">Способы оплаты:</h4>
+      <img class="img" src="/uploads/visa.png" alt="Банковская Карта" title="Банковская Карта">
+      <img class="img" src="/uploads/yaMoney.png" alt="Яндекс Деньги" title="Яндекс Деньги">
+      <img class="img" src="/uploads/webMoney.png" alt="Web Money" title="Web Money">
+      <img class="img" src="/uploads/beznal.png" alt="Безналичный Расчё" title="Безналичный Расчёт">
+      <img class="img" src="/uploads/mob.png" alt="Мобильный телефон" title="Мобильный телефон">
+      <img class="img" src="/uploads/qiwi.png" alt="Qiwi кошелёк" title="Qiwi кошелёк">
+      <img class="img" src="/uploads/kurer.png" alt="Наличными курьеру" title="Наличными курьеру">
+    </div>%>
+    <div class="mess1 col-xs-12 col-sm-12" style="text-align: justify;">
+      <p>Доставим в течение 2-х часов в любую точку города и области!! Открытка с Вашим текстом в подарок!</p>
+      <p>Для нас всегда важно оставить довольным каждого покупателя, но если всё же так произойдёт, что цветы не понравятся и не превзойдут Ваши ожидания, то в течении 24 часов Вы всегда можете оставить свою жалобу и мы заменим товар на новый. Команда службы доставки живых цветов Розарио настолько уверены в качестве своей работы, что даёт такую гарантию любому покупателю.</p>
+    </div>
+    
+    <style type="text/css"> .mess1 { font-weight: normal; } @media only screen and (max-width: 200px) { .mess1 { position: absolute; right: calc(32% - 24px); padding: 0; } } </style>
+
+  </div>
+</div>
+<style type="text/css">
+
+#brdcrmps {
+  margin-bottom: 12px;
+}
+
+#page-preloader {
+  width: 105%;
+  height: 100%;
+  position: absolute;
+  top: 1.7em;
+  background: #f5e7d9 url('/images/Spinner-1s-200px.svg') no-repeat 50% 50%;
+  z-index: 88;
+  background-size: 100px;
+  right: -24px;
+}
+
+.delivery-lg {
+  display: inline-block !important;
+}
+
+.pay_type {display: block; margin-bottom: 6px;}
+.pay_type img {width: 100%; max-width: 36px; height: auto; padding: 4px;}
+
+.feedback {
+  display: none;
+}
+
+.col-md-12.catalog_menu.hidden-xs.hidden-sm ul {
+  margin-top: 30px;
+}
+
+.modal-body { padding: 45px 10px 24px 10px; }
+
+.gtSm p {
+  cursor: pointer;
+  color: #3a4f10;
+  white-space: nowrap;
+  text-align: left;
+  font-size: 16px;
+}
+
+@media only screen and (max-width: 768px) {
+    .redirect {
+      right: 0 !important;
+    }
+
+    .name {
+      left: 0 !important;
+    }
+}
+
+@media only screen and (max-width: 652px) { #page-preloader { width: 110%; height: 107%; position: absolute; top: -0.3em;  z-index: 88; right: -15px; } }
+@media only screen and (max-width: 320px) { .dostavka { right: 0 !important; } }
+@media only screen and (max-width: 320px) { .pull-right { padding: 0; } }
+/*@media only screen and (max-width: 360px) { .info { padding: 0; } }*/
+@media only screen and (max-width: 320px) { .modal-body { padding: 0; } }
+@media only screen and (max-width: 992px) { .modal-body { padding: 0 0 32px; } }
+.radios * { font-size: 16px !important; }
+.radios h4 strong { font-weight: normal !important; }
+@media only screen and (max-width: 1200px) { .radios * { font-size: 13px !important; } }
+@media only screen and (max-width: 992px)  { .radios * { font-size: 16px !important; } }
+@media only screen and (max-width: 992px)  { .radios .complectToggler, .radios ul * { font-size: 12px !important; } }
+
+.radios .pull-right { width: 100%; display: block; }
+.radios .btn.btn-primary { display: block; width: 100%; font-weight: normal !important; text-transform: uppercase; font-size: 18px !important; }
+
+.itemImg img {
+  max-width: 900px;
+  border-radius: 5px;
+}
+
+.itemImg:hover {
+  border-radius: 5px;
+}
+
+.modal-content .bottom { background: none; }
+
+.texxxt {
+  position: relative;
+  left: 4%;
+}
+
+.texxxt * { font-size: 14px !important }
+.texxxt .bold { font-weight: bold !important; }
+@media only screen and (max-width: 992px) { .texxxt { display: none } }
+@media screen and (max-device-width: 537px) {
+    /* STYLES HERE */
+}
+@media only screen and (max-width: 992px) {.chelik img { width: 66%; position: absolute; bottom: -170px;} }
+@media only screen and (max-width: 537px) {.chelik img { width: 84%; top: -20px; }
+@media only screen and (max-width: 362px) {.chelik img { width: 84%; top: 12px; }
+@media only screen and (max-width: 462px) {.mess1 { width: 84%; top: 46px; margin-bottom: 15px; }
+
+@media only screen and (max-width: 425px) {.mess1 { top: 46px; width: 100%; margin-bottom: 15px;}
+@media only screen and (max-width: 425px) {.info { top: 15px; }
+
+.col-* {
+  text-align: justify;
+}
+
+.modal-content .col-md-12.bottom {
+  background-image: url('/images/chelik.png') !important;
+  background-repeat: no-repeat !important;
+  background-size: 80px auto !important
+}
+
+.modal-content .name { padding: 0px 0 5px !important; font-weight: normal; font-size: 18px; }
+
+.modal-dialog{
+  width: 100%;
+  margin: 0;
+}
+span.divider { color: #ef845b; }
+
+</style>
+
+<script>
+
+$(window).on('load', function () {
+  $('#page-preloader').css("display", "block"); // показываем блок с контентом
+  $('#page-preloader').delay(350).fadeOut('slow'); // и скрываем сам блок прелоудера.
+});
+
+<%# function setCookie(name, value, days) {
+  let expires = "";
+  if (days) {
+    const date = new Date();
+    date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+    expires = "; expires=" + date.toUTCString();
+  }
+  document.cookie = name + "=" + encodeURIComponent(value) + expires + "; path=/";
+}
+
+function getCookie(name) { // Функция для получения значения куки по имени
+  const nameEQ = name + "=";
+  const cookies = document.cookie.split(';');
+  for (let i = 0; i < cookies.length; i++) {
+    let c = cookies[i].trim();
+    if (c.indexOf(nameEQ) === 0) {
+      return decodeURIComponent(c.substring(nameEQ.length));
+    }
+  }
+  return null; // Если куки не найдено
+}
+
+function addLinkFromCookie() { // Функция для создания элемента <a> и добавления его в другой элемент
+  const brdcrmps_cat_slug     = getCookie('brdcrmps_cat_slug');
+  const brdcrmps_cat_title    = getCookie('brdcrmps_cat_title');
+  const brdcrmps_subcat_slug  = getCookie('brdcrmps_subcat_slug');
+  const brdcrmps_subcat_title = getCookie('brdcrmps_subcat_title');
+  if (brdcrmps_cat_slug && brdcrmps_cat_slug != 'nihil') { // Если значение куки найдено
+    const link = document.createElement('a');
+    link.href = `/category/${brdcrmps_cat_slug}`; // Устанавливаем ссылку из значения куки
+    link.textContent = brdcrmps_cat_title; // Текст ссылки
+    const targetElement = document.getElementById("brdcrmps"); // Находим целевой элемент по ID
+    if (targetElement) {
+      targetElement.appendChild(link);  // Добавляем <a> как последний дочерний элемент
+      if (brdcrmps_subcat_slug && brdcrmps_subcat_slug != 'nihil') { // Если значение куки найдено
+        const spanElement = document.createElement('span');
+        spanElement.className = 'divider';
+        spanElement.textContent = ' • ';
+        targetElement.appendChild(spanElement);
+        const link = document.createElement('a');
+        link.href = `/category/${brdcrmps_cat_slug}/${brdcrmps_subcat_slug}`; // Устанавливаем ссылку из значения куки
+        link.textContent = brdcrmps_subcat_title; // Текст ссылки
+        targetElement.appendChild(link);  // Добавляем <a> как последний дочерний элемент
+      } else { console.error("ERROR_Y8E0FKJ5"); }
+    } else { console.error("ERROR_1UUGK0UH"); }
+  } else { console.error("ERROR_Y8E0FKJ5"); }
+}
+addLinkFromCookie(); %>
+
+// Включить правый клик мыши
+document.addEventListener('contextmenu', function(event) {
+  event.stopPropagation();  // Остановить распространение события, если его перехватывают другие обработчики
+}, true);
+
+</script>

@@ -1,0 +1,28 @@
+-# coding: utf-8
+
+- error = @slideshow.errors.include?(:title)
+%fieldset.control-group{:class => error ? 'has-error' : ''}
+  =f.label "Название", :class => 'control-label'
+  .controls
+    =f.text_field :title, :class => 'input-xlarge input-with-feedback'
+    %span.help-inline=error ? f.error_message_on(:title, :class => 'text-error') : pat(:example)
+
+- error = @slideshow.errors.include?(:default)
+%fieldset.control-group{:class => error ? 'has-error' : ''}
+  .controls
+    =f.check_box :default, :class => 'input-xlarge input-with-feedback'
+    %span.help-inline=error ? f.error_message_on(:default, :class => 'text-error') : 'Использовать по-умолчанию'
+
+- error = @slideshow.errors.include?(:cart)
+%fieldset.control-group{:class => error ? 'has-error' : ''}
+  .controls
+    =f.check_box :cart, :class => 'input-xlarge input-with-feedback'
+    %span.help-inline=error ? f.error_message_on(:cart, :class => 'text-error') : 'Использовать на странице с корзиной'
+
+
+.form-actions
+  =f.submit pat(:save), :class => 'btn btn-primary'
+  &nbsp;
+  =f.submit pat(:save_and_continue), :class => 'btn btn-info', :name => 'save_and_continue'
+  &nbsp;
+  =link_to pat(:cancel), url(:slideshows, :index), :class => 'btn'

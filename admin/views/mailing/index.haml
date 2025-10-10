@@ -1,0 +1,37 @@
+- # encoding: utf-8
+
+%h2 Рассылка писем
+
+%div{style: "text-align:right;"}
+  =link_to "Импорт из 1С", url(:mailing, :import)
+  %p <a href="/sender.txt" target="_blank">Статус рассылки</a>
+
+-form_for "mailing", url(:mailing, :start), multipart: true, :class => 'form-horizontal' do |f|
+
+  %fieldset.control-group
+    =f.label "Список получателей", :class => 'control-label'
+    .controls
+      %span.btn.btn-file
+        Загрузить
+        =f.file_field :recipients, :class => 'input-xlarge input-with-feedback'
+      %span.help-inline='Текстовый файл с адресами эл. почты. 1 строка — адрес.'
+
+
+  %fieldset.control-group
+    =f.label "Тема письма", :class => 'control-label'
+    .controls
+      =f.text_field :subject, :class => 'input-xlarge input-with-feedback', :autofocus => true
+      %span.help-inline='Простой текст'
+
+  %fieldset.control-group
+    =f.label "Тело письма", :class => 'control-label'
+    .controls
+      =f.text_area :body, :class => 'input-xlarge input-with-feedback ckeditor'
+      %span.help-inline='Простой текст'
+
+  %p{style: "text-align:center;"} Пожалуйста, не закрывайте страницу после нажатия кнопки «Отправить». Дождитесь сообщения об успешной отправке или об ошибке.
+
+  .form-actions
+    =f.submit "Отправить", :class => 'btn btn-primary'
+    &nbsp;
+    =link_to pat(:cancel), url(:mailing, :index), :class => 'btn'

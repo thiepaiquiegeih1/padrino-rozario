@@ -1,0 +1,136 @@
+- # encoding: utf-8
+
+:ruby
+  # CollectionPage Schema.org markup  
+  if defined?(@category) && @category
+    current_domain = CURRENT_DOMAIN
+    # Use proper subdomain logic with murmansk handling
+    base_url = @subdomain.url != 'murmansk' ? "https://#{@subdomain.url}.#{current_domain}" : "https://#{current_domain}"
+    category_title = @category.title
+    category_slug = @category.slug ? @category.slug.force_encoding('UTF-8') : @category.id.to_s
+    
+    if @category.parent_id && @category.parent_id != 32
+      parent_category = Category.find(@category.parent_id)
+      parent_slug = parent_category.slug ? parent_category.slug.force_encoding('UTF-8') : parent_category.id.to_s
+      parent_url = base_url + "/category/" + parent_slug
+      category_url = base_url + "/category/" + parent_slug + "/" + category_slug
+      breadcrumbs = [
+        { name: parent_category.title, url: parent_url },
+        { name: category_title, url: category_url }
+      ]
+      canonical_url = category_url
+    else
+      category_url = base_url + "/category/" + category_slug
+      breadcrumbs = [
+        { name: "Главная", url: base_url },
+        { name: category_title, url: category_url }
+      ]
+      canonical_url = category_url
+    end
+    
+    collection_options = {
+      name: category_title,
+      description: (@category.announce || category_title),
+      about: "Каталог товаров в категории " + category_title.to_s,
+      url: canonical_url,
+      breadcrumbs: breadcrumbs,
+      items: (defined?(@items) ? @items : []),
+      date_published: (@category.created_at ? @category.created_at.strftime('%Y-%m-%d') : Date.current.strftime('%Y-%m-%d')),
+      date_modified: (@category.updated_at ? @category.updated_at.strftime('%Y-%m-%d') : Date.current.strftime('%Y-%m-%d'))
+    }
+  end
+
+- if defined?(collection_options)
+  = collection_page_schema(collection_options)
+
+- content_for :head do
+  -#stylesheet_link_tag 'bootstrap-span'
+  / =javascript_include_tag 'jquery.zoom.min'
+  =javascript_include_tag 'ang/angular4.min'
+  =javascript_include_tag 'ang/lodash.underscore.min'
+  =javascript_include_tag 'ang/restangular.min'
+  =javascript_include_tag 'ang/angular-busy.min'
+  =javascript_include_tag 'ang/navigator'
+  =javascript_include_tag 'ang/catalog'
+  / =stylesheet_link_tag 'angular-busy'
+
+%div#crutch-indent{style:'height:1px'}
+
+- if @items && @category
+  .row
+    .col-md-6
+      %div.breadcrumps{style: 'margin-top: 19px;'}
+        - if @category.parent_id != 32
+          %a{href: "/" }="Главная"
+          %span.divider='•'
+          %a{href: "/category/#{Category.find(@category.parent_id).slug.force_encoding("UTF-8")}" }=Category.find(@category.parent_id).title
+        - else
+          %a{href: "/" }=Category.find(@category.parent_id).title
+        %span.divider='•'
+        %span=@category.title
+    .col-md-12
+      .ttl{style: 'display: inline-block;'}
+        %a{href: @category.parent_id != 32 ? "/category/#{Category.find(@category.parent_id).slug.force_encoding("UTF-8")}" : "/"}
+          %span.backarr
+            %svg.products-slider__icon{color: "#161616", fill: "none", height: "24", viewbox: "0 0 24 24", width: "24", xmlns: "http://www.w3.org/2000/svg"}
+              %path{"clip-rule" => "evenodd", d: "M8.22 5.24a1 1 0 00.02 1.41l5.4 5.29-5.4 5.28a1 1 0 101.4 1.43l6.12-6a1 1 0 000-1.43l-6.12-6a1 1 0 00-1.42.02z", fill: "#161616", "fill-rule" => "evenodd"}
+      %h2.ttl{style: 'display: inline-block; margin-top: 0; font-weight: bold;'}
+        =@category.title
+  .row
+  .autop-wrapper
+    .row.text-center{ style: "padding-right:16px; padding-left:16px" }
+      #category-list.clearfix
+        = partial 'product/cardplace'
+
+- if @items.count > @limit
+  .row
+    .col-md-12.text-center#morebtn{style:'padding:24px 0;'}
+      %button.btn.btn-default{ :'ng-hide' => 'navigator.auto', :'ng-click' => 'navigator.startAuto()' } Показать ёщё
+      %img.block-center{ :'ng-show' => 'navigator.inProcess', src: "/images/preloader.gif", style: 'width:50px;' }
+
+.filter{ style: "padding-left:48px; position: absolute; top: 30px; right: 18px; z-index" }
+  .line1
+    - if params[:all].blank?
+      .dropdown{ style: "text-align: right; margin-top: 19px;" }
+        %a.dropdown-toggle.SN8WJEDJ{"data-toggle" => "dropdown", :href => "#"}
+          Сортировка товаров
+          %b.caret
+        %ul.dropdown-menu{ style: "right: 0; left: auto;" }
+          %li
+            =link_to "по алфавиту", "javascript:void(0)", { :'ng-click' => 'navigator.toggleSort("title")', :'ng-class' => '{selected: navigator.sortBy === "title"}' }
+          %li
+            =link_to "по возрастанию цены", "javascript:void(0)", { :'ng-click' => 'navigator.toggleSort("price-asc")', :'ng-class' => '{selected: navigator.sortBy === "price-asc"}' }
+          %li
+            =link_to "по убыванию цены", "javascript:void(0)", { :'ng-click' => 'navigator.toggleSort("price-desc")', :'ng-class' => '{selected: navigator.sortBy === "price-desc"}' }
+
+<style>@media only screen and (max-width: 992px) { .delivery-lg { margin-bottom: 8px !important; } }</style>
+
+:css
+  .autop-wrapper > .row { padding: 0 16px 0 16px !important; }
+  span.divider { color: #ef845b; }
+  .breadcrumps { margin-bottom: 16px; }
+  @media screen and ( max-width: 992px ) {
+    .ddm { position: absolute; right: 8px; top: 62px; z-index: 99; }
+  }
+  @media screen and ( min-width: 992px ) {
+    .ttl { margin-bottom: 24px; }
+    .filter { top: 24px !important; }
+  }
+  .ttl { font-weight: bolder; font-size: 18px; margin-top: 0; }
+  .ttl a, h2.ttl a:hover, h2.ttl a:visited { color: rgb(120 54 62); margin: 0;}
+  .backarr { padding: 4px 15px; border-radius: 4px; background: #fed9c8; margin-right: 4px; }
+  .backarr svg {
+    transform: scaleX(-1);
+    position: absolute; left: 18px;
+    top: 0;
+  }
+  #content a.dropdown-toggle {
+    padding: 10px;
+    /* border: 1px solid #ef845b; */
+    border-radius: 21px;
+    background: #fed9c8;
+  }
+  @media screen and ( max-width: 992px ) { .dropdown { padding-right: 0 !important; } }
+
+:javascript
+  console.log('app/views/category/withinfo.haml');

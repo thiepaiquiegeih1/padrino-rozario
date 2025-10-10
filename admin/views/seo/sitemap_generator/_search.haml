@@ -1,0 +1,9 @@
+-#coding: utf-8
+-form_tag url("seo/sitemap_generator/#{title}/search"), :method => :get, :class => 'form-horizontal' do
+  %fieldset.control-group
+    -unless @data_type
+      =select_tag :type, :options => @data.attribute_names, :selected => 'id', :style => "width:20%"
+    -else
+      =select_tag :type, :options => @data_type.attribute_names, :selected => 'id', :style => "width:20%"
+    =text_field_tag :query, :class => 'search_field', :placeholder => 'поиск', :style => "width:60%"
+    =submit_tag pat('Поиск'), :class => 'btn btn-primary'

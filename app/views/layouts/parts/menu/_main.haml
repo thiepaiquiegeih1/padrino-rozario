@@ -1,0 +1,10 @@
+﻿-# coding: utf-8
+.col-md-12.col-sm-12.col-xs-12.ctlg-menu{style:'display:none'}
+  .main_menu
+    .row
+      -# .col-md-6.col-sm-6.col-xs-12.menu_item.visible-sm.visible-xs
+        -# %strong= link_to 'Все букеты', '/'
+      - @lf_catlist.where(parentcat_id: 0).order("sequence").each do |cat|
+
+        .col-md-6.col-sm-6.col-xs-12.menu_item.visible-sm.visible-xs
+          %strong= link_to cat.category.title, '/category/' + cat.slug.to_s, :id => 'i'+ cat.category_id.to_s

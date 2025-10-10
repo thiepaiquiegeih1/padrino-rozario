@@ -1,0 +1,10 @@
+- # encoding: utf-8
+%ul.nav.nav-tabs
+  %li=link_to tag_icon(:list, pat(:list)), url(:contacts, :index)
+  %li=link_to tag_icon(:plus, pat(:new)), url(:contacts, :new)
+  %li.active=link_to tag_icon(:edit, pat(:edit)), url(:contacts, :edit, :id => @contact.id)
+
+.tabs-content
+  -form_for :contact, url(:contacts, :update, :id => @contact.id), :method => :put, :class => 'form-horizontal' do |f|
+    =partial 'contacts/form', :locals => { :f => f }
+

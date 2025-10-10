@@ -1,0 +1,40 @@
+- # encoding: utf-8
+
+=partial 'seo/tabs', :locals => {:entity => :script_execution_history, :action => :list}
+
+.tabs-content
+  %table#list.table.table-striped.table-hover.table-condensed
+    %thead
+      %tr
+        %th.header.list-menu
+          .dropdown
+            %a.list-menu-toggle.dropdown-toggle{:href => '#', :'data-toggle' => :dropdown}
+              =tag_icon :magic
+              %span.caret
+            %ul.list-menu.dropdown-menu{:role => :menu}
+              %li.list-menu-wrapper=link_to tag_icon(:check, pat(:select_all)), '#', :id => 'select-all', :class => 'list-menu-link'
+              %li.list-menu-wrapper.list-menu-wrapper-disabled
+                =link_to tag_icon(:'check-empty', pat(:deselect_all)), '#', :id => 'deselect-all', :class => 'list-menu-link list-menu-link-disabled'
+        %th.header= :id
+        %th.header= :status
+        %th.header= :comment
+        -#%th.header= :log
+        %th.header= :created_at
+        %th.header= :updated_at
+        %th.header.list-row-action-header
+
+    %tbody
+      -@execution_histories.each do |h|
+        %tr.list-row
+          %td.list-column.list-selectable
+            =check_box_tag 'page_ids[]', :value => h.id, :class => 'list-selectable-checkbox'
+          %td.list-column=h.id
+          %td.list-column=h.status
+          %td.list-column
+            %strong=h.comment
+          -#%td.list-column=h.log
+          %td.list-column=time_ago_in_words h.created_at
+          %td.list-column=time_ago_in_words h.updated_at
+          %td.list-column.list-row-action
+            .list-row-action-wrapper
+              =link_to tag_icon(:'zoom-in'), :href => url(:'seo/script_execution_history', :show, :id => h.id), :rel => :tooltip, :title => "#{pat(:show)} script execution log", :class => 'list-row-action-wrapper-link'

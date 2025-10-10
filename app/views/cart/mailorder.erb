@@ -1,0 +1,195 @@
+<!DOCTYPE html><html><head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <style>
+    body { font-family: Verdana; font-size: 15px; margin: 0; color: #000; }
+    small { font-size: 11px; color: #666; }
+  </style>
+</head>
+<body>
+
+<div class="site" style="width: 920px; margin: 0 auto; padding: 0 40px; background: #fff;">
+  <div id="logo" style="height: 91px; margin-bottom: 20px; padding-bottom: 20px;">
+    <img src="//<%=CURRENT_DOMAIN%>/admin/images/logoroz.png" alt="" style="float: left; width: 150px; margin-right: 42px; margin-left: 20px;">
+    <h2>Заказ №<%= @order_id %></h2>
+    <div class="title" style="float: left; font-size: 46px; color: #ccc; line-height: 88px;">Интернет-магазин «Розарио»</div>
+  </div>
+
+  <% if @cart %>
+
+    <table width="100%" cellpadding="0" cellspacing="0" style="border-top: 1px solid #bbb; border-left: 1px solid #bbb;">
+
+    <% @cart.each do |item| %>
+      <%
+        x_101 = [258, 978, 1145, 1183, 1208, 1244, 1255, 1580, 2204, 2230, 2282, 2335, 2367, 2445, 2447, 2499, 2500, 2501, 2553, 2568, 2581, 2585, 2725, 2728, 2746, 2834, 2835]
+        special_array = [3045, 2853, 2854, 2853, 2853, 2852, 2846, 2988, 2846, 2849, 2855, 2661, 2988, 2662, 2849, 2661, 2849, 2846, 2988, 2661, 2660, 1934, 1934, 1934, 1934, 1937, 1935, 1936, 1845, 2988]
+        product = Product.find_by_id(item["id"].to_i)
+        type_id = Complect.find_by_title(item["type"]).id
+        cmplct_id = ProductComplect.where(product_id: item["id"], complect_id: type_id).order(created_at: :desc)[0].id
+        if x_101.include?(item["id"].to_i)
+          extras = @subdomain['101roze']
+        elsif special_array.include?(item["id"].to_i)
+          extras = @subdomain['ordprod']
+        else
+          extras = @subdomain['overprsubd']
+        end
+        price = product.get_cmplct_price(cmplct_id, @subdomain.discount_pool_id, true) + extras
+
+        discount = @subdsc[0] ? @subdsc[0] : 0
+        if @subdsc.include?(product.id); discount += @subdsc[item["id"].to_i][item["type"]]; end
+      %>
+      <tr>
+        <td width="10%" style="border-bottom:1px solid #bbb;border-right:1px solid #bbb;padding:5px;">
+          <a href="/product/<%= product.id %>"><img src="https://<%= request.host %><%= product.image %>" alt="" width="180" class="iimg"></a>
+        </td>
+        <td style="border-bottom:1px solid #bbb;border-right:1px solid #bbb;padding:5px;">
+          <em>ID: <%= item["id"] %></em><br />
+          <% if !product.categories.blank? %>
+            <%= product.categories.first.title %> &rarr; <%= product_item2title(item) %> <br />
+          <% end %>
+          Цена: <%=(price+discount).round() %> руб.
+          Количество: <%=item["quantity"] %><br />
+          <strong>Стоимость: <%=(price+discount).round()*item["quantity"].to_i %> руб.
+
+          &nbsp;<i class="fa fa-rub" aria-hidden="true"></i><br /></strong>
+        </td>
+      </tr>
+
+    <% end %>
+
+    </table>
+
+    <!--<h3><% if !@delivery_price.blank? %>Доставка: <%= @delivery_price %> руб.<br /><% end %>Сумма к оплате: <%= @total_summ %> руб.</h3>-->
+
+  <% end %>
+
+  <h3 style="font-size:20px;">Сумма товаров:
+    <% if !@delivery_price.blank? %>
+      <%=@total_summ.to_i - @delivery_price.to_i %>&nbsp;руб.<!-- <i class="fa fa-rub" aria-hidden="true"></i> --><br />
+    <% else %>
+      <%=@total_summ %>&nbsp;руб.<!-- <i class="fa fa-rub" aria-hidden="true"></i> --><br />
+    <% end %>
+  </h3>
+
+  <table width="100%" cellpadding="0" cellspacing="0" style="border-top: 1px solid #bbb; border-left: 1px solid #bbb; background: #f3f3f3;">
+    <tr>
+      <td width="40%" style="border-bottom:1px solid #bbb;border-right:1px solid #bbb;padding:5px;">Заказчик</td>
+      <td style="border-bottom:1px solid #bbb;border-right:1px solid #bbb;padding:5px;"><strong><%= @name %></strong></td>
+    </tr>
+    <tr>
+      <td style="border-bottom:1px solid #bbb;border-right:1px solid #bbb;padding:5px;">Телефон</td>
+      <td style="border-bottom:1px solid #bbb;border-right:1px solid #bbb;padding:5px;"><strong><%= @tel %></strong></td>
+    </tr>
+    <tr>
+      <td style="border-bottom:1px solid #bbb;border-right:1px solid #bbb;padding:5px;">Эл. почта</td>
+      <td style="border-bottom:1px solid #bbb;border-right:1px solid #bbb;padding:5px;"><strong><%= @email %></strong></td>
+    </tr>
+    <tr>
+      <td style="border-bottom:1px solid #bbb;border-right:1px solid #bbb;padding:5px;">Способ доставки</td>
+      <td style="border-bottom:1px solid #bbb;border-right:1px solid #bbb;padding:5px;">
+        <strong><%= @dt_txt %></strong>
+        <% if (@dcall==1&&@dt_txt!='Забрать в магазине (самовывоз)') %> | Позвонить получателю для уточнения времени доставки<% if (@surprise) %> (не говорить по телефону, что это цветы)<%end%><%end%>
+        <% if (@dcall==2&&@dt_txt!='Забрать в магазине (самовывоз)') %> | Везти без звонка в указанный промежуток времени:<%=@d2_date + ' ' + @d2_date_tFr + ' ' + @d2_date_tTo %><%end%>
+      </td>
+    </tr>
+    <tr>
+      <td style="border-bottom:1px solid #bbb;border-right:1px solid #bbb;padding:5px;">Способ оплаты</td>
+      <td style="border-bottom:1px solid #bbb;border-right:1px solid #bbb;padding:5px;"><strong><%= @payment_type_text.length > 0 ? @payment_type_text : 'Оплатить на сайте' %></strong></td>
+    </tr>
+    <tr>
+      <td style="border-bottom:1px solid #bbb;border-right:1px solid #bbb;padding:5px;">Дата принятия заказа</td>
+      <td style="border-bottom:1px solid #bbb;border-right:1px solid #bbb;padding:5px;"><strong><%= Time.now.strftime("%d-%m-%Y %H:%M") %></strong></td>
+    </tr>
+  </table>
+
+  <p style="margin-top:0;">&nbsp;</p>
+
+  <% if @dt_txt != "Забрать в магазине (самовывоз)" %>
+    <table width="100%" cellpadding="0" cellspacing="0" style="border-top: 1px solid #bbb; border-left: 1px solid #bbb; background: #f3f3f3;">
+      <tr>
+        <td width="40%" height="80" style="border-bottom:1px solid #bbb;border-right:1px solid #bbb;padding:5px;">
+          <% if !@city_text.blank? %><%= @city_text %><br /><% end %>
+          <% if !@subdomain.suffix? %><%=@subdomain.suffix %><br /><% end %>
+        </td>
+        <td style="border-bottom:1px solid #bbb;border-right:1px solid #bbb;padding:5px;">
+          <% if !@delivery_address.blank? %><%= @delivery_address %><% end %>
+          <% if !@deldom.blank? %><%= @deldom %><% end %>
+          <% if !@delkorpus.blank? %><%= @delkorpus %><% end %>
+          <% if !@delkvart.blank? %><%= @delkvart %><% end %>
+        </td>
+      </tr>
+    </table>
+  <% end %>
+
+  <h3 style="margin-top:0;font-size:20px;"><span style="font-weight:normal;">Получатель: </span><%= @dname %></h3>
+  <h3 style="margin-top:0;font-size:20px;"><span style="font-weight:normal;">Телефон получателя: </span><%= @dtel %></h3>
+
+
+  <h4 style="margin-bottom:0;">Дополнительная информация</h4>
+  <table width="100%" cellpadding="0" cellspacing="0" style="border-top:1px solid #bbb; border-left:1px solid #bbb;">
+    <% if !@card_text.blank? %>
+    <tr>
+      <td style="border-bottom:1px solid #bbb;border-right:1px solid #bbb;padding:5px;" height="80" width="200">Текст открытки</td>
+      <td style="border-bottom:1px solid #bbb;border-right:1px solid #bbb;padding:5px;"><%= @card_text %></td>
+    </tr>
+    <% end %>
+    <% if !@comment.blank? %>
+    <tr>
+      <td style="border-bottom:1px solid #bbb;border-right:1px solid #bbb;padding:5px;" height="80">Комментарий</td>
+      <td style="border-bottom:1px solid #bbb;border-right:1px solid #bbb;padding:5px;"><%= @comment %></td>
+    </tr>
+    <% end %>
+  </table>
+
+  <p style="margin-top:0;">&nbsp;</p>
+
+  <table width="100%" cellpadding="0" cellspacing="0">
+    <tr>
+      <td width="40%" style="font-size:17px;">
+        <% if !@d1_date.blank? %>
+          Дата и время самовывоза:<br />
+          <div style="text-align:center;"><h3 style="margin:0 auto;width:120px;font-size:20px;"><%= @d1_date %></h3></div>
+        <% end %>
+        <% if !@d2_date.blank? %>
+          Дата и время доставки:<br />
+          <div style="text-align:center;"><h3 style="margin:0 auto;width:120px;font-size:20px;"><%= @d2_date %></h3></div>
+        <% end %>
+      </td>
+      <td>
+        <% if @dt_txt != "Забрать в магазине (самовывоз)" %>
+        <table width="100%" cellpadding="0" cellspacing="0" style="font-style:italic;">
+          <tr>
+            <td>Сделать фото получателя в момент вручения?</td>
+            <td><strong><%= @make_photo %></strong></td>
+          </tr>
+          <tr>
+            <td>Можно оставить букет соседям/родственникам?</td>
+            <td><strong><%= @ostav %></strong></td>
+          </tr>
+        </table>
+        <% end %>
+      </td>
+    </tr>
+  </table>
+
+  <h3 style="font-size:20px;">
+    <% if !@delivery_price.blank?&&@dt_txt!='Забрать в магазине (самовывоз)' %>
+      Сумма доставки: <%= @delivery_price %>&nbsp;руб.<!-- <i class="fa fa-rub" aria-hidden="true"></i> --><br />
+    <% end %>
+    Сумма заказа: <%= @total_summ.to_i.round() %>&nbsp;руб.<!-- <i class="fa fa-rub" aria-hidden="true"></i> --><br /></h3>
+
+  <p>&nbsp;</p>
+
+  <p class="sign">
+    Претензий по качеству доставленного не имею: <span style="position:relative;left:130px;">___________________________</span><br />
+    <small style="position:relative;left:501px;">(____)</small>
+  </p>
+
+  <p class="sign">
+    Согласен на размещение фото в галерее сайта <%=CURRENT_DOMAIN%>: <span style="position:relative;left:20px;">___________________________</span><br />
+    <small style="position:relative;left:501px;">(_____)</small>
+  </p>
+</div>
+
+</body>
+</html>

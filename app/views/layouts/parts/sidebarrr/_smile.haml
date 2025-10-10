@@ -1,0 +1,68 @@
+- # encoding: utf-8
+- ext = File.extname(@post.images.current_path); base = File.basename(@post.images.current_path, ".*").to_s
+- fname = base + '_tn' + ext
+- File.file?('/var/www/rozarioflowers.ru/rozario/public/uploads/smiles/' + fname) ? fname : fname = File.basename(@post.images.current_path)
+- imglnk = '/uploads/smiles/' + fname
+
+%a{href: File.join('/smiles/', @post.slug.present? ?  @post.slug.to_s : @post.id.to_s), itemprop: "url", rel: 'nofollow', class: 'smile-container'}
+  .square-image-container
+    .background-blur{style: "background-image: url(#{imglnk})"}
+    %img.main-image{src: imglnk, :itemprop => 'contentUrl', alt: (@post.alt ? @post.alt.force_encoding('UTF-8') : ''), loading: "lazy"}
+  %meta{:content => "Улыбки получателей #{fname}".force_encoding('UTF-8'), :itemprop => 'name'}/
+  %meta{:content => "Фотография счастливой обладательницы красивого букета".force_encoding('UTF-8'), :itemprop => 'description'}/
+  %meta{:content => "2017-09-25", :itemprop => 'datePublished'}/
+  %meta{:content => "256", :itemprop => 'width'}/
+  %meta{:content => "256", :itemprop => 'height'}/
+  %meta{:content => "Rozarioflowers", :itemprop => 'author'}/
+
+:css
+  #wr .smiles img {
+    width: 100%;
+  }
+  
+  .smile-container {
+    display: block;
+    text-decoration: none;
+    width: 100%;
+  }
+  
+  .square-image-container {
+    position: relative;
+    width: 120px;
+    height: 120px;
+    border-radius: 2px;
+    overflow: hidden;
+    margin: 0 auto;
+  }
+  
+  .background-blur {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    filter: blur(10px);
+    transform: scale(1.1);
+    z-index: 1;
+  }
+  
+  .main-image {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    z-index: 2;
+    border-radius: 2px;
+  }
+  
+  .smile-container:hover .square-image-container {
+    transform: scale(1.05);
+    transition: transform 0.3s ease;
+  }

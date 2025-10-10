@@ -1,0 +1,45 @@
+- # encoding: utf-8
+=partial 'seo/tabs', :locals => {:entity => :general, :action => :edit}
+.tabs-content
+  -form_for :general, url(:'seo/general', :update, :id => @general.id), :method => :put, multipart: true, :class => 'form-horizontal' do |f|
+    =partial 'seo/general/form', :locals => { :f => f }
+.dropup.tags-info
+  %a{"data-toggle" => "dropdown", :href => "#"}
+    %i{:class => "icon-info-sign", :'data-toggle' => "tooltip", :'data-placement'=> "left", :title => "Доступные теги для seo блока"}
+  %ul.dropdown-menu{"aria-labelledby" => "dLabel", :role => "menu"}
+    %li{:onclick => "copyToClipboard('%city%')", :'data-toggle' => "tooltip", :'data-placement'=> "left", :title => "Нажмите чтобы копировать %city%"}
+      %strong %city% 
+      \- название города (пр.: Мурманск)
+    
+    %li{:onclick => "copyToClipboard('%morph_datel%')", :'data-toggle' => "tooltip", :'data-placement'=> "left", :title => "Нажмите чтобы копировать %morph_datel%"}
+      %strong %morph_datel% 
+      \- дательный падеж (пр.: Мурманску)
+
+    %li{:onclick => "copyToClipboard('%morph_predl%')", :'data-toggle' => "tooltip", :'data-placement'=> "left", :title => "Нажмите чтобы копировать %morph_predl%"}
+      %strong %morph_predl% 
+      \- предложный падеж (пр.: Мурманске)
+
+    %li{:onclick => "copyToClipboard('%morph_rodit%')", :'data-toggle' => "tooltip", :'data-placement'=> "left", :title => "Нажмите чтобы копировать %morph_rodit%"}
+      %strong %morph_rodit% 
+      \- родительный падеж (пр.: Мурманска)
+    -if ['articles','categories','news','smiles','pages','products'].one? {|w| w == @general.name}
+      %li{:onclick => "copyToClipboard('%header%')", :'data-toggle' => "tooltip", :'data-placement'=> "left", :title => "Нажмите чтобы копировать %header%"}
+        %strong %header% 
+        \- заголовок или тайтл
+    -if ['products'].one? {|w| w == @general.name}
+      %li{:onclick => "copyToClipboard('%categories%')", :'data-toggle' => "tooltip", :'data-placement'=> "left", :title => "Нажмите чтобы копировать %categories%"}
+        %strong %categories% 
+        \- категории
+      %li{:onclick => "copyToClipboard('%tags%')", :'data-toggle' => "tooltip", :'data-placement'=> "left", :title => "Нажмите чтобы копировать %tags%"}
+        %strong %tags% 
+        \- теги
+:javascript
+  function copyToClipboard(value) {
+    var element = $(this).text();
+    var $temp = $("<input>");
+    $("body").append($temp);
+    $temp.val(value).select();
+    document.execCommand("copy");
+    $temp.remove();
+  }
+

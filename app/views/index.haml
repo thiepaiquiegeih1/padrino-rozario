@@ -1,0 +1,15 @@
+- # encoding: utf-8
+-# @testItem = ProductComplect.first
+
+.row
+  .col-md-12.hidden-xs
+    %h2 Наша продукция и услуги
+    -# %img{ src: @testItem.image.url }
+    .catlist.clearfix.row
+      = partial 'category/catlist', :collection => @catlist
+
+#sh-about
+  %h2
+    = getpage('company-short').title
+  != getpage('company-short').body
+  %p <a href="/page/company">Подробнее</a>

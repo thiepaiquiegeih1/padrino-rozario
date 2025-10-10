@@ -1,0 +1,32 @@
+-# coding: utf-8
+
+:plain
+  <script>
+    $(function() {
+      $('.selectpicker').selectpicker();
+      $('.selectpicker2').selectpicker();
+      $('.selectpicker3').selectpicker();
+
+    });
+  </script>
+
+- error = @categorygroup.errors.include?(:title)
+%fieldset.control-group{:class => error ? 'has-error' : ''}
+  =f.label :Название, :class => 'control-label'
+  .controls
+    =f.text_field :title, :class => 'input-xlarge input-with-feedback', :autofocus => true
+    %span.help-inline=error ? f.error_message_on(:title, :class => 'text-error') : pat(:example)
+
+- error = @categorygroup.errors.include?(:category_ids)
+%fieldset.control-group{:class => error ? 'has-error' : ''}
+  =f.label :Категории, :class => 'control-label'
+  .controls
+    =f.select(:category_ids, :collection => @categories, :fields => [:title, :id], :class => 'selectpicker input-xlarge input-with-feedback', :autofocus => true, :multiple => true, :data => {:live_search => "true"})
+    %span.help-inline=error ? f.error_message_on(:category_ids, :class => 'text-error') : 'Выбрать категории'
+
+.form-actions
+  =f.submit pat(:save), :class => 'btn btn-primary'
+  &nbsp;
+  =f.submit pat(:save_and_continue), :class => 'btn btn-info', :name => 'save_and_continue'
+  &nbsp;
+  =link_to pat(:cancel), url(:categorygroups, :index), :class => 'btn'

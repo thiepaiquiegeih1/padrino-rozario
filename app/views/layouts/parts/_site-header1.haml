@@ -1,0 +1,75 @@
+﻿.row.site_header{style:'margin-bottom: 24px;'}
+  %noindex
+    .sec_1.col-md-4.col-sm-6.col-xs-12.text-center
+      %a{href: "/", style: "display: inline-block", rel: 'nofollow'}
+        /%img{ src: "/images/logo.png", class: "img-responsive", style: "margin-top:20px", loading: "lazy" }
+        %img.newlogo{:src => "/images/logo.svg", loading: "lazy"}/
+  .sec_2.col-md-5.text-left{ style: "max-width:341px" }
+    .addr
+      -if @h1
+        = @h1
+      -else
+        !=show_address()
+    #search.hidden-xs.hidden-sm
+      .stitle
+      \<form action="/search" method="get">
+      \  <input id="query" type="text" name="query"  placeholder="Поиск по сайту">
+      \  <input type="submit" name="search" value="" id="lupe">
+      \</form>
+  %noindex
+    .col-md-3.col-sm-6.col-xs-12.text-left{ style: "padding-top: 20px"}
+      #userarea{ style:"width:#{current_account ? '284px' : '284px'}"}
+
+        .cartb.clearfix
+          %span.glyphicon.glyphicon-shopping-cart{ style: "width: 0;font-size: 18px;color: #344f59;"}
+          = link_to "Корзина", abs_url_for(:cart, :index), :class => "cartlink", rel: 'nofollow'
+          .nums-holder
+            .noindex
+              .empty У Вас пока нет товаров
+        - if current_account
+          .logged{ style: "position:relative" }
+            .hello-name
+              Здравствуйте,<br><em>#{current_account.surname}</em>
+            %ul.ulinks{ style: "position:absolute;left:124px;" }
+              %li= link_to "Личный кабинет", abs_url_for(:user_accounts, :profile), rel: 'nofollow'
+              %li= link_to "Выход", abs_url_for(:sessions, :destroy), rel: 'nofollow'
+        - else
+          %ul.ulinks{ style: "float:right" }
+            %li= link_to "Мои заказы", abs_url_for(:sessions, :new), rel: 'nofollow'
+            / %li= link_to "Регистрация", abs_url_for(:user_accounts, :new)
+      .delivery.col-md-3.delivery-lg.visible-lg.visible-md{ style: 'position: absolute; border-radius:4px; padding-bottom: 0px; color: #fff; text-align: center; top: 103px; right: 240px; font-size: 14px; width: 200px; text-shadow: 0 1px 0 rgba(0, 0, 0, 0.2);'}
+
+
+        %strong{ style: 'text-align: center; font-family:"PT Sans",sans-serif; font-size:14px; font-weight:normal; margin-left: 10px;' } Город доставки:
+        .input-block
+          %input.input.cities{  style: 'font-size:14px; z-index: 5000; text-align: center;      background: transparent .5em 50% no-repeat;', placeholder: "Введите город доставки", onfocus: "if (this.value == this.defaultValue) { this.select(); }", onchange: "$('.ui-menu-item.ui-state-focus').click()", value: @subdomain ? @subdomain.city : '' }
+          .preloader
+            /%img{ src: "/images/preloader.gif" }
+        .error{style:'position: relative;'}
+          "Населенный пункт не найден. Свяжитесь, пожалуйста, с нами для уточнения стоимости доставки"
+          %strong 8 800 250 64 70
+    .delivery.delivery-sm.visible-sm.visible-xs
+      %input.input.cities{ placeholder: "Введите город доставки" }
+
+
+
+
+:javascript
+  $(document).ready(function() {
+    if($('body').width()<977) {
+      $('.sec_1, .sec_2').on('click', function() {
+        location.href = '/'
+      })
+    }
+  });
+  $(window).resize(function() {
+    if($('body').width()<992) {
+      $('.sec_1, .sec_2').on('click', function() {
+        location.href = '/'
+      })
+    } else {
+      $('.sec_1, .sec_2').on('click', function() {})
+      $('.sec_1, .sec_2').off('click');
+      $('.sec_1, .sec_2').unbind('click');
+    }
+  });

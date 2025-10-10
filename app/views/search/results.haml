@@ -1,0 +1,41 @@
+- # encoding: utf-8
+- @title = 'Результаты поиска'
+
+%h2{style: 'margin-top: 4rem'} Результаты поиска
+
+- if @error
+	%p= @error
+
+- if !@error
+	#sresults.col-md-12
+		- if @pages && @pages.any?
+			- @pages.each do |result|
+				.item
+					%h3!= highlight(result.title, @query)
+					%p!= truncate_words(highlight(Sanitize.fragment(result.body), @query), :length => 30)
+					%p.more= link_to 'Смотреть', url_for(:page, :index, result.uri)
+		- if @news && @news.any?
+			- @news.each do |result|
+				.item
+					%h3!= highlight(result.title, @query)
+					%p!= truncate_words(highlight(Sanitize.fragment(result.body), @query), :length => 30)
+					%p.more= link_to 'Смотреть', url_for(:news, :index, result.slug || result.id)
+		- if @articles && @articles.any?
+			- @articles.each do |result|
+				.item
+					%h3!= highlight(result.title, @query)
+					%p!= truncate_words(highlight(Sanitize.fragment(result.body), @query), :length => 30)
+					%p.more= link_to 'Смотреть', url_for(:article, :index, result.slug || result.id)
+		- if @comments && @comments.any?
+			- @comments.each do |result|
+				.item
+					%h3 Отзыв клиента #{result.name}
+					%p!= truncate_words(highlight(Sanitize.fragment(result.body), @query), :length => 30)
+					%p.more= link_to 'Смотреть', url_for(:comment, :index)
+		- if @products && @products.any?
+			- @products.each do |result|
+				.item.product-item
+					%h3!= highlight(result.header, @query)
+					.image= link_to image_tag(result.image, :alt => result.alt), url_for(:product, :index, result.slug || result.id), :title => result.header
+					%p.more= link_to 'Смотреть', url_for(:product, :index, result.slug || result.id)
+

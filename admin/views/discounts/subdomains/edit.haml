@@ -1,0 +1,8 @@
+- # encoding: utf-8
+%ul.nav.nav-tabs
+  %li=link_to tag_icon(:list, pat(:list)), url(:'discounts/subdomains', :index)
+  %li.active=link_to tag_icon(:edit, pat(:edit)), url(:'discounts/subdomains', :edit, :id => @subdomain.id)
+
+.tabs-content
+  -form_for :subdomain, url(:'discounts/subdomains', :update, :id => @subdomain.id), :method => :put, :class => 'form-horizontal' do |f|
+    =partial 'discounts/subdomains/form', :locals => { :f => f }

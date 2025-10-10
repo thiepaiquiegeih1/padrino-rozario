@@ -1,0 +1,606 @@
+- # encoding: utf-8
+
+- content_for :head do
+  =javascript_include_tag "https://cdnjs.cloudflare.com/ajax/libs/flickity/3.0.0/flickity.pkgd.min.js"
+  =stylesheet_link_tag "https://cdnjs.cloudflare.com/ajax/libs/flickity/3.0.0/flickity.min.css"
+
+.alert 'perekrestok.haml'
+
+.row
+  .col-md-12
+    %div.breadcrumps{style: 'margin-top: 19px;'}
+      %a{href: @category.parent_id != 32 ? "/category/#{Category.find(@category.parent_id).slug.force_encoding("UTF-8")}" : "/" }=Category.find(@category.parent_id).title
+      %span.divider='•'
+      -# %a{href: "/category/#{Category.find(@category.parent_id).slug.force_encoding("UTF-8")}/#{@category.slug.force_encoding("UTF-8")}" }=@category.title
+      %span=@category.title
+      - if @category.parent_id != 32
+        :plain
+          <script type="application/ld+json">
+            {
+              "@context": "https://schema.org",
+              "@type": "BreadcrumbList",
+              "itemListElement": [{
+                "@type": "ListItem",
+                "position": 1,
+                "item": {
+                  "@id": "#{"https://#{CURRENT_DOMAIN}/category/#{Category.find(@category.parent_id).slug.force_encoding("UTF-8")}"}",
+                  "name": "#{Category.find(@category.parent_id).title}"
+                }
+              }]
+            }
+          </script>
+      - else
+        :plain
+          <script type="application/ld+json">
+            {
+              "@context": "https://schema.org",
+              "@type": "BreadcrumbList",
+              "itemListElement": [{
+                "@type": "ListItem",
+                "position": 1,
+                "item": {
+                  "@id": "#{"https://#{CURRENT_DOMAIN}/"}",
+                  "name": "#{Category.find(@category.parent_id).title}"
+                }
+              }]
+            }
+          </script>
+
+  .col-md-12
+    %div
+      - if @category.parent_id != 32
+        - lnk = "/category/#{Category.find(@category.parent_id).slug.force_encoding("UTF-8")}/#{@category.slug.force_encoding("UTF-8")}"
+      - else
+        - lnk = "/"
+      %a{rel: 'nofollow', href: lnk}
+        %figure.backarr
+          %svg{'aria-label' => 'Back arrow', fill: "none", height: "30", viewbox: "0 0 30 30", width: "30", xmlns: "http://www.w3.org/2000/svg"}
+            %g#Group{transform: "matrix(-1 0 0 1 30 0)"}
+              %path#Rectangle{d: "M26 0C28.2094 0 30 1.79056 30 4L30 26C30 28.2094 28.2094 30 26 30L4 30C1.79056 30 0 28.2094 0 26L0 4C0 1.79056 1.79056 0 4 0L26 0Z", fill: "#FED9C8"}
+              %path#Path{d: "M0.280934 0.30594C-0.101312 0.701455 -0.0923758 1.33142 0.300934 1.71594C0.300934 1.71594 5.70093 7.00594 5.70093 7.00594C5.70093 7.00594 0.300935 12.2859 0.300935 12.2859C-0.0939484 12.6725 -0.100664 13.3061 0.285935 13.7009C0.672534 14.0958 1.30605 14.1025 1.70093 13.7159C1.70093 13.7159 7.82094 7.71594 7.82094 7.71594C8.01335 7.5278 8.12181 7.27005 8.12181 7.00094C8.12181 6.73183 8.01335 6.47408 7.82094 6.28594C7.82094 6.28594 1.70093 0.285939 1.70093 0.285939C1.51051 0.099247 1.25341 -0.00365639 0.986768 9.91821e-05C0.720122 0.00385475 0.466022 0.113957 0.280934 0.305939C0.280934 0.305939 0.280934 0.30594 0.280934 0.30594Z", fill: "#161616", "fill-rule" => "evenodd", transform: "translate(11 8)"}
+      %h2.ttl
+        =@category.title
+        -# %a{href: lnk}=@category.title
+
+- if !@childrens.empty?
+  .row{style: 'margin-right: 0px;'}
+    .carousel#CATEGORIES
+      - @childrens.each_with_index do |category, index|
+        - if category.id != 32
+          .carousel-cell{:id => "ci_#{category.id}"}
+            -# =link_to image_tag(category.image, :alt => category.title), url_for(:category, :index, category.slug.force_encoding("UTF-8")), :title => category.title
+            = category_image_schema(category)
+            =link_to image_tag(category.image, :alt => category.title), "/category/#{Category.find(category.parent_id).slug.force_encoding("UTF-8")}/#{category.slug.force_encoding("UTF-8")}", :title => category.title
+            %p.short-text=link_to category.title, "/category/#{Category.find(category.parent_id).slug.force_encoding("UTF-8")}/#{category.slug.force_encoding("UTF-8")}"
+            -# %p!= category.text
+ 
+  // var imgs = carousel.querySelectorAll('.carousel-cell img');
+  // // get transform property
+  // var docStyle = document.documentElement.style;
+  // var transformProp = typeof docStyle.transform == 'string' ? 'transform' : 'WebkitTransform';
+  // flkty.on( 'scroll', function() {
+  //   flkty.slides.forEach( function( slide, i ) {
+  //     var img = imgs[i];
+  //     var x = ( slide.target + flkty.x ) * -1/3;
+  //     img.style[ transformProp ] = 'translateX(' + x  + 'px)';
+  //   });
+  // });
+
+/ - if !@childrens.empty?
+/   .row
+/     .col-md-12
+/       %h2 Виды
+/   .row
+/     #category-list-sub.clearfix
+/       - @childrens.each_with_index do |category, index|
+/         - if category.id != 32
+/           %div{:class => "item col-md-6 col-sm-6 col-xs-12", :id => "ci_#{category.id}"}
+/             .image
+/               -# =link_to image_tag(category.image, :alt => category.title), url_for(:category, :index, category.slug.force_encoding("UTF-8")), :title => category.title
+/               =link_to image_tag(category.image, :alt => category.title), "/category/#{Category.find(category.parent_id).slug.force_encoding("UTF-8")}/#{category.slug.force_encoding("UTF-8")}", :title => category.title
+/             %div.title= link_to category.title, url_for(:category, :index, category.slug.force_encoding("UTF-8"))
+/             .text!= category.text
+
+/ -@items.each_with_index do | product, index |
+/   %p=product.methods.sort
+
+- if !@childrens.empty?
+  .row#MATRIX
+    - @childrens.each_with_index do |category, index|
+      - if category.id != 32
+        .col-md-12
+          %h3.header-of-subcategory
+            %a.linkkk.scttl{ :href => "/category/#{Category.find(category.parent_id).slug.force_encoding("UTF-8")}/#{category.slug.force_encoding("UTF-8")}" }=category.title
+          %div.header-of-subcategory
+            %a.linkkk{ rel: "nofollow", :href => "/category/#{Category.find(category.parent_id).slug.force_encoding("UTF-8")}/#{category.slug.force_encoding("UTF-8")}" }
+              %figure.forwarr
+                %svg{'aria-label' => 'Forward arrow', fill: "none", height: "28", viewbox: "0 0 28 28", width: "28", xmlns: "http://www.w3.org/2000/svg"}
+                  %g#Group
+                    %path#Rectangle{d: "M24 0C26.2094 0 28 1.79056 28 4L28 24C28 26.2094 26.2094 28 24 28L4 28C1.79056 28 0 26.2094 0 24L0 4C0 1.79056 1.79056 0 4 0L24 0Z", fill: "#FED9C8"}
+                    %path#Path{d: "M0.262206 0.285544C-0.0945568 0.654692 -0.0862169 1.24266 0.280873 1.60154C0.280873 1.60154 5.32087 6.53888 5.32087 6.53888C5.32087 6.53888 0.280874 11.4669 0.280874 11.4669C-0.0876846 11.8277 -0.0939522 12.419 0.266873 12.7875C0.6277 13.1561 1.21898 13.1624 1.58754 12.8015C1.58754 12.8015 7.29954 7.20154 7.29954 7.20154C7.47912 7.02595 7.58036 6.78538 7.58036 6.53421C7.58036 6.28304 7.47912 6.04247 7.29954 5.86688C7.29954 5.86688 1.58754 0.266877 1.58754 0.266877C1.40981 0.0926299 1.16985 -0.00341272 0.920984 9.25064e-05C0.672114 0.00359774 0.434955 0.10636 0.262207 0.285543C0.262207 0.285543 0.262206 0.285544 0.262206 0.285544Z", fill: "#161616", "fill-rule" => "evenodd", transform: "translate(10.267 7.467)"}
+          %span.count
+            =category.products.count
+            ="товаров"
+          - if category.text.gsub(/<[^>]*>/, "").gsub(/\s+/, "") != ''
+            %div.descr!= category.text.gsub(/<[^>]*>/, '').strip
+          - if !category.products.empty?
+            .carousel-wrapper{style: 'position: relative;'}
+              %div{'class' => "carousel carousel-#{index}", 'data-flickity' => '{ "dragThreshold": 0, "freeScrollFriction": 0.04, "selectedAttraction": 0.06, "friction": 0.5, "freeScroll": true, "groupCells": true, "pageDots": false, "lazyLoad": 2, "cellAlign": "left", "contain": true }'}
+                - x = []
+                - CategoriesProducts.where(category_id: category.id).each do |bound|
+                  - if !bound.nil?
+                    - prdct = Product.where(id: bound.product_id).first
+                    - if !prdct.nil?
+                      - begin
+                        - tester = prdct.get_price(@subdomain.discount_pool_id, true)
+                        - if CategoriesProducts.where(product_id: bound.product_id, category_id: 746).first.nil?
+                          - x << Product.where(id: bound.product_id).first
+                - x = x.shuffle
+                - x.each_with_index do | product, i |
+                  - break if (i >= 11 || i >= x.count - (x.count % 3) - 1) && i > 1
+                  .carousel-cell{:itemscope => 'itemscope', :itemtype => 'http://schema.org/Product'}
+                    .wrapper
+                      - frst_product_complect = ProductComplect.where(product_id: product.id).first
+                      - dflt_cmplct_id = product.default_price
+                      - dflt_cmplct = dflt_cmplct_id.nil? ? Complect.find_by_id(1) : Complect.find_by_id(dflt_cmplct_id)
+                      - dflt_product_complect = ProductComplect.where(product_id: product.id, complect_id: dflt_cmplct).first
+                      - dflt_cmplct_ttl = dflt_cmplct.title
+                      - price = product.get_price(@subdomain.discount_pool_id, true)
+                      - price = price + @subdomain.overprsubd.to_i
+                      - old_spice = price
+                      - percent_discount = rand(2) == 0 && PADRINO_ENV == 'development' ? 10 : 0
+                      - begin
+                        - if dflt_product_complect.discounts && dflt_product_complect.discounts != ''
+                          - JSON.parse(dflt_product_complect.discounts).each do |discount|
+                            - if discount['shedule'].nil?
+                              - discount['shedule'] = "* * * * *"
+                            - if discount['percent'] && discount['period']
+                              - if discount['percent'] > 100 || discount['percent'] < -100
+                                - raise "Недопустимое значение скидки в процентах: #{discount['percent'].to_s}"
+                              - percent_discount = discount['percent'].to_i
+                              - if matches_cron?(discount['shedule']) && convert_to_utc_plus_3(discount['period']['datetime_start']) < Time.now && convert_to_utc_plus_3(discount['period']['datetime_end']) > Time.now # https://crontab.guru/
+                                - price = ((old_spice.to_f - old_spice.to_f * 0.01 * discount['percent'].to_f) * 0.1).round * 10
+                                - if discount['cap']
+                                  - price = price < discount['cap'] ? discount['cap'] : price
+                      - rescue StandardError => e
+                        - data = {product_complect_id: dflt_product_complect.id, discounts_str: dflt_product_complect.discounts.to_s}
+                        :javascript
+                          console.log('Error (299fa9b5) from HAML: #{e}', JSON.parse('#{data.to_json}'))
+                      %meta{:content => "Розарио. Цветы", :itemprop => 'brand'}/
+                      %meta{:content => "#{product.id}", :itemprop => 'mpn'}/
+                      %meta{:content => "#{product.header}", :itemprop => 'description'}/
+                      %meta{:url => "https://"+ "#{@subdomain.url}" + ".#{CURRENT_DOMAIN}/product/" + product.slug.force_encoding("UTF-8"), :itemprop => 'url'}/
+                      - begin
+                        - if frst_product_complect.main_image && frst_product_complect.main_image != ''
+                          - image_url = "/product_images_thumbnails/#{frst_product_complect.id_1C}/#{JSON.parse(frst_product_complect.main_image)['url'].split('/')[-1]}"
+                        - else
+                          - image_url = product.thumb_image(true)
+                      - rescue StandardError => e
+                        - image_url = '/default.jpg'
+                        :javascript
+                          console.log("Error (dadcbf6b) from HAML: #{e}")
+                      %meta{:content => image_url, :itemprop => 'image'}/
+                      - if percent_discount > 0
+                        .discount="-#{percent_discount}%"
+                      = complex_product_image_schema(product, image_url)
+                      %img{alt: "#{product.header}", src: image_url }
+                      .info
+                        .div-h4
+                          %a.header.short-text{:href => "/product/#{product.slug.force_encoding("UTF-8")}?brdcrmbs_lvl1=#{@category.id}&brdcrmbs_lvl2=#{category.id}", :onclick => ''}
+                            %meta{content: product.header.strip, itemprop: "name"}/
+                            = product.header.strip
+                        .price-block
+                          %div{:itemprop => 'offers', :itemscope => true, :itemtype => 'http://schema.org/Offer'}
+                            %meta{:content => "RUB", :itemprop => 'priceCurrency'}/
+                            %link{:href => "http://schema.org/InStock", :itemprop => "availability"}/
+                            %meta{:content => "http://schema.org/NewCondition", :itemprop => "itemCondition"}/
+                            %meta.currprice{:content => price, :itemprop => 'price'}
+                          .price{class: percent_discount != 0 ? 'discounted' : ''}
+                            %span.price-prefix от 
+                            #{price}
+                            %i.fa.fa-rub{"aria-hidden" => ""}
+                            - if old_spice > price
+                              %p.old-spice
+                                #{old_spice}
+                                %i.fa.fa-rub{"aria-hidden" => ""}
+                .carousel-cell.last
+                  .wrapper
+                    - # sample = x.sample(4)
+                    - sample = []
+                    - x.each do |i| # Перебираем массив продуктов
+                      - complect = ProductComplect.where(product_id: i.id).first
+                      - if complect && complect.main_image.present? # Если найден complect и у него есть main_image
+                        - sample << complect
+                      - break if sample.size >= 4 # Если в результате уже набрано 4 элемента, прекращаем цикл
+                    - if sample.size < 4 # Если подходящих элементов недостаточно, ищем любые ProductComplect с непустым main_image
+                      - size = sample.nil? ? 4 : 4 - sample.size
+                      - # additional_complects = ProductComplect.where.not(main_image: nil).limit(size)
+                      - additional_complects = ProductComplect.find_by_sql("SELECT * FROM product_complects WHERE main_image IS NOT NULL LIMIT #{size}")
+                      - sample.concat(additional_complects)
+                      - sample = sample.shuffle
+                    .row
+                      .column.a{style: "background-image: url(/product_images_thumbnails/#{sample[0].id_1C}/#{JSON.parse(sample[0].main_image)['url'].split('/')[-1]})"}                      
+                      .column.b{style: "background-image: url(/product_images_thumbnails/#{sample[1].id_1C}/#{JSON.parse(sample[1].main_image)['url'].split('/')[-1]})"}
+                    .row
+                      .column.c{style: "background-image: url(/product_images_thumbnails/#{sample[2].id_1C}/#{JSON.parse(sample[2].main_image)['url'].split('/')[-1]})"}
+                      .column.d{style: "background-image: url(/product_images_thumbnails/#{sample[3].id_1C}/#{JSON.parse(sample[3].main_image)['url'].split('/')[-1]})"}
+                    / %h4
+                    %a.header.short-text{:href => "/category/#{Category.find(category.parent_id).slug.force_encoding("UTF-8")}/#{category.slug.force_encoding("UTF-8")}"}="Показать больше"
+              / :javascript
+              /   document.addEventListener("DOMContentLoaded", function() {
+              /     flkty_#{index} = new Flickity(document.querySelector('.carousel-#{index}'), {
+              /       freeScroll: true,
+              /       groupCells: true,
+              /       pageDots: false,
+              /       lazyLoad: 2,
+              /       cellAlign: "left",
+              /       contain: true
+              /     });
+              /   });
+:css
+  /* @media screen and ( max-width: 500px ) { 
+    .container { overflow-x: hidden; }
+    .site_menu, .site_menu > div { overflow-x: hidden; width: 100vw !important; right: auto !important; }
+  }*/
+  #CATEGORIES .flickity-prev-next-button.next     { top: 65px; right: -6px; }
+  #CATEGORIES .flickity-prev-next-button.previous { top: 65px; left: -4px;  }
+  @media screen and ( max-width: 500px ) { #mainnn { width: 100vw; overflow: hidden; } }
+  span.divider { color: #ef845b; }
+  #wr .carousel-cell.last .wrapper { background-color: #FFF !important; position: relative; }
+  #wr .carousel-cell.last .row { height: 50%; margin: 0; }
+  #wr .carousel-cell.last .column {
+    height: 100%;
+    background-color: #FFF;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position-x: center;
+    background-position-y: center;
+  }
+  #wr .carousel-cell.last .header {
+    position: absolute; top: 44.1%; right: 0; left: 0;
+    background-color: #DDD;
+    width: 131px;
+    display: inline-block;
+    margin: auto;
+    padding: 7px;
+    border-radius: 15px;
+    color: rgb(120 54 62);
+  }
+  #wr .carousel-cell.last .column { padding: 0; width: 50%; position: relative; float: left; height: 100%; }
+  #wr .carousel-cell.last .column { outline: solid #EEE 2px;}
+  #wr .short-text {
+    white-space: nowrap;         /* Запрещает перенос текста на новую строку */
+    overflow: hidden;            /* Скрывает текст, выходящий за пределы */
+    text-overflow: ellipsis;     /* Добавляет многоточие (...) */
+    display: block;              /* Гарантирует, что элемент будет блочным */
+  }
+  #wr .multiline-text {
+    display: -webkit-box;            /* Используется для создания блочного контейнера */
+    -webkit-box-orient: vertical;    /* Указывает направление строк */
+    overflow: hidden;                /* Скрывает текст за пределами области */
+    text-overflow: ellipsis;         /* Добавляет многоточие */
+    -webkit-line-clamp: 3;           /* Устанавливает количество строк */
+    line-height: 1.5;                /* Высота строки */
+    max-height: calc(1.5em * 3);     /* Ограничивает высоту (строки * line-height) */
+  }
+  #wr .flickity-prev-next-button.next     { right: 4px; }
+  #wr .flickity-prev-next-button.previous { left:  5px; }
+  body { overflow-x: hidden !important; }
+  #content a:link, #content a:visited, #content a:active, #content a:hover { text-decoration: none !important; }
+  #mainnn { padding-right: 0 !important; }
+  #wr .flickity-button       { background-color: #f4e7d8; transition: all 0.5s ease-out; }
+  #wr .flickity-button:hover { background-color: #f4e7d8; }
+  #wr .flickity-button[disabled] { display: none; }
+  #wr .flickity-button:focus { outline: 0; box-shadow: none; } /* disable vendor preset */
+  @media screen and ( max-width: 992px ) {
+    #wr .flickity-prev-next-button { background-color: transparent; }
+    #wr .flickity-prev-next-button:hover { background-color: transparent; }
+  }
+  #CATEGORIES p { margin-top: 8px; padding: 0 16px; }
+  @media screen and ( max-width: 800px ) { #CATEGORIES { margin-left: 3%; } }
+  /* @media screen and ( max-width: 440px ) { #CATEGORIES { margin-left: 31px; } } */
+  #CATEGORIES .carousel-cell { width: 25%; height: auto; margin: 0; overflow: hidden; text-align: center; float: left; }
+  #CATEGORIES .carousel-cell a { display: inline-block; } 
+  #CATEGORIES .carousel-cell img {
+    width: 100%; max-width: 128px; height: 128px; /* border: 3px solid #c2d3a2; */ border-radius: 10px;
+    border: 1px solid rgba(210, 127, 54, .29);
+    box-shadow: 0 0 9px 0 rgba(0, 0, 0, .07);
+    transition: all 0.3s ease;
+  }
+  #CATEGORIES .carousel-cell img:hover { box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); transform: scale(1.012); }
+  @media screen and ( max-width: 768px ) {
+    #CATEGORIES .flickity-button  { display: none; }
+  }
+  @media screen and ( max-width: 600px ) {
+    #CATEGORIES .carousel-cell { margin: 0 8px; }
+    #CATEGORIES .carousel-cell { width: 25%; }
+  }
+  @media screen and ( max-width: 500px ) {
+    #CATEGORIES .carousel-cell { width: 33.33%; }
+  }
+  @media screen and ( max-width: 400px ) {
+    #CATEGORIES .carousel-cell { width: 50%; }
+    #content { padding-right: 0 !important; }
+  }
+  @media screen and ( max-width: 320px ) { #CATEGORIES .carousel-cell { min-width: 128px; width: 50%; } }
+  #wr h2.ttl { margin-bottom: 18px; font-weight: bolder; font-size: 18px; margin-top: 16px; display: inline-block; }
+  #wr h2.ttl a, #wr h2.ttl a:hover, #wr h2.ttl a:visited { color: rgb(120 54 62); margin: 0;}
+  #wr .backarr {
+    display: inline-block;
+    position: relative;
+    top: 9px;
+  }
+  #wr .forwarr {
+    display: inline-block;
+    position: relative;
+    top: 9px;
+  }
+  /*  .backarr svg, .forwarr svg { position: relative; }*/
+  #MATRIX .col-md-12 { height: auto; }
+  #MATRIX .carousel-wrapper { position: relative; height: auto; overflow: visible; width: 102%; left: -14px; }
+  @media screen and ( max-width: 992px ) {
+    #MATRIX .carousel-wrapper { width: 100%; left: 0; }
+  }
+  #MATRIX .carousel { overflow: hidden; padding: 12px 14px 12px 28px; left: -12px; width: 104%; position: relative; bottom: 0; }
+  @media screen and ( max-width: 666px ) {
+    #MATRIX .carousel { padding: 12px 0 12px 8px; }
+    #MATRIX .col-md-12 { padding-right: 0; }
+  }
+  #MATRIX .flickity-viewport { overflow: visible; }
+  #MATRIX .header-of-subcategory { display: inline-block; font-weight: normal; font-family: "PT Sans", sans-serif; font-size: 16px; margin-top: 20px; margin-bottom: 10px; }
+  #MATRIX .header-of-subcategory .linkkk { color: rgb(120 54 62); line-height: 24px; }
+  #MATRIX .header-of-subcategory .linkkk.scttl { font-weight: bolder !important; }
+  #MATRIX .header-of-subcategory .count { margin-left: 4px; font-size: 12px; }
+  #MATRIX p.descr { font-style: italic; }
+  #MATRIX .price-prefix { font-size: 0.75em; font-weight: lighter; }
+  #MATRIX .price-block { text-align: right; padding-bottom: 0px; }
+  #MATRIX .old-spice {
+    text-align: right; margin: 0 8px 0 8px;
+    color: rgb(182, 186, 194);
+    text-decoration: line-through;
+    font-size: 15px;
+    line-height: 16px;
+    z-index: 1;
+    position: relative;
+    font-weight: lighter;
+  }
+  #MATRIX .price {
+    text-align: center; margin: 2px 8px 8px;
+    font-size: 20px;
+    line-height: 24px;
+    font-weight: 600;
+    color: rgb(219, 54, 54);
+    padding: 8px 8px 4px;
+    border-radius: 12px;
+    background: rgb(213, 244, 218);
+  }
+  #MATRIX .price.discounted { color: red; }
+  #wr .price .fa-rub { font-size: 18px; }
+  #wr .old-spice .fa-rub { font-size: 13px; }
+  #wr a.header { padding: 0 12px; }
+  #wr a.header::after {
+    content: '';
+    position: absolute; inset: 0;
+  }
+  #MATRIX .wrapper {
+    position: relative;
+    height: auto; /* 296px; */
+    /* aspect-ratio: 1 / 1.49; */
+    margin: 4px 12px 4px 0;
+    background-color: #faf2e9;
+    transition: all 0.3s ease;
+    overflow: hidden;
+    text-align: center;
+    /* border: 3px solid #c2d3a2; */ border-radius: 8px;
+    background: #faf2e9;
+    border: 1px solid rgba(210, 127, 54, .29);
+    box-shadow: 0 0 9px 0 rgba(0, 0, 0, .07);
+  }
+  #MATRIX .wrapper:hover {
+    transform: scale(1.012);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+  #MATRIX .discount {
+    position: absolute; top: 4px; left: 4px;
+    margin: 4px;
+    background-color: #a8f03e;
+    border-radius: 8px;
+    display: inline-block;
+    padding: 4px 10px;
+    font-weight: bolder;
+  }
+  #MATRIX .carousel-cell {
+    margin-right: 3px; margin-left: 0; width: 33%; height: auto;
+  }
+  #MATRIX .carousel-cell.is-selected { opacity: 1; }
+  #MATRIX .carousel-cell { opacity: 0; transition: all 0.5s ease; }
+  #MATRIX .carousel-cell img {
+    width: 100%;
+    /* max-width: 100%;*/
+    height: auto;
+    aspect-ratio: 1 / 1; /* задает квадратную форму */
+  }
+  @media screen and ( max-width: 992px ) {
+    #MATRIX { margin-bottom: 48px; }
+  }
+  @media screen and ( max-width: 700px ) {
+    #MATRIX .carousel-cell { opacity: 1; transition: none; }
+    #MATRIX .carousel-cell { width: 33.33%; }
+  }
+  @media screen and ( min-width: 551px ) { #MATRIX .carousel-cell .wrapper .info { height: 92px; } }
+  @media screen and ( max-width: 550px ) {
+    #MATRIX .carousel-cell .wrapper { width: 192px; aspect-ratio: 1 / 1.5; }
+    #wr .flickity-button { display: none; }
+    #MATRIX .carousel-cell { width: 200px; }
+    /* #MATRIX .carousel-cell { width: 45%; min-width: 100px; } */
+  }
+  @media screen and ( max-width: 450px ) {
+    #wr .flickity-button { display: none; }
+    /* #MATRIX .carousel-cell { width: 60%; min-width: 100px; } */
+  }
+  @media screen and ( max-width: 350px ) {
+    #wr .flickity-button { display: none; }
+    /* #MATRIX .carousel-cell { width: 70%; min-width: 100px; } */
+  }
+  @media screen and ( max-width: 320px ) {
+    /* #MATRIX .carousel-cell { width: 80%; min-width: 100px; } */
+  }
+  @media screen and ( max-width: 200px ) {
+    /* #MATRIX .carousel-cell { width: 90%; } */
+  }
+  #MATRIX .carousel-cell .div-h4 { margin: 6px 0; font-size: 1.2em; font-family: Arial,Helvetica,sans-serif; }
+
+:javascript
+  var resizeTimeout;
+  var carousels;
+  var flickityInstances = []; // Храним все экземпляры Flickity
+  function isIphone() { return /iPhone/i.test(navigator.userAgent); }
+  document.addEventListener('contextmenu', function(event) {
+    event.stopPropagation();  // Остановить распространение события, если его перехватывают другие обработчики
+  }, true);
+  function getWindowSize() {
+    let windowWidth = 0;
+    let windowHeight = 0;
+    if (typeof window.innerWidth === 'number') {
+      windowWidth = window.innerWidth;
+      windowHeight = window.innerHeight;
+    } else if (document.documentElement && (document.documentElement.clientWidth || document.documentElement.clientHeight)) {
+      windowWidth = document.documentElement.clientWidth;
+      windowHeight = document.documentElement.clientHeight;
+    } else if (document.body && (document.body.clientWidth || document.body.clientHeight)) {
+      windowWidth = document.body.clientWidth;
+      windowHeight = document.body.clientHeight;
+    }
+    return { width: windowWidth, height: windowHeight };
+  }
+  windowSize = getWindowSize()
+  var carousel = document.querySelector('#CATEGORIES');
+  var cells = document.querySelectorAll('#CATEGORIES .carousel-cell');
+  var flkty = null; // Объявляем переменную для хранения экземпляра Flickity
+  function initCarousel() { // Функция для создания карусели
+    if (!flkty) { // Проверяем, что карусель еще не инициализирована
+      flkty = new Flickity(carousel, {
+        cellAlign: "left",
+        draggable: true,
+        freeScroll: false,
+        contain: true,
+        pageDots: false,
+        wrapAround: true,
+        adaptiveHeight: true,
+        lazyLoad: 2,
+        prevNextButtons: true,
+        imagesLoaded: true,
+        percentPosition: false,
+        // arrowShape: { 
+        //   x0: 10,
+        //   x1: 55, y1: 45,
+        //   x2: 70, y2: 40,
+        //   x3: 20
+        // }
+      });
+    }
+  }
+  function destroyCarousel() { // Функция для уничтожения карусели
+    if (flkty) { // Проверяем, что карусель уже существует
+      flkty.destroy(); flkty = null;
+    }
+  }
+  function toggleCarousel() { // Функция для управления состоянием карусели на основе ширины окна и количества слайдов
+    if (cells.length > 4 || window.innerWidth < 600) { initCarousel(); }
+    else                                             { destroyCarousel(); }
+    // if (cells.length < 5 && window.innerWidth > 600) { destroyCarousel(); }
+  }
+  toggleCarousel(); // Выполняем проверку при загрузке страницы
+  function handleResize() {
+    clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(() => {
+      let newWindowSize = getWindowSize();
+      if (windowSize != newWindowSize) {
+        windowSize = newWindowSize
+        toggleCarousel();
+        initializeCarousels();
+        setTimeout(setEqualHeight, 501); // таймаут для отработки css transition
+      }
+      console.log('Window size:', windowSize);
+    }, 100); // таймаут для обновления windowSize, иначе иногда не успевает обновиться и использует старые значения
+  }
+  if (isIphone()) {
+    window.addEventListener('orientationchange', handleResize);
+    console.log("Вы используете iPhone");
+  } else {
+    window.addEventListener('resize', handleResize);
+    console.log("Вы используете другое устройство");
+  }
+  // flkty.on('settle', function(index) { console.log( 'Flickity settled at ' + index ); });
+  function setEqualHeight() {  // Функция для установки одинаковой высоты
+    const flickityViewports = document.querySelectorAll('#MATRIX .flickity-viewport');
+    const cards = document.querySelectorAll('.wrapper');
+    let maxHeight = 0;
+    cards.forEach(card => { if (card.offsetHeight > maxHeight) { maxHeight = card.offsetHeight; } }); // Определяем максимальную высоту
+    let skip = true;
+    cards.forEach(card => { // Устанавливаем одинаковую высоту всем карточкам
+      if (skip) {
+        skip = false;
+      } else {
+        // console.log(card.style.height)
+        // card.style.height = `${maxHeight}px`;
+        card.style.height = `${cards[0].offsetHeight}px`;
+      }
+    });
+    flickityViewports.forEach(x => {
+      x.style.height = `${maxHeight}px`;
+    });
+  }
+  function initializeCarousels() { // Функция для инициализации или реинициализации каруселей
+    // console.log('initializeCarousels')
+    // setTimeout(function () {
+      flickityInstances.forEach(instance => instance.destroy()); // Уничтожаем существующие экземпляры
+      flickityInstances = [];
+      const isMobile = window.innerWidth <= 550; // Определяем, мобильная ли версия
+      carousels.forEach(carousel => { // Инициализируем карусели с обновленными настройками
+        let flickityOptions = JSON.parse(carousel.getAttribute("data-flickity").replace(/&quot;/g, '"')); // Получаем текущие настройки из data-flickity
+        // console.log(flickityOptions)
+        flickityOptions.freeScroll = isMobile; // Обновляем параметр freeScroll в зависимости от устройства
+        flickityOptions.groupCells = !isMobile;
+        const flkty = new Flickity(carousel, flickityOptions);  // Инициализируем Flickity
+        flickityInstances.push(flkty);
+      });
+    // }, 1000);
+  }
+  function delayedInitialization() {
+    window.requestAnimationFrame(() => {
+      initializeCarousels();
+      // setEqualHeight();
+    });
+  }
+  document.addEventListener("DOMContentLoaded", function() {
+    window.requestAnimationFrame(() => {
+      carousels = document.querySelectorAll("#MATRIX .carousel");
+      // console.log(carousels)
+      // initializeCarousels(); // Инициализируем карусели при загрузке
+      // window.addEventListener("load", delayedInitialization);
+      setEqualHeight() // Iphone?
+      setTimeout(delayedInitialization, 200)
+      if (!isIphone()) {
+        // window.addEventListener("resize", () => { initializeCarousels(); }); // Реинициализируем карусели при изменении размера окна
+        window.addEventListener('resize', setEqualHeight); // Вызов функции при изменении размера окна
+      }
+    });
+  });
+
+  // function setCookie(name, value, days) {
+  //   let expires = "";
+  //   if (days) {
+  //     const date = new Date();
+  //     date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+  //     expires = "; expires=" + date.toUTCString();
+  //   }
+  //   document.cookie = name + "=" + encodeURIComponent(value) + expires + "; path=/";
+  // }
+  // setCookie("brdcrmps_cat_slug",     "#{Category.find(@category.id).slug.force_encoding("UTF-8")}", 1);
+  // setCookie("brdcrmps_cat_title",    "#{Category.find(@category.id).title.force_encoding("UTF-8")}", 1);
+  // setCookie("brdcrmps_subcat_slug",  "nihil", 1);
+  // setCookie("brdcrmps_subcat_title", "nihil", 1);
+  
+:javascript
+  console.log('app/views/category/perekrestok.haml');

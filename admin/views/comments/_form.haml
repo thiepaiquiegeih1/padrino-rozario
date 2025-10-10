@@ -1,0 +1,78 @@
+-# coding: utf-8
+- error = @comment.errors.include?(:title)
+%fieldset.control-group{:class => error ? 'has-error' : ''}
+  =f.label :title, :class => 'control-label'
+  .controls
+    =f.text_field :title, :class => 'input-xlarge input-with-feedback', :autofocus => true
+    %span.help-inline=error ? f.error_message_on(:title, :class => 'text-error') : 'Заголовок'
+- error = @comment.errors.include?(:name)
+%fieldset.control-group{:class => error ? 'has-error' : ''}
+  =f.label :name, :class => 'control-label'
+  .controls
+    =f.text_field :name, :class => 'input-xlarge input-with-feedback', :autofocus => true
+    %span.help-inline=error ? f.error_message_on(:name, :class => 'text-error') : 'Имя'
+
+- error = @comment.errors.include?(:body)
+%fieldset.control-group{:class => error ? 'has-error' : ''}
+  =f.label :body, :class => 'control-label'
+  .controls
+    =f.text_area :body, :class => 'input-xlarge input-with-feedback ckeditor'
+    %span.help-inline=error ? f.error_message_on(:body, :class => 'text-error') : 'Текст'
+
+- lang=@lang.to_json
+- val=@comment.date.present? ? @comment.date.to_date.strftime("%d.%m.%Y") : ''
+%fieldset.control-group
+  =f.label "Число", :class => 'control-label'
+  #dates.container-fluid{style: "display: inline-block; margin-left: 15px; width: 300px;"}
+    %pre=val.present? ? val : "{{currDate}}"
+    .controls
+      %div
+        %vuejs-datepicker{name: "comment[date]", ":language" => lang, "format" => "dd.MM.yyyy", "placeholder" => "Выберите дату", "v-model" => "date" }
+
+- error = @comment.errors.include?(:rating)
+%fieldset.control-group{:class => error ? 'has-error' : ''}
+  =f.label "Рейтинг", :class => 'control-label'
+  .controls
+    =f.text_field :rating, type: "number", min: 1, max: 5, step: 0.5, :class => 'input-xlarge input-with-feedback'
+    %span.help-inline=error ? f.error_message_on(:rating, :class => 'text-error') : 'Рейтинг'
+
+- error = @comment.errors.include?(:order_eight_digit_id)
+%fieldset.control-group{:class => error ? 'has-error' : ''}
+  =f.label "Номер заказа", :class => 'control-label'
+  .controls
+    =f.text_field :order_eight_digit_id, type: "number", :class => 'input-xlarge input-with-feedback', placeholder: "8-значный номер заказа (необязательно)"
+    %span.help-inline=error ? f.error_message_on(:order_eight_digit_id, :class => 'text-error') : 'Номер заказа (необязательно)'
+    - if @comment.order_eight_digit_id.present?
+      %br
+      %small.text-info= "Заказ найден: #{@comment.order&.useraccount&.name || 'Данные заказа недоступны'}"
+
+.form-actions
+  =f.submit pat(:save), :class => 'btn btn-primary'
+  &nbsp;
+  =f.submit pat(:save_and_continue), :class => 'btn btn-info', :name => 'save_and_continue'
+  &nbsp;
+  =link_to pat(:cancel), url(:comments, :index), :class => 'btn'
+
+%script{:src => "https://unpkg.com/vuejs-datepicker"}
+:javascript
+  const app = new Vue({
+    el: '#dates',
+    components: {
+    	vuejsDatepicker
+    },
+    data: function(){
+      return{
+        date: ''
+      }
+    },
+    computed:{
+      currDate: function(){
+        var d = new Date(Date.parse(this.date));
+        var date = d.getDate() + "." + parseInt(d.getMonth() + 1)  + "."+ d.getFullYear();
+        return date
+      }
+    },
+    mounted: function(){
+      document.querySelectorAll("#dates input")[1].style.background = "#fff";
+    }
+  })

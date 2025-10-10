@@ -1,0 +1,28 @@
+<%=erb :'erbhf/header'%>
+
+<%
+  access = false
+  #current_account.methods
+  if current_account
+    if current_account.id == 171; access = true; end;
+  end
+%>
+
+<div style="height: 88px" class="hidden-xs hidden-sm"></div>
+
+<% if access %>
+
+<% if @post %>
+  <p>Are you sure?</p>
+  <form action="/smiles/<%= @post.id %>/" method="post">
+    <input type="hidden" name="_method" value="delete">
+    <input type="submit" value="Yes, Delete It!">
+    <a href="<%#="#{SITE_URL}"%>/smiles/<%= @post.id %>/">Cancel</a>
+  </form>
+<% else %>
+  <p>Post not found.</p>
+<% end %>
+
+<% end %>
+
+<%=erb :'erbhf/footer'%>

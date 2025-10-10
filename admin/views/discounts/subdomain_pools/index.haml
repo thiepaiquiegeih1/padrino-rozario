@@ -1,0 +1,24 @@
+- # encoding: utf-8
+=partial 'discounts/tabs', :locals => {:entity => :subdomain_pools, :action => :list}
+-form_tag url('discounts/subdomain_pools', :search), :method => :get, :class => 'form-horizontal' do
+  %fieldset.control-group
+    =text_field_tag :query, :class => 'search_field', :placeholder => 'поиск'
+
+.tabs-content
+  %table#list.table.table-striped.table-hover.table-condensed
+    %thead
+      %tr
+        %th.header= :id
+        %th.header= :name
+        %th.header.list-row-action-header
+
+    %tbody
+      -@subdomain_pools.each do |subdomain_pool|
+        %tr.list-row
+          %td.list-column=subdomain_pool.id
+          %td.list-column=subdomain_pool.name
+          %td.list-column.list-row-action
+            .list-row-action-wrapper
+              =link_to tag_icon(:edit), :href => url(:'discounts/subdomain_pools', :edit, :id => subdomain_pool.id), :rel => :tooltip, :title => "#{pat(:edit)} subdomain_pool", :class => 'list-row-action-wrapper-link'
+- if !@search
+  !=will_paginate @subdomain_pools

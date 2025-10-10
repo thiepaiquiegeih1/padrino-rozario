@@ -1,0 +1,124 @@
+<script src="https://unpkg.com/vue@2.5.17/dist/vue.min.js"></script>
+<script src="https://unpkg.com/vuetify@1.2.5/dist/vuetify.min.js"></script>
+<script src="https://unpkg.com/jquery"></script>
+<script src="https://unpkg.com/select2@4.0.3"></script>
+<link href="https://unpkg.com/select2@4.0.3/dist/css/select2.min.css" rel="stylesheet" />
+<%
+  # uri = URI('/json/cities2.json')
+  # params = { :limit => 10, :page => 3 }
+  # uri.query = URI.encode_www_form(params)
+  # res = Net::HTTP.get_response(uri)
+  # cities = JSON.parse(res.body) if res.is_a?(Net::HTTPSuccess)
+  # File.open("/var/www/rozarioflowers.ru/www/json/cities2.json", "r") { |file| cities = JSON.parse(file) }
+  file = File.read("/var/www/rozarioflowers.ru/www/json/cities2.json")
+  cities = JSON.parse(file)
+  item = {}
+  cities2 = []
+  cities.each_with_index { |x, i|
+    obj = Subdomain.find_by_city(x['name'])
+    cities2[i] = {}
+    cities2[i]['id'] = obj.nil? ? nil : obj.id
+    cities2[i]['text'] = x['name']
+    cities2[i]['subdomain'] = obj.nil? ? nil : obj.url
+  }
+%>
+<div id="el"></div>
+<!-- using string template here to work around HTML <option> placement restriction -->
+<script type="text/x-template" id="demo-template">
+  <div>
+    <p>Subdomain ID: {{ selected }}</p>
+    <select2 :options="options" v-model="selected">
+      <option disabled value="0">Select one</option>
+    </select2>
+  </div>
+</script>
+<script type="text/x-template" id="select2-template">
+  <select>
+    <slot></slot>
+  </select>
+</script>
+
+<script>
+
+  function get_host_info() {
+    var hostname = document.location.hostname.split('.');
+    var cookie = 'tldfind=' + new Date().getTime();
+    var domain = [];
+    var segment;
+
+    while (segment = hostname.pop()) {
+      domain.unshift(segment);
+      document.cookie = cookie + ';domain=.' + domain.join('.') + ';';
+      if (document.cookie.indexOf(cookie) > -1) {
+        document.cookie = cookie + ';domain=.' + domain.join('.') + ';expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+        break;
+      }
+    }
+
+    return {
+      subdomain: hostname.join('.') || null,
+      domain: domain.join('.') || null,
+      tld: domain.slice(1).join('.') || null
+    };
+  };
+
+  var info = get_host_info(), // console.log(info.tld, info.domain, info.subdomain);
+      res = <%=cities2.to_json%>
+  for (var key in res) { if (res[key]['subdomain'] == info.subdomain.split('.')[0]) {
+    var current_city_id = Number(res[key]['id']) 
+    console.log(current_city_id)
+    console.log(info.subdomain.split('.')[0])
+  }}
+
+  var cndnt = true
+
+  Vue.component('select2', {
+    props: ['options', 'value'],
+    template: '#select2-template',
+    mounted: function () {
+      var vm = this
+      $(this.$el)
+        .val(this.value)
+        .select2({ data: this.options }) // init select2
+        .on('change', function () { vm.$emit('input', this.value) }) // emit event on change.
+      vm.$emit('input', current_city_id)
+    },
+    watch: {
+      value: function (value) {
+        // update value
+        $(this.$el).val(value).trigger('change')
+        if (value!=current_city_id) {
+          for (var key in res) { if (res[key]['id'] == value) {
+            var sd = res[key]['subdomain']
+            if (info.subdomain!=null) {
+              if (info.subdomain.indexOf('staging')!=-1) { // работаем на тестовой среде:
+                location.href = 'https://'+sd+'.staging.'+info.domain+location.pathname;
+              } else { // работаем на основном сайте (поддомене):
+                location.href = 'https://'+sd+'.'+info.domain+'/';
+              }
+            } else { // работаем на основном сайте:
+              location.href = 'https://'+sd+'.'+info.domain+location.pathname;
+            }
+          }}
+        }
+        
+      },
+      options: function (options) {
+        // update options
+        $(this.$el).select2({ data: options })
+      }
+    },
+    destroyed: function () {
+      $(this.$el).off().select2('destroy')
+    }
+  })
+
+  var vm = new Vue({
+    el: '#el',
+    template: '#demo-template',
+    data: {
+      selected: 0,
+      options: res
+    }
+  })
+</script>

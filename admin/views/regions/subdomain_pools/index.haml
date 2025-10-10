@@ -1,0 +1,58 @@
+- # encoding: utf-8
+=partial 'regions/tabs', :locals => {:entity => :subdomain_pools, :action => :list}
+-form_tag url('regions/subdomain_pools', :search), :method => :get, :class => 'form-horizontal' do
+  %fieldset.control-group
+    =text_field_tag :query, :class => 'search_field', :placeholder => 'поиск'
+
+.tabs-content
+  %table#list.table.table-striped.table-hover.table-condensed
+    %thead
+      %tr
+        %th.header.list-menu
+          .dropdown
+            %a.list-menu-toggle.dropdown-toggle{:href => '#', :'data-toggle' => :dropdown}
+              =tag_icon :magic
+              %span.caret
+            %ul.list-menu.dropdown-menu{:role => :menu}
+              %li.list-menu-wrapper=link_to tag_icon(:check, pat(:select_all)), '#', :id => 'select-all', :class => 'list-menu-link'
+              %li.list-menu-wrapper.list-menu-wrapper-disabled
+                =link_to tag_icon(:'check-empty', pat(:deselect_all)), '#', :id => 'deselect-all', :class => 'list-menu-link list-menu-link-disabled'
+              %li.list-menu-divider.divider
+              %li.list-menu-wrapper.list-menu-wrapper-disabled
+                =link_to tag_icon(:trash, pat(:delete_selected)), '#', :id => 'delete-selected', :class => 'list-menu-link list-menu-link-disabled'
+                .list-menu-popover-delete-selected.popover.right
+                  .arrow
+                  %h3.popover-title=pat(:delete_selected_title)
+                  .popover-content
+                    -form_tag url(:'regions/subdomain_pools', :destroy_many), :method => :delete do
+                      =hidden_field_tag :subdomain_pool_ids, :'data-delete-many-ids' => true
+                      =submit_tag pat(:delete), :class =>'list-menu-popover-delete-selected-btn btn btn-danger btn-small'
+                      .btn.btn-small.cancel=pat(:cancel)
+        %th.header= :id
+        %th.header= :name
+        %th.header= :created_at
+        %th.header= :updated_at
+        %th.header.list-row-action-header
+
+    %tbody
+      -@subdomain_pools.each do |subdomain_pool|
+        %tr.list-row
+          %td.list-column.list-selectable
+            =check_box_tag 'subdomain_pool_ids[]', :value => subdomain_pool.id, :class => 'list-selectable-checkbox'
+          %td.list-column=subdomain_pool.id
+          %td.list-column=subdomain_pool.name
+          %td.list-column=time_ago_in_words subdomain_pool.created_at
+          %td.list-column=time_ago_in_words subdomain_pool.updated_at
+          %td.list-column.list-row-action
+            .list-row-action-wrapper
+              =link_to tag_icon(:edit), :href => url(:'regions/subdomain_pools', :edit, :id => subdomain_pool.id), :rel => :tooltip, :title => "#{pat(:edit)} subdomain_pool", :class => 'list-row-action-wrapper-link'
+              =link_to tag_icon(:trash), :rel => :tooltip, :title => "#{pat(:delete)} subdomain_pool", :class => 'list-row-action-delete-one list-row-action-wrapper-link'
+              .popover.list-row-action-popover-delete-one.left
+                .arrow
+                %h3.popover-title=pat(:delete, :model => "subdomain_pool")
+                .popover-content
+                  -form_tag url(:'regions/subdomain_pools', :destroy, :id => subdomain_pool.id), :method => :delete do
+                    =submit_tag pat(:delete), :class =>'list-row-action-popover-delete-one-btn btn btn-danger btn-small'
+                    .btn.btn-small.cancel=pat(:cancel)
+- if !@search
+  !=will_paginate @subdomain_pools

@@ -1,0 +1,111 @@
+- # encoding: utf-8
+
+=partial 'seo/tabs', :locals => {:entity => :script_execution, :action => :list}
+
+:plain
+  <script>
+    $(function() {
+      $('.selectpicker').selectpicker();
+      $('.selectpicker').selectpicker('val', [#{@pc_ids}]);
+      $('.selectpicker').selectpicker('render');
+      $('.selectpicker2').selectpicker();
+      $('.selectpicker2').selectpicker('val', [#{@pt_ids}]);
+      $('.selectpicker2').selectpicker('render');
+      $('.selectpicker3').selectpicker();
+      $('.selectpicker3').selectpicker('val', [#{@pct_ids}]);
+      $('.selectpicker3').selectpicker('render');
+      $('.selectpicker4').selectpicker();
+      $('.selectpicker4').selectpicker('val', [#{@tgs_ids}]);
+      $('.selectpicker4').selectpicker('render');
+      $('.selectpicker5').selectpicker();
+      $('.selectpicker5').selectpicker('val', [#{@tgs_ids}]);
+      $('.selectpicker5').selectpicker('render');
+      $('.selectpicker6').selectpicker();
+      $('.selectpicker6').selectpicker('val', [#{@tgs_ids}]);
+      $('.selectpicker6').selectpicker('render');
+      window.complects_preloaded = #{@product_complects};
+      window.tags_preloaded = #{@tag_complects};
+    });
+  </script>
+-error = false
+.tabs-content
+  =form_tag('script_execution/execute', method: 'POST', class: 'form-horizontal') do |f|
+    %fieldset.control-group
+      =label_tag 'Скрипт', :class => 'control-label'
+      .controls
+        =select_tag(:script_id, :options => SeoScript.all.map { |script| [script.title, script.id] },  class: 'input-xlarge input-with-feedback')
+    %fieldset.control-group
+      =label_tag 'Выполнить для', :class => 'control-label'
+      .controls
+        =select_tag(:page_type, :options => [['Товаров', 'products'], ['Страниц', 'pages'], ['Категорий', 'categories'], ['Поддоменов', 'subdomains']], include_blank: true, class: 'input-xlarge input-with-feedback seo-script-target-select')
+        -#=select_tag(:target_type, :options => [['Title', 'title'], ['Description', 'description'], ['Keywords', 'keywords']], :selected => 'green1', class: 'input-xlarge input-with-feedback')
+        -#%span.help-inline=error ? f.error_message_on(:comment, :class => 'text-error') : 'Комментарий'
+
+    .products-spoiler{style: 'display: none;'}
+      %fieldset.control-group
+        =label_tag 'Применить к товарам', :class => 'control-label'
+        .controls
+          =select_tag(:products_list, options: [['Всем', 'all'], ['Отдельным', 'list']], class: 'products-filter-spoiler-select')
+          %span.help-inline=error ? f.error_message_on(:complect_id, :class => 'text-error') : 'Применить к'
+      .products-filter-spoiler{style: 'display:none;'}
+        %fieldset.control-group
+          =label_tag :category_id, :class => 'control-label'
+          .controls
+            =select_tag(:category_id, :collection => @categories, :fields => [:title, :id], :class => 'selectpicker input-xlarge input-with-feedback', :autofocus => true, :multiple => true, :data => {:live_search => "true"})
+            %span.help-inline=error ? f.error_message_on(:complect_id, :class => 'text-error') : 'Категория'
+            -#%span.help-inline=error ? f.error_message_on(:category_id, :class => 'text-error') : 'Категория'
+        %fieldset.control-group{:class => error ? 'has-error' : ''}
+          =label_tag :complect_id, :class => 'control-label'
+          .controls
+            =select_tag(:complect_id, :collection => @complects, :fields => [:title, :id], :class => 'selectpicker2 input-xlarge input-with-feedback', :autofocus => true, :multiple => true, :data => {:live_search => "true"})
+            %span.help-inline=error ? f.error_message_on(:complect_id, :class => 'text-error') : 'Комплект'
+        -#%fieldset.control-group{:class => error ? 'has-error' : ''}
+          =label_tag :product_id, :class => 'control-label'
+          .controls
+            =select_tag(:product_id, :collection => @products, :fields => [:title, :id], :class => 'selectpicker3 input-xlarge input-with-feedback', :autofocus => true, :multiple => true, :data => {:live_search => "true"})
+            %span.help-inline=error ? f.error_message_on(:complect_id, :class => 'text-error') : 'Товар'
+        %fieldset.control-group{:class => error ? 'has-error' : ''}
+          =label_tag :tag_id, :class => 'control-label'
+          .controls
+            =select_tag(:tag_id, :collection => @tags, :fields => [:title, :id], :class => 'selectpicker4 input-xlarge input-with-feedback', :autofocus => true, :multiple => true, :data => {:live_search => "true"})
+            %span.help-inline=error ? f.error_message_on(:complect_id, :class => 'text-error') : 'Тэг'
+
+    .pages-spoiler{style: 'display: none;'}
+      %fieldset.control-group
+        =label_tag 'Применить к страницам', :class => 'control-label'
+        .controls
+          =select_tag(:pages_list, options: [['Всем', 'all'], ['Отдельным', 'list']], class: 'pages-filter-spoiler-select')
+          %span.help-inline=error ? f.error_message_on(:complect_id, :class => 'text-error') : 'Применить к'
+      .pages-filter-spoiler{style: 'display:none;'}
+        %fieldset.control-group
+          =label_tag :page, :class => 'control-label'
+          .controls
+            =select_tag(:page_id, options: @pages.map{|p| ["#{p.uri} - #{p.header}", p.id]}, :class => 'selectpicker5 input-xlarge input-with-feedback', :autofocus => true, :multiple => true, :data => {:live_search => "true"})
+            %span.help-inline=error ? f.error_message_on(:page_id, :class => 'text-error') : 'Страницы'
+    -#%span.help-inline=error ? f.error_message_on(:category_id, :class => 'text-error') : 'Категория'
+    .categories-spoiler{style: 'display: none;'}
+      %fieldset.control-group
+        =label_tag 'Применить к категориям', :class => 'control-label'
+        .controls
+          =select_tag(:categories_list, options: [['Всем', 'all'], ['Отдельным', 'list']], class: 'categories-filter-spoiler-select')
+          %span.help-inline=error ? f.error_message_on(:complect_id, :class => 'text-error') : 'Применить к'
+      .categories-filter-spoiler{style: 'display:none;'}
+        %fieldset.control-group
+          =label_tag :category, :class => 'control-label'
+          .controls
+            =select_tag(:category_id, :options => @categories.map{|p| ["#{p.title}", p.id]}, :class => 'selectpicker6 input-xlarge input-with-feedback', :autofocus => true, :multiple => true, :data => {:live_search => "true"})
+            %span.help-inline=error ? f.error_message_on(:complect_id, :class => 'text-error') : 'Категории'
+    .subdomains-spoiler{style: 'display: none;'}
+      %fieldset.control-group
+        =label_tag 'Применить к поддоменам', :class => 'control-label'
+        .controls
+          =select_tag(:subdomains_list, options: [['Всем', 'all'], ['Отдельным', 'list']], class: 'subdomains-filter-spoiler-select')
+          %span.help-inline=error ? f.error_message_on(:complect_id, :class => 'text-error') : 'Применить к'
+      .subdomains-filter-spoiler{style: 'display:none;'}
+        %fieldset.control-group
+          =label_tag :subdomain, :class => 'control-label'
+          .controls
+            =select_tag(:subdomain_id, :options => @subdomains.map{|p| ["#{p.url} - #{p.city} - #{p.suffix}", p.id]}, :class => 'selectpicker6 input-xlarge input-with-feedback', :autofocus => true, :multiple => true, :data => {:live_search => "true"})
+            %span.help-inline=error ? f.error_message_on(:complect_id, :class => 'text-error') : 'Поддомены'
+    .form-actions
+      =submit_tag pat(:run), :class => 'btn btn-danger run-seo-script'

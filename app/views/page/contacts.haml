@@ -1,0 +1,49 @@
+- # encoding: utf-8
+
+- @title= @page.title
+- contact_page = Subdomain.contact_page_params(@subdomain)
+%div.hidden-xs.hidden-sm{style:"height: 70px"}
+.page
+  /%h2{style:"margin-top:0"}=contact_page[:header]
+  /.body!= contact_page[:body]
+  .body!= erb :'/page/contacts_body'
+
+:plain
+  <style>
+    @media only screen and (max-width: 992px) {.delivery-lg {display: none !important;}.page > h2 {margin: 24px 0 !important;}}
+    .subscr { display: none; }
+  </style>
+  <script>
+    function get_host_info() {
+      var hostname = document.location.hostname.split('.');
+      var cookie = 'tldfind=' + new Date().getTime();
+      var domain = [];
+      var segment;
+
+      while (segment = hostname.pop()) {
+        domain.unshift(segment);
+        document.cookie = cookie + ';domain=.' + domain.join('.') + ';';
+        if (document.cookie.indexOf(cookie) > -1) {
+          document.cookie = cookie + ';domain=.' + domain.join('.') + ';expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+          break;
+        }
+      }
+
+      return {
+        subdomain: hostname.join('.') || null,
+        domain: domain.join('.') || null,
+        tld: domain.slice(1).join('.') || null
+      };
+    };
+    if (info.subdomain!=null) {
+      if (info.subdomain.indexOf('staging')!=-1) { // работаем на тестовой среде:
+        if (info.subdomain=='staging') { q = null; }
+        else { q = info.subdomain.split('.')[0]; }
+      } else { // работаем на основном сайте (поддомене):
+      	console.log('helooooooooo')
+        $('.body h3:eq(1) font font font').text('Широкий ассортимент корзин с цветами')
+      }
+    } else { // работаем на основном сайте:
+      q = info.subdomain;
+    }
+  </script>

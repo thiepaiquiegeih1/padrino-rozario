@@ -1,0 +1,26 @@
+- # encoding: utf-8
+
+=partial 'seo/tabs', :locals => {:entity => :script_execution_history, :action => :show}
+
+.tabs-content
+
+  %fieldset.control-group
+    =label_tag :id, :class => 'control-label'
+    .controls
+      %span
+        =@execution_history.id
+  %fieldset.control-group
+    =label_tag :status, :class => 'control-label'
+    .controls
+      %span
+        =@execution_history.status
+  %fieldset.control-group
+    =label_tag :comment, :class => 'control-label'
+    .controls
+      %span
+        =@execution_history.comment
+
+  %fieldset.control-group
+    =label_tag :log, :class => 'control-label'
+    .controls
+      =@execution_history.log.split("\n").join('<br>').html_safe

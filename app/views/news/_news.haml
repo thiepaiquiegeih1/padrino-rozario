@@ -1,0 +1,16 @@
+%article.clearfix
+  .date= # news.created_at.strftime("%d.%m.%Y")
+  -if news.slug.present?
+    .image
+      =link_to image_tag(news.image, :alt => news.alt), abs_url_for(:news, :index, :slug => news.slug)
+    / .ann!= news.announce
+    .title= link_to news.title, abs_url_for(:news, :index, :slug => news.slug)
+  -else
+    .image
+      =link_to image_tag(news.image, :alt => news.alt), abs_url_for(:news, :index, :slug => news)
+    / .ann!= news.announce
+    .title= link_to news.title, abs_url_for(:news, :index, :slug => news)
+  - stuff = news.body.gsub(/<\/?[^>]*>/, "").split('&nbsp;').join()
+  - if stuff.include?'.'; stout = stuff.split('.')[0].chomp+'. '+stuff.split('.')[1].chomp+'.'; if stout.include?'?'; stout = stout.split('?')[0].chomp+'? '+stout.split('?')[1].chomp+'.'; end; if stout.include?'!'; stout = stout.split('!')[0].chomp+'! '+stout.split('!')[1].chomp+'.'; end; elsif stuff.include?'?'; stout = stuff.split('?')[0].chomp+'.'; elsif stuff.include?'!'; stout = stuff.split('!')[0].chomp+'.'; else; stout = stuff; end;
+  - # stout = stuff
+  .ann= stout+'..' #  if news.announce?; news.announce; else; stout; end;

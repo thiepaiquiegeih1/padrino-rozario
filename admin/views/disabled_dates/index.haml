@@ -1,0 +1,66 @@
+- # encoding: utf-8
+-form_tag url(:disabled_dates, :search), :method => :get, :class => 'form-horizontal' do
+  %fieldset.control-group
+    =select_tag :type, :options => DisabledDate.attribute_names, :selected => 'id', :style => "width:20%"
+    =text_field_tag :query, :class => 'search_field', :placeholder => 'поиск', :style => "width:70%"
+    =submit_tag pat('Поиск'), :class => 'btn btn-primary'
+%ul.nav.nav-tabs
+  %li.active=link_to tag_icon(:list, pat(:list)), url(:disabled_dates, :index)
+  %li=link_to tag_icon(:plus, pat(:new)), url(:disabled_dates, :new)
+
+.tabs-content
+  %table#list.table.table-striped.table-hover.table-condensed
+    %thead
+      %tr
+        %th.header.list-menu
+          .dropdown
+            %a.list-menu-toggle.dropdown-toggle{:href => '#', :'data-toggle' => :dropdown}
+              =tag_icon :magic
+              %span.caret
+            %ul.list-menu.dropdown-menu{:role => :menu}
+              %li.list-menu-wrapper=link_to tag_icon(:check, pat(:select_all)), '#', :id => 'select-all', :class => 'list-menu-link'
+              %li.list-menu-wrapper.list-menu-wrapper-disabled
+                =link_to tag_icon(:'check-empty', pat(:deselect_all)), '#', :id => 'deselect-all', :class => 'list-menu-link list-menu-link-disabled'
+              %li.list-menu-divider.divider
+              %li.list-menu-wrapper.list-menu-wrapper-disabled
+                =link_to tag_icon(:trash, pat(:delete_selected)), '#', :id => 'delete-selected', :class => 'list-menu-link list-menu-link-disabled'
+                .list-menu-popover-delete-selected.popover.right
+                  .arrow
+                  %h3.popover-title=pat(:delete_selected_title)
+                  .popover-content
+                    -form_tag url(:disabled_dates, :destroy_many), :method => :delete do
+                      =hidden_field_tag :disabled_date_ids, :'data-delete-many-ids' => true
+                      =submit_tag pat(:delete), :class =>'list-menu-popover-delete-selected-btn btn btn-danger btn-small'
+                      .btn.btn-small.cancel=pat(:cancel)
+        %th.header= :id
+        %th.header Название
+        %th.header Число
+        %th.header Статус
+        %th.header Исключить самомывоз?
+        %th.header Только самовывоз?
+        %th.header.list-row-action-header
+
+    %tbody
+      -if @disabled_date.present?
+        -@disabled_date.each do |disabled_date|
+          %tr.list-row
+            %td.list-column.list-selectable
+              =check_box_tag 'disabled_date_ids[]', :value => disabled_date.id, :class => 'list-selectable-checkbox'
+            %td.list-column=disabled_date.id
+            %td.list-column=disabled_date.name
+            %td.list-column=disabled_date.date.to_date.strftime("%d.%m.%Y")
+            %td.list-column=disabled_date.enabled ? 'Вкл.' : 'Выкл.'
+            %td.list-column=disabled_date.except_delivery ? 'Да' : 'Нет'
+            %td.list-column=disabled_date.only_delivery ? 'Да' : 'Нет'
+            %td.list-column.list-row-action
+              .list-row-action-wrapper
+                =link_to tag_icon(:edit), :href => url(:disabled_dates, :edit, :id => disabled_date.id), :rel => :tooltip, :title => "#{pat(:edit)} disabled_date", :class => 'list-row-action-wrapper-link'
+                =link_to tag_icon(:trash), :rel => :tooltip, :title => "#{pat(:delete)} disabled_date", :class => 'list-row-action-delete-one list-row-action-wrapper-link'
+                .popover.list-row-action-popover-delete-one.left
+                  .arrow
+                  %h3.popover-title=pat(:delete, :model => "disabled_date")
+                  .popover-content
+                    -form_tag url(:disabled_dates, :destroy, :id => disabled_date.id), :method => :delete do
+                      =submit_tag pat(:delete), :class =>'list-row-action-popover-delete-one-btn btn btn-danger btn-small'
+                      .btn.btn-small.cancel=pat(:cancel)
+!=will_paginate @disabled_date

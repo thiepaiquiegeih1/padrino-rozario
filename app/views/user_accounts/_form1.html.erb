@@ -1,0 +1,67 @@
+<form method="post" class="form register" name="registerForm">
+  <fieldset class="control-group">
+    <label for="user_account_Ф.И.О." class="control-label">Ф.И.О.: </label>
+    <div class="controls">
+      <input type="text" name="user_account[surname]" id="user_account_surname" autofocus="autofocus" class="input-xlarge input-with-feedback" placeholder="Иванов Иван Иванович" ng-model="formData.surname" required>
+      <span class="help-inline"></span>
+    </div>
+  </fieldset>
+  <fieldset class="control-group">
+    <label for="user_account_Эл. почта" class="control-label">Эл. почта: </label>
+    <div class="controls">
+      <input type="email" id="user_account_email" class="input-xlarge input-with-feedback" name="user_account[email]" placeholder="user@yandex.ru" ng-model="formData.email" required>
+      <span class="help-inline"></span>
+    </div>
+  </fieldset>
+  <fieldset class="control-group">
+    <label for="user_account_Контактный телефон" class="control-label">Контактный телефон: </label>
+    <div class="controls">
+      <input type="text" name="user_account[tel]" id="user_account_tel" class="input-xlarge input-with-feedback" placeholder="+7-921-777-88-99" ng-model="formData.tel" ng-pattern="/^(\+|\d)(\d|-){1,}$/" pattern="^(\+|\d)(\d|-){1,}$" title="Номер телефона может состоять только из цифр" required>
+      <span class="help-inline"></span>
+    </div>
+  </fieldset>
+  <fieldset class="control-group">
+    <label for="user_account_Номер дисконтной карты" class="control-label">Номер дисконтной карты:<br>
+      <span class="small">(если имеется)</span></label>
+    <div class="controls">
+      <input type="text" name="user_account[discount_code1]" ng-pattern="/^\d{1,}$/" pattern="^\d{1,}$" id="user_account_discount_code1" value="" class="input-xlarge input-with-feedback ilb big" maxlength="5" placeholder="55555" title="Номер дисконтной карты может состоять только из цифр" ng-model="formData.discount_code1">
+      <input type="text" name="user_account[discount_code2]" id="user_account_discount_code2" value="" class="input-xlarge input-with-feedback ilb" maxlength="4" placeholder="4444" ng-pattern="/^\d{1,}$/" pattern="^\d{1,}$" ng-model="formData.discount_code2" title="Номер дисконтной карты может состоять только из цифр">
+      <input type="text" name="user_account[discount_code3]" id="user_account_discount_code3" value="" class="input-xlarge input-with-feedback ilb" maxlength="4" placeholder="3333" ng-pattern="/^\d{1,}$/" pattern="^\d{1,}$" ng-model="formData.discount_code3" title="Номер дисконтной карты может состоять только из цифр">
+      <span class="help-inline"></span>
+    </div>
+  </fieldset>
+  <fieldset class="control-group">
+    <label for="user_account_Пароль" class="control-label">Пароль: </label>
+    <div class="controls">
+      <input type="password" name="user_account[password]" id="user_account_password" placeholder="******"  class="input-xlarge input-with-feedback" ng-model="formData.password" required>
+      <span class="help-inline"></span>
+    </div>
+  </fieldset>
+  <fieldset class="control-group">
+    <label for="user_account_Подтвердите пароль" class="control-label">Подтвердите пароль: </label>
+    <div class="controls">
+      <input type="password" name="user_account[password_confirmation]" id="user_account_password_confirmation"  class="input-xlarge input-with-feedback" placeholder="******" ng-model="formData.password_confirmation" required>
+      <span class="help-inline"></span>
+    </div>
+  </fieldset>
+  <fieldset style="margin-bottom:8px;" class="control-group">
+    <div class="controls">
+      <input type="checkbox" value="1" name="agree" style="position:relative;top:2px;" checked="checked" id="agree">
+      <label style="display:inline;font-weight:normal;font-size:14px;" for="agree">Нажимая кнопку «Продолжить», я подтверждаю свою дееспособность, даю согласие на обработку моих персональных данных</label>
+      <a href="/page/policy" target="_blank">(подробнее)</a>
+    </div>
+  </fieldset>
+  <div class="form-actions">
+    <a class="btn btn-primary pull-right" ng-click="loginFormBack()">Назад</a>
+    <button type="submit" class="btn btn-primary" ng-click="signupFormSubmit(registerForm.$valid)">Далее</button>
+</div>
+
+</form>
+<script>
+  $("form.form.register").on("submit", function(e) {
+    if ($("input#agree").is(":checked") == false) {
+      alert("Для регистрации необходимо согласитсья с условиями");
+      e.preventDefault();
+    }
+  });
+</script>

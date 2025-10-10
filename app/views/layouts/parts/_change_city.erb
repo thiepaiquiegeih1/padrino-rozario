@@ -1,0 +1,105 @@
+<div>
+  <div id="el"></div>
+
+  <script type="text/x-template" id="d">
+
+ 
+  <div class="row" id="my">
+    <div class="col-md-8 content" style="margin-top:50px"> 
+
+      
+    <ul >
+      <li v-for="i in cl_u">
+      <div>
+        <img  v-if="i.id == p" :src="i.rc" width="100%" >
+        </div>
+      </div>
+      </li>
+    </ul>
+
+<div class="col-md-4 content" style="margin-top:50px">
+
+    <ul>
+    <li v-for="t in cl_t">
+    <input  type="radio" name="t" v-bind:value="t.id" v-model="p" > 
+    <span> {{ t.n }} {{ t.pr }} </span>
+    </li>
+    </ul>
+</div>
+</div>
+
+  </script>
+
+  <script>
+
+    Vue.component('my', MyC);
+
+    var MyC = Vue.extend({
+      props: ['options', 'value',  'p_h', 'p_h2', 'p_h3','cl_u', 'cl_t'],
+      template: '#select2-template',
+      mounted: function () {
+        var vm = this
+        $(this.$el)
+          .val(this.value)
+          .select2({ data: this.options }) 
+          .on('change', function () { vm.$emit('input', this.value) }) 
+        vm.$emit('input', current_city_id)
+      },
+      watch: {
+        value: function (value) {
+          $(this.$el).val(value).trigger('change')
+          if (value!=current_city_id) {
+            for (var key in res) { if (res[key]['id'] == value) {
+              var sd = res[key]['subdomain']
+              if (info.subdomain!=null) {
+                if (info.subdomain.indexOf('staging')!=-1) { 
+                  location.href = 'https://'+sd+'.staging.'+info.domain+location.pathname;
+                } else { 
+                  location.href = 'https://'+sd+'.'+info.domain+'/';
+                }
+              } else { 
+                location.href = 'https://'+sd+'.'+info.domain+location.pathname;
+              }
+            }}
+          }
+          
+        },
+        options: function (options) {
+          // update options
+          $(this.$el).select2({ data: options })
+        }
+      },
+      destroyed: function () {
+        $(this.$el).off().select2('destroy')
+      }
+    })
+
+
+    var vm = new Vue({
+      el: '#el',
+      template: '#d',
+      data: {
+        p: 1,
+        cl_u: [
+          {
+            id: 2,
+            rc: "<%=@st_url.to_s%>"
+          }
+        ],
+        cl_t: [
+          {
+            id: '2',
+            n: 'Стандартный',
+            pr: <%=@st_price%>
+          }
+        ],
+        p_id: <%=@product.id%>,
+        p_h2: <%=@st_price.to_s%>,
+        sel: 1,
+        selected: 0,
+
+      }
+      
+    })
+  </script>
+</div>

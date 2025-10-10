@@ -1,0 +1,9 @@
+- # encoding: utf-8
+%ul.nav.nav-tabs
+  %li=link_to tag_icon(:list, pat(:list)), url(:slideshows, :index)
+  %li=link_to tag_icon(:plus, pat(:new)), url(:slideshows, :new)
+  %li.active=link_to tag_icon(:edit, pat(:edit)), url(:slideshows, :edit, :id => @slideshow.id)
+
+.tabs-content
+  -form_for :slideshow, url(:slideshows, :update, :id => @slideshow.id), :method => :put, multipart: true, :class => 'form-horizontal' do |f|
+    =partial 'slideshows/form', :locals => { :f => f }

@@ -1,0 +1,249 @@
+﻿<!DOCTYPE html><html><head>
+  <meta charset="utf-8" />
+  <title>test</title>
+  <!-- <script src="//ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script> -->
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <%#=javascript_include_tag'//rawgit.com/kawanet/msgpack-lite/master/dist/msgpack.min.js'%>
+  <%#<script src="https://unpkg.com/vue@2.5.17/dist/vue.min.js"></script>%>
+  <%#<script src="https://unpkg.com/vuetify@1.2.5/dist/vuetify.min.js"></script>%>
+  <%#<script src="https://unpkg.com/select2@4.0.3"></script>%>
+  <%#=javascript_include_tag'test'%>
+  <%#=stylesheet_link_tag'test'%>
+
+  <!-- see also: http://simplegrid.io/ -->
+  <%=stylesheet_link_tag'/stylesheets/grid/simple-grid.min.css'%>
+  <%#=stylesheet_link_tag'//cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css'%>
+  <%#=stylesheet_link_tag'//unpkg.com/select2@4.0.3/dist/css/select2.min.css'%>
+
+  <style type="text/css">
+    body { background: url('/images/horizon-wide.jpg'); background-size: cover; background-attachment: fixed; }
+    * { color: #FFF; }
+    button { color: #000; cursor: pointer; }
+    main { margin: 92px auto 0; max-width: 1280px; min-height: 600px; padding: 24px; background: rgba(0,0,0,0.75); color: #FFF; border-radius: 12px; }
+    main section { margin-bottom: 24px; padding: 24px; border: 1px solid #FFF; font-family: monospace; }
+    h1 { color: #FFF; margin: 0; }
+    table { width: 100%; /* border-collapse: collapse; */ text-align: center; color: #FFF; }
+    table caption { padding: 24px; font-size: 24px; font-weight: 24px; color: #FFF; }
+    table th { color: yellow; }
+    table th, table td { padding: 8px; }
+    table tr               { background: rgba(0,0,0,0.4); color: #FFF; }
+    table tr:nth-child(2n) { background: rgba(0,0,0,0.3); }
+    table tr.main { background: rgba(255,0,0,0.5); }
+    .cmplct_hdr { text-align: left; }
+    .round-src { display: none; }
+    .dependent { text-decoration: underline; cursor: pointer; }
+    .select2-container--default .select2-results__option--highlighted[aria-selected] { background: rgba(255,0,0,0.5) !important; }
+    .select2-results__option { background: rgba(0,0,0,0.25) !important; }
+    .select2-dropdown { background: none !important; }
+    .select2-search__field { background: rgba(0,0,0,0.25) !important; }
+    .select2-container--default .select2-selection--single { background: rgba(0,0,0,0.25) !important; }
+  </style><script type="text/javascript">
+    $(function() {
+      $('.dependent').on('click', function() { alert("This price is not set in the database, it is obtained by calculation from the base price:\r\r\n\nDP1290 = price (base)\r\nDP1990 = DP1290 + 20%\r\nDP2890 = DP1990 + 45%\r\nDP3790 = DP1990 + 80%") })
+    });
+  </script>
+</head><body class="animated fadeIn">
+
+<main class="animated bounceInDown">
+
+  <section>
+
+    <%
+      prdct = Product.find_by_id(@id)
+      prdct_cmplct_main = ProductComplect.find_by_complect_id(prdct.default_price)
+
+      dpids = [1290,1990,2890,3790]
+
+      @params.each { |x| %><%#=x%><% }
+
+    %>
+
+    <h1 align="center"><%=prdct.header%></h1> 
+
+    <div class="row">
+      <div class="col-7">
+        <table>
+          <caption>Discount Pools</caption>
+          <thead><tr><th></th><th>1290</th><th>1990</th><th>2890</th><th>3790</th></tr></thead>
+          <tbody>
+            <% ProductComplect.where(product_id: @id).order(created_at: :desc).each { | cmplct | %>
+              <%if cmplct.complect_id==prdct.default_price%>
+                <tr class="main">
+                  <td class="cmplct_hdr"><%=cmplct.header%></td>
+                  <% dpids.each { |dpid| %>
+                    <td>
+                      <span class="round-dst <%=if !cmplct.chk_price(dpid); 'dependent'; end; %>"><%=prdct.get_price(dpid, true)%></span>
+                      <span class="round-src <%=if !cmplct.chk_price(dpid); 'dependent'; end; %>"><%=prdct.get_price(dpid, false)%></span>
+                    </td>
+                  <% } %>
+                </tr>
+              <% else %>
+                <tr>
+                  <td class="cmplct_hdr"><%=cmplct.header%></td>
+                  <% dpids.each { |dpid| %>
+                    <td>
+                      <span class="round-dst <%=if !cmplct.chk_price(dpid); 'dependent'; end; %>"><%=prdct.get_cmplct_price(cmplct.id, dpid, true)%></span>
+                      <span class="round-src <%=if !cmplct.chk_price(dpid); 'dependent'; end; %>"><%=prdct.get_cmplct_price(cmplct.id, dpid, false)%></span>
+                    </td>
+                  <% } %>
+                </tr>
+              <% end %>
+            <% } %>
+          </tbody>
+        </table>
+      </div>
+      <div class="col-5">
+        <table>
+          <caption>dsc.rb</caption>
+          <thead><tr><th>Subdomain</th><th>Discount Object</th><th>Zero Product</th></tr></thead>
+          <tbody>
+            <% @dsc.each { | sbdmn | %>
+              <% zero_product = sbdmn[1][0] ? sbdmn[1][0] : 'empty' %>
+              <% if sbdmn[1].include?(@id) %>
+                <tr>
+                  <td><%=sbdmn[0]%></td>
+                  <td><%=sbdmn[1][@id]%></td>
+                  <td><%=zero_product%></td>
+                </tr>
+              <% elsif (!sbdmn[1].include?(@id)&&sbdmn[1][0]) %>
+                <tr>
+                  <td><%=sbdmn[0]%></td>
+                  <td>empty</td>
+                  <td><%=zero_product%></td>
+                </tr>
+              <% end %>
+            <% } %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+  <section style="text-align: center">
+    <div class="row">
+      <div class="col-6">
+        <section>
+          <%
+            # uri = URI('/json/cities2.json')
+            # params = { :limit => 10, :page => 3 }
+            # uri.query = URI.encode_www_form(params)
+            # res = Net::HTTP.get_response(uri)
+            # cities = JSON.parse(res.body) if res.is_a?(Net::HTTPSuccess)
+            # File.open("/var/www/rozarioflowers.ru/www/json/cities2.json", "r") { |file| cities = JSON.parse(file) }
+            file = File.read("/var/www/rozarioflowers.ru/www/json/cities2.json")
+            cities = JSON.parse(file)
+            item = {}
+            cities2 = []
+            cities.each_with_index { |x, i|
+              obj = Subdomain.find_by_city(x['name'])
+              cities2[i] = {}
+              cities2[i]['id'] = obj.nil? ? nil : obj.id
+              cities2[i]['text'] = x['name']
+              cities2[i]['subdomain'] = obj.nil? ? nil : obj.url
+            }
+          %>
+          <div id="el"></div>
+          <!-- using string template here to work around HTML <option> placement restriction -->
+          <script type="text/x-template" id="demo-template">
+            <div>
+              <p>Subdomain ID: {{ selected }}</p>
+              <select2 :options="options" v-model="selected">
+                <option disabled value="0">Select one</option>
+              </select2>
+            </div>
+          </script>
+          <script type="text/x-template" id="select2-template">
+            <select>
+              <slot></slot>
+            </select>
+          </script>
+
+          <script>
+
+            function get_host_info() {
+              var hostname = document.location.hostname.split('.');
+              var cookie = 'tldfind=' + new Date().getTime();
+              var domain = [];
+              var segment;
+
+              while (segment = hostname.pop()) {
+                domain.unshift(segment);
+                document.cookie = cookie + ';domain=.' + domain.join('.') + ';';
+                if (document.cookie.indexOf(cookie) > -1) {
+                  document.cookie = cookie + ';domain=.' + domain.join('.') + ';expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+                  break;
+                }
+              }
+
+              return {
+                subdomain: hostname.join('.') || null,
+                domain: domain.join('.') || null,
+                tld: domain.slice(1).join('.') || null
+              };
+            };
+
+            var info = get_host_info(), // console.log(info.tld, info.domain, info.subdomain);
+                res = <%=cities2.to_json%>
+            for (var key in res) { if (res[key]['subdomain'] == info.subdomain.split('.')[0]) {
+              var current_city_id = Number(res[key]['id']) 
+              console.log(current_city_id)
+              console.log(info.subdomain.split('.')[0])
+            }}
+
+            var cndnt = true
+
+            Vue.component('select2', {
+              props: ['options', 'value'],
+              template: '#select2-template',
+              mounted: function () {
+                var vm = this
+                $(this.$el)
+                  .val(this.value)
+                  .select2({ data: this.options }) // init select2
+                  .on('change', function () { vm.$emit('input', this.value) }) // emit event on change.
+                vm.$emit('input', current_city_id)
+              },
+              watch: {
+                value: function (value) {
+                  // update value
+                  $(this.$el).val(value).trigger('change')
+                  if (value!=current_city_id) {
+                    for (var key in res) { if (res[key]['id'] == value) {
+                      var sd = res[key]['subdomain']
+                      if (info.subdomain!=null) { location.href = 'https://'+sd+'.'+info.domain+'/'; }
+                      else { location.href = 'https://'+sd+'.'+info.domain+location.pathname; }
+                    }}
+                  }
+                  
+                },
+                options: function (options) {
+                  // update options
+                  $(this.$el).select2({ data: options })
+                }
+              },
+              destroyed: function () {
+                $(this.$el).off().select2('destroy')
+              }
+            })
+
+            var vm = new Vue({
+              el: '#el',
+              template: '#demo-template',
+              data: {
+                selected: 0,
+                options: res
+              }
+            })
+          </script>
+        </section>
+      </div>
+      <div class="col-6">
+        <section style="height: 100%;">
+          <button onclick="$('.round-src').toggle();$('.round-dst').toggle()">round_toggle</button>
+        </section>
+      </div>
+    </div>
+  </section>
+
+
+
+</main></body></html>

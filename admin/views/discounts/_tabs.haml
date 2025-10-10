@@ -1,0 +1,15 @@
+-# coding: utf-8
+-tab_list = [{entity:'subdomains', title: 'Поддомены'}, {entity:'subdomain_pools',  title: 'Пулы поддоменов'}, {entity: 'categories', title: 'Категории'}, {entity: 'discount_periods', title: 'Периоды действия', new: true}]
+
+-#-entity
+-#-action
+-#-
+-entity = entity.to_s
+-action = action.to_s
+-p entity.to_s
+-p action
+%ul.nav.nav-tabs
+  -tab_list.each  do |tab_name|
+    -icon_name = :list
+    -icon_name = tab_name[:icon] unless tab_name[:icon].nil?
+    %li{:class => ('active' if entity == tab_name[:entity] && action == 'list')}=link_to tag_icon(icon_name, pat(tab_name[:title])), url(:"discounts/#{tab_name[:entity]}", :index)

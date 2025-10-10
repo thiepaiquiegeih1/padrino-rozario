@@ -1,0 +1,146 @@
+<%=erb :'erbhf/header'%>
+
+<%
+  access = false
+  #current_account.methods
+  if current_account
+    if current_account.id == 171; access = true; end;
+  end
+
+  @product = Product.find_by_id(@pid)
+
+%>
+
+<%# <div style="height: 70px" class="hidden-xs hidden-sm"></div> %>
+
+<%#<h1 id="TITLE"><%=@seo[:h1]</h1>%>
+
+<%if @product%>
+  <% txt = @product.title.sub! "\%in_city%", "в " + @subdomain.city; txt = txt.split(' | ')[0]%>
+  <p align="center"><%=txt%></p>
+<%end%>
+
+<% if access %>
+  <div style="padding: 24px; text-align: center;">
+    <a class="btn" href="/smiles/create/">СОЗДАТЬ</a>
+  </div>
+<% end %>
+
+<div class="post-list" style="visibility:hidden;"><div class="wrapper">
+  <% i = 0; @postsss.each do | post | %>
+    <% if i % 5 == 0; big = 'big'; else; big = ''; end; %>
+    <%
+      if @pid
+        linkkk = '/smiles/product/'+@pid.to_s+'/'+post.id.to_s+'/'
+      elsif post.slug.present?
+        linkkk = '/smiles/'+post.slug.to_s+'/'
+      else
+        linkkk = '/smiles/'+post.id.to_s+'/'
+      end
+    %>
+    <div class="post-item <%=big%>"><div class="wrapper hvr-grow">
+      <%#<h2>=post.title</h2>%>
+      <hr />
+      <p itemscope itemtype='http://schema.org/ImageObject'>
+        <% ext = File.extname(post.images.current_path) %>
+        <% base = File.basename(post.images.current_path, ".*").to_s %>
+        <% fname = base + '_tn' + ext %>
+        <% File.file?(fname) ? fname : fname = File.basename(post.images.current_path) %>
+        <meta itemprop="name" content='<%=post.title%>'>
+        <meta itemprop="description" content='<%=post.title%>'>
+        <a href="<%=linkkk%>" itemprop='contentUrl'><img class="show-smile" alt="<%=post.alt%>" type="button" src="<%='/uploads/smiles/'+fname%>" /></a>
+        <meta itemprop="width" content='256'>
+        <meta itemprop="height" content='256'>
+        <meta itemprop="author" content='Rozarioflowers'>
+      </p>
+      <p >
+        <a class="btn rm" href="<%=linkkk%>">Подробнее</a>
+      </p>
+    </div></div>
+  <% i = i + 1; end; %>
+</div></div>
+
+<div style="padding: 24px; text-align: center;">
+  <button class="btn get-more">ПОКАЗАТЬ ЕЩЁ</button>
+</div>
+
+<% if @lastget %><style>.get-more{display:none}</style><% end %>
+
+<% org_data = organization_microdata_attributes %>
+<div itemscope itemtype='http://schema.org/Florist'>
+  <meta content='<%=org_data[:address]%>' itemprop='address'>
+  <meta content='<%=org_data[:telephone]%>' itemprop='telephone'>
+  <meta content='<%=org_data[:name]%>' itemprop='name'>
+  <meta content='<%=org_data[:opening_hours]%>' itemprop='openingHours'>
+  <meta content='<%=org_data[:payment_accepted]%>' itemprop='paymentAccepted'>
+  <meta content='<%=org_data[:email]%>' itemprop='email'>
+  <meta itemprop='image' itemscope itemtype='https://schema.org/Url'>
+  <meta content='RUB' itemprop='priceRange'>
+</div>
+
+<%=organization_florist_schema%>
+
+<style type="text/css">
+  .feedback {
+    display: block;
+  }
+</style>
+
+<script type="text/javascript">
+
+  function scrollToElement(theElement) {
+    var selectedPosX = 0,
+        selectedPosY = 0;
+    while (theElement != null) {
+      selectedPosX += theElement.offsetLeft;
+      selectedPosY += theElement.offsetTop;
+      theElement = theElement.offsetParent;
+    }
+    window.scrollTo(selectedPosX,selectedPosY);
+  }
+  var mainnn = document.getElementById('mainnn');
+  scrollToElement(mainnn);
+
+  $(window).load(function() {
+    $('.post-list > .wrapper').packery({ itemSelector: '.post-item', layoutMode: 'packery' })
+    $('.post-list > .wrapper').packery('layout');
+    $('.post-list').css('visibility', 'visible');
+  });
+
+  $(window).resize(function() {
+    setTimeout(function() {
+      $('.post-list > .wrapper').packery('layout');
+    }, 300);
+  });
+
+  $i = 1; $('.get-more').on('click', function() { $i++;
+
+    var link = '/smiles/gettt<%=if@tt;'tt';end%>/'+$i+'/';
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', link, true);
+    xhr.send();
+    xhr.onreadystatechange = function() {
+      if (this.readyState != 4) return;
+      // по окончании запроса доступны:
+      // status, statusText
+      // responseText, responseXML (при content-type: text/xml)
+      if (this.status != 200) {
+        // обработать ошибку
+        alert( 'ошибка: ' + (this.status ? this.statusText : 'запрос не удался') );
+        return;
+      }
+      $items = this.responseText;
+      $('.post-list > .wrapper').append($items).packery('appended', $items);
+      setTimeout(function() { $('.post-list > .wrapper').packery('reloadItems'); $('.post-list > .wrapper').packery('layout'); }, 500);
+    }
+
+    var cls = '.pt'+$i;
+
+    $(cls).css('display', 'block');
+    $('.post-list > .wrapper').packery('layout');
+
+  });
+
+</script>
+
+<%=erb :'erbhf/footer'%>

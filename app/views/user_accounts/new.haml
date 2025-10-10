@@ -1,0 +1,8 @@
+- # encoding: utf-8
+
+%div#crutch-indent{style:'height:80px'}
+%h1.regtitle Регистрация
+-form_for :user_account, url(:user_accounts, :create), :class => 'form register well row' do |f|
+  =partial 'user_accounts/form', :locals => { :f => f }
+
+<style> @media only screen and (max-width: 992px) { .delivery-lg { display: none; } } </style>

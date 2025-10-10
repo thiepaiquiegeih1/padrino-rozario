@@ -1,0 +1,64 @@
+- # encoding: utf-8
+%ul.nav.nav-tabs
+  %li.active=link_to tag_icon(:list, pat(:list)), url(:contacts, :index)
+  %li=link_to tag_icon(:plus, pat(:new)), url(:contacts, :new)
+
+.tabs-content
+  %table#list.table.table-striped.table-hover.table-condensed
+    %thead
+      %tr
+        %th.header.list-menu
+          .dropdown
+            %a.list-menu-toggle.dropdown-toggle{:href => '#', :'data-toggle' => :dropdown}
+              =tag_icon :magic
+              %span.caret
+            %ul.list-menu.dropdown-menu{:role => :menu}
+              %li.list-menu-wrapper=link_to tag_icon(:check, pat(:select_all)), '#', :id => 'select-all', :class => 'list-menu-link'
+              %li.list-menu-wrapper.list-menu-wrapper-disabled
+                =link_to tag_icon(:'check-empty', pat(:deselect_all)), '#', :id => 'deselect-all', :class => 'list-menu-link list-menu-link-disabled'
+              %li.list-menu-divider.divider
+              %li.list-menu-wrapper.list-menu-wrapper-disabled
+                =link_to tag_icon(:trash, pat(:delete_selected)), '#', :id => 'delete-selected', :class => 'list-menu-link list-menu-link-disabled'
+                .list-menu-popover-delete-selected.popover.right
+                  .arrow
+                  %h3.popover-title=pat(:delete_selected_title)
+                  .popover-content
+                    -form_tag url(:contacts, :destroy_many), :method => :delete do
+                      =hidden_field_tag :contact_ids, :'data-delete-many-ids' => true
+                      =submit_tag pat(:delete), :class =>'list-menu-popover-delete-selected-btn btn btn-danger btn-small'
+                      .btn.btn-small.cancel=pat(:cancel)
+        %th.header= :id
+        %th.header= :name
+        %th.header= :header
+        %th.header= :address
+        %th.header= :url
+        %th.header= :subdomain
+        %th.header= :enabled
+        %th.header.list-row-action-header
+
+    %tbody
+      -@contacts.each do |contact|
+        %tr.list-row
+          %td.list-column.list-selectable
+            =check_box_tag 'contact_ids[]', :value => contact.id, :class => 'list-selectable-checkbox'
+          %td.list-column=contact.id
+          %td.list-column=contact.name
+          %td.list-column=contact.header
+          %td.list-column=Subdomain.find(contact.subdomain_id).ya_address.truncate(500)
+          %td.list-column=Subdomain.find(contact.subdomain_id).ya_url.truncate(100)
+          %td.list-column=contact.subdomain.try(:city)
+          %td.list-column=contact.enabled
+          %td.list-column.list-row-action
+            .list-row-action-wrapper
+              =link_to tag_icon(:edit), :href => url(:contacts, :edit, :id => contact.id), :rel => :tooltip, :title => "#{pat(:edit)} contact", :class => 'list-row-action-wrapper-link'
+              - unless contact.id == 1
+                =link_to tag_icon(:trash), :rel => :tooltip, :title => "#{pat(:delete)} contact", :class => 'list-row-action-delete-one list-row-action-wrapper-link'
+                .popover.list-row-action-popover-delete-one.left
+                  .arrow
+                  %h3.popover-title=pat(:delete, :model => "contact")
+                  .popover-content
+                    -form_tag url(:contacts, :destroy, :id => contact.id), :method => :delete do
+                      =submit_tag pat(:delete), :class =>'list-row-action-popover-delete-one-btn btn btn-danger btn-small'
+                      .btn.btn-small.cancel=pat(:cancel)
+
+!=will_paginate @contacts

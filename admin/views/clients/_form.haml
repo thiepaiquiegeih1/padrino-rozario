@@ -1,0 +1,37 @@
+-# coding: utf-8
+
+- error = @client.errors.include?(:surname)
+%fieldset.control-group{:class => error ? 'has-error' : ''}
+  =f.label :surname, :class => 'control-label'
+  .controls
+    =f.text_field :surname, :class => 'input-xlarge input-with-feedback', :autofocus => true
+    %span.help-inline=error ? f.error_message_on(:surname, :class => 'text-error') : 'Ф.И.О.'
+
+- error = @client.errors.include?(:email)
+%fieldset.control-group{:class => error ? 'has-error' : ''}
+  =f.label :email, :class => 'control-label'
+  .controls
+    =f.text_field :email, :class => 'input-xlarge input-with-feedback'
+    %span.help-inline=error ? f.error_message_on(:email, :class => 'text-error') : 'Эл. почта'
+
+- error = @client.errors.include?(:tel)
+%fieldset.control-group{:class => error ? 'has-error' : ''}
+  =f.label :tel, :class => 'control-label'
+  .controls
+    =f.text_field :tel, :class => 'input-xlarge input-with-feedback'
+    %span.help-inline=error ? f.error_message_on(:tel, :class => 'text-error') : 'Телефон'
+
+- error = @client.errors.include?(:discount_code)
+%fieldset.control-group{:class => error ? 'has-error' : ''}
+  =f.label :discount_code, :class => 'control-label'
+  .controls
+    =f.text_field :discount_code, :class => 'input-xlarge input-with-feedback'
+    %span.help-inline=error ? f.error_message_on(:discount_code, :class => 'text-error') : 'Номер дисконтной карты'
+
+
+.form-actions
+  =f.submit pat(:save), :class => 'btn btn-primary'
+  &nbsp;
+  =f.submit pat(:save_and_continue), :class => 'btn btn-info', :name => 'save_and_continue'
+  &nbsp;
+  =link_to pat(:cancel), url(:clients, :index), :class => 'btn'

@@ -1,0 +1,9 @@
+- # encoding: utf-8
+%ul.nav.nav-tabs
+  %li=link_to tag_icon(:list, pat(:list)), url(:'delivery/murmanskstreets', :index)
+  %li=link_to tag_icon(:plus, pat(:new)), url(:'delivery/murmanskstreets', :new)
+  %li.active=link_to tag_icon(:edit, pat(:edit)), url(:'delivery/murmanskstreets', :edit, :id => @murmanskstreet.id)
+
+.tabs-content
+  -form_for :murmanskstreet, url(:'delivery/murmanskstreets', :update, :id => @murmanskstreet.id), :method => :put, :class => 'form-horizontal' do |f|
+    =partial 'delivery/murmanskstreets/form', :locals => { :f => f }

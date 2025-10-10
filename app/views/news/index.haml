@@ -1,0 +1,8 @@
+- # encoding: utf-8
+
+%div.hidden-xs.hidden-sm{style:"height: 88px"}
+
+%h1.tttl{:style => "font-size:20px;margin: 24px 0 !important;"}=@seo[:h1] # 'Статьи о цветах'
+#news-list= partial 'news/news', :collection => @news
+
+<style>@media only screen and (max-width: 992px) {.delivery-lg {display: none !important;}}</style>

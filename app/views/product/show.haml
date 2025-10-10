@@ -1,0 +1,21 @@
+- # encoding: utf-8
+.prng{'ng-app' => "catalog", 'ng-controller' => "itemsController"}
+  = partial("product/item_modal.html", :engine => :erb)
+- content_for :head do
+  -# =javascript_include_tag 'jquery.zoom.min'
+  =javascript_include_tag 'ang/angular4.min'
+  =javascript_include_tag 'ang/lodash.underscore.min'
+  =javascript_include_tag 'ang/restangular.min'
+  =javascript_include_tag 'ang/angular-busy.min'
+  =javascript_include_tag 'ang/navigator'
+  =javascript_include_tag 'ang/catalog'
+  -# =javascript_include_tag 'ang/cart'
+  -# =javascript_include_tag 'jquery.datetimepicker'
+  -# =javascript_include_tag 'test'
+  -# =javascript_include_tag 'modprod.js'
+  -# =javascript_include_tag 'https://s3-us-west-2.amazonaws.com/s.cdpn.io/2708/bootstrap-datetimepicker.min.js'
+  -# =javascript_include_tag 'bootstrap-spinedit'
+  -# =stylesheet_link_tag 'angular-busy'
+  -# =stylesheet_link_tag 'bootstrap-spinedit'
+.clearfix
+= flash_tag(:notice)

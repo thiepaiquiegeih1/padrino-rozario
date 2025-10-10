@@ -1,0 +1,39 @@
+- # encoding: utf-8
+
+.tabs-content
+  %table#list.table.table-striped.table-hover.table-condensed
+    %thead
+      %tr
+        %th.header.list-menu
+          .dropdown
+            %a.list-menu-toggle.dropdown-toggle{:href => '#', :'data-toggle' => :dropdown}
+              =tag_icon :magic
+              %span.caret
+            %ul.list-menu.dropdown-menu{:role => :menu}
+              %li.list-menu-wrapper=link_to tag_icon(:check, pat(:select_all)), '#', :id => 'select-all', :class => 'list-menu-link'
+              %li.list-menu-wrapper.list-menu-wrapper-disabled
+                =link_to tag_icon(:'check-empty', pat(:deselect_all)), '#', :id => 'deselect-all', :class => 'list-menu-link list-menu-link-disabled'
+        %th.header= :ID
+        %th.header= :Изображение
+        %th.header= :Каталог
+        %th.header= :Title
+        %th.header= :Description
+        %th.header= :Keywords
+        %th.header.list-row-action-header
+
+
+			
+    %tbody
+      -@products.each do |product|
+        %tr.list-row
+          %td.list-column.list-selectable
+            =check_box_tag 'product_ids[]', :value => product.id, :class => 'list-selectable-checkbox'
+          %td.list-column=product.id
+          %td.list-column=image_tag(product.image, :class => 'img-rounded', :style => "max-width:200px;")
+          %td.list-column=product.categories.first.nil? ? 'нет' : product.categories.map(&:title)
+          %td.list-column=product.title
+          %td.list-column=product.description
+          %td.list-column=product.keywords
+          %td.list-column.list-row-action
+            .list-row-action-wrapper
+              =link_to tag_icon(:edit), :href => url(:'seo/products', :edit, :id => product.id), :rel => :tooltip, :title => "#{pat(:edit)} product", :class => 'list-row-action-wrapper-link'

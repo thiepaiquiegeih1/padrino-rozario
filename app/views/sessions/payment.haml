@@ -1,0 +1,14 @@
+- # encoding: utf-8
+%div#crutch-indent{style:'height:44px'}
+
+%h2 Ваш заказ сохранен!
+
+%p Пожалуйста, выберите способ оплаты и следуйте инструкциям.
+
+/ / test
+/ #{@total_summ}
+/ #{session[:order_id]}
+/ #{@include_tax}
+
+:plain
+  <script type='text/javascript' src='https://paymaster.ru/widget/Basic/1?LMI_MERCHANT_ID=c3a83105-87be-4c00-a8b5-80e7c8555b09&LMI_PAYMENT_AMOUNT=#{@total_summ}&LMI_PAYMENT_DESC=Платеж за заказ #{session[:order_id]} в интернет-магазине Розарио&LMI_CURRENCY=RUB&LMI_PAYMENT_NO=#{session[:order_id]}#{@include_tax}'></script>

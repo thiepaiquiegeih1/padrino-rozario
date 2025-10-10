@@ -1,0 +1,8 @@
+- # encoding: utf-8
+%ul.nav.nav-tabs
+  %li=link_to tag_icon(:list, pat(:list)), url(:'discounts/categories', :index)
+  %li.active=link_to tag_icon(:edit, pat(:edit)), url('discounts/categories', :edit, :id => @category.id)
+
+.tabs-content
+  -form_tag url(:'discounts/categories', :update), :method => :put, multipart: true, :class => 'form-horizontal' do |f|
+    =partial 'discounts/categories/form', :locals => { :f => f }

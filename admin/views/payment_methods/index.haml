@@ -1,0 +1,207 @@
+- # encoding: utf-8
+
+%h2 Способы оплаты
+
+%ul.tabs
+  %li.active
+    %a(href="#tab-1") Мурманск
+  %li
+    %a(href="#tab-2") Поддомены
+
+%div.tab-content
+  %div#tab-1.tab-pane.active
+    %form#dynamic-form-1
+      #fields-1
+        - @payment_methods.each do |payment_method|
+          .field-group{id: "field-group-#{payment_method.order}", class: payment_method.order == 1 ? 'primary' : ''}
+            - if payment_method.order == 1
+              %label{for: "field-#{payment_method.order}"} Базовый
+            - if payment_method.order == 2
+              %label{for: "field-#{payment_method.order}"} Прочие
+            %input{for: "field-#{payment_method.order}", name: "field-#{payment_method.order}", type: "text", value: "#{payment_method.name}"}
+            - unless payment_method.order == 1
+              %button.remove-field{type: "button"} Удалить
+              /- unless payment_method.order == 2
+              %button.move-up-field{type: "button"} ↑
+              /- unless payment_method.order == @payment_methods.count
+              %button.move-down-field{type: "button"} ↓
+      %button#add-field-1{type: "button"} Добавить поле
+      %button{type: "submit"} Сохранить
+  %div#tab-2.tab-pane
+    %form#dynamic-form-2
+      #fields-2
+        - @payment_methods_subdomains.each do |payment_method|
+          .field-group{id: "field-group-#{payment_method.order}", class: payment_method.order == 1 ? 'primary' : ''}
+            - if payment_method.order == 1
+              %label{for: "field-#{payment_method.order}"} Базовый
+            - if payment_method.order == 2
+              %label{for: "field-#{payment_method.order}"} Прочие
+            %input{for: "field-#{payment_method.order}", name: "field-#{payment_method.order}", type: "text", value: "#{payment_method.name}"}
+            - unless payment_method.order == 1
+              %button.remove-field{type: "button"} Удалить
+              /- unless payment_method.order == 2
+              %button.move-up-field{type: "button"} ↑
+              /- unless payment_method.order == @payment_methods.count
+              %button.move-down-field{type: "button"} ↓
+      %button#add-field-2{type: "button"} Добавить поле
+      %button{type: "submit"} Сохранить
+
+:css
+  body {
+    font-family: Arial, sans-serif;
+  }
+  #field-group-1 { margin-bottom: 32px; }
+  .field-group {
+    margin-bottom: 1em;
+  }
+  .field-group label {
+    display: block;
+    margin-bottom: 0.5em;
+  }
+  button[type="button"] {
+    margin-top: 1em;
+  }
+  .tabs {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-bottom: 1px solid #ccc;
+  }
+  .tabs li {
+    display: inline-block;
+    margin-right: 10px;
+  }
+  .tabs li.active a {
+    color: #337ab7;
+    border-bottom: 2px solid #337ab7;
+  }
+  .tabs a {
+    color: #666;
+    line-height: 48px;
+    text-decoration: none;
+  }
+  .tab-content {
+    margin-top: 20px;
+  }
+  .tab-pane {
+    display: none;
+  }
+  .tab-pane.active {
+    display: block;
+  }
+
+:javascript
+
+  document.addEventListener('DOMContentLoaded', function() {
+
+    function createElementFromHTML(htmlString) { // https://stackoverflow.com/questions/494143/creating-a-new-dom-element-from-an-html-string-using-built-in-dom-methods-or-pro
+      let div = document.createElement('div');
+      div.innerHTML = htmlString.trim();
+      // Change this to div.childNodes to support multiple top-level nodes.
+      return div.firstChild;
+    }
+
+    // FORMS
+
+    const form1 = document.getElementById('dynamic-form-1'),
+          form2 = document.getElementById('dynamic-form-2'),
+          fieldsContainer1 = document.getElementById('fields-1'),
+          fieldsContainer2 = document.getElementById('fields-2'),
+          addFieldButton1 = document.getElementById('add-field-1');
+          addFieldButton2 = document.getElementById('add-field-2');
+    let fieldCounters = [#{@payment_methods.count}, #{@payment_methods_subdomains.count}]
+
+    function removeField(x) { // Функция удаления поля
+      if (confirm('Вы уверены, что хотите удалить выбранное поле?')) {
+        x.parentNode.remove();
+      }
+    }
+
+    function moveUpField(x) { // Функция для обмена значениями с предыдущим полем
+      let prevElementInputValue = x.parentNode.previousElementSibling.getElementsByTagName('input')[0].value,
+          baseElementInputValue = x.parentNode.getElementsByTagName('input')[0].value;
+      if (!x.parentNode.previousElementSibling.classList.contains('primary')) {
+        x.parentNode.getElementsByTagName('input')[0].value = prevElementInputValue;
+        x.parentNode.previousElementSibling.getElementsByTagName('input')[0].value = baseElementInputValue;
+      }
+    }
+
+    function moveDownField(x) { // Функция для обмена значениями со следующим полем
+      let nextElementInputValue = x.parentNode.nextElementSibling.getElementsByTagName('input')[0].value,
+          baseElementInputValue = x.parentNode.getElementsByTagName('input')[0].value;
+      x.parentNode.getElementsByTagName('input')[0].value = nextElementInputValue;
+      x.parentNode.nextElementSibling.getElementsByTagName('input')[0].value = baseElementInputValue;
+    }
+
+    function addField(fieldsContainer, tab) { // Функция добавления нового поля
+      switch(tab) {
+        case 1: fieldCounters[0]++; break;
+        case 2: fieldCounters[1]++; break;
+      }
+      const fieldHTML = `<div class="field-group" id="field-group-${fieldCounters[tab-1]}">
+        <input type="text" id="field-${fieldCounters[tab-1]}" name="field-${fieldCounters[tab-1]}" value="Новое поле ${fieldCounters[tab-1]}">
+        <button type="button" class="remove-field">Удалить</button>
+        <button type="button" class="move-up-field">↑</button>
+        <button type="button" class="move-down-field">↓</button>
+      </div>`;
+      element = createElementFromHTML(fieldHTML);
+      element.getElementsByClassName('remove-field')[0].addEventListener('click', function() { removeField(this) });
+      element.getElementsByClassName('move-up-field')[0].addEventListener('click', function() { moveUpField(this) });
+      element.getElementsByClassName('move-down-field')[0].addEventListener('click', function() { moveDownField(this) });
+      console.log('1')
+      fieldsContainer.appendChild(element);
+    }
+
+    document.querySelectorAll('.remove-field').forEach(button => { // Добавляем обработчик для кнопки удаления
+      button.addEventListener('click', function() { removeField(this) });
+    });
+
+    document.querySelectorAll('.move-up-field').forEach(button => { // Добавляем обработчик для кнопки перемещения вверх
+      button.addEventListener('click', function() { moveUpField(this) });
+    });
+
+    document.querySelectorAll('.move-down-field').forEach(button => { // Добавляем обработчик для кнопки перемещения вниз
+      button.addEventListener('click', function() { moveDownField(this) });
+    });
+
+    addFieldButton1.addEventListener('click', (e) => addField(fieldsContainer1, 1)); // Добавляем обработчик для кнопки добавления поля
+    addFieldButton2.addEventListener('click', (e) => addField(fieldsContainer2, 2));
+
+    function formSubmitHandler(e, table) { // Обработчик события отправки формы
+      e.preventDefault(); // предотвращаем стандартное поведение отправки формы
+      const formData = new FormData(e.target);
+      let array = [];
+      for (const [key, value] of formData.entries()) { array.push(value); }
+      data = { table: table, methods: array }
+      console.log(data)
+      fetch('/admin/payment_methods/save', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      }).then(response => response.json()).then(data => {
+        alert('Данные успешно сохранены!')
+        // console.log(data)
+      }).catch((error) => {
+        alert('Ошибка! Данные НЕ СОХРАНЕНЫ!')
+        console.error('Ошибка отправки формы:', error);
+      });
+    }
+    form1.addEventListener('submit', (e) => formSubmitHandler(e, 'payment_methods'));
+    form2.addEventListener('submit', (e) => formSubmitHandler(e, 'payment_methods_subdomains'));
+
+    // TABS
+
+    const tabs = document.querySelectorAll('.tabs li a');
+
+    function switchTab(e) { // Функция переключения вкладок
+      tabs.forEach(tab => tab.parentNode.classList.remove('active'));
+      e.target.parentNode.classList.add('active');
+      document.querySelectorAll('.tab-content .tab-pane').forEach(content => content.classList.remove('active'));
+      const tabId = e.target.getAttribute('href').slice(1);
+      document.querySelector(`#${tabId}`).classList.add('active');
+    }
+
+    tabs.forEach(tab => tab.addEventListener('click', (e) => switchTab(e)));
+
+  });
+

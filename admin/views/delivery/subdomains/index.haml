@@ -1,0 +1,25 @@
+- # encoding: utf-8
+=partial 'delivery/tabs', :locals => {:entity => :subdomains, :action => :list}
+-form_tag url(:'delivery/subdomains', :search), :method => :get, :class => 'form-horizontal' do
+  %fieldset.control-group
+    =text_field_tag :query, :class => 'search_field', :placeholder => 'поиск'
+
+.tabs-content
+  %table#list.table.table-striped.table-hover.table-condensed
+    %thead
+      %tr
+        %th.header= :id
+        %th.header= "Город"
+        %th.header= "Цена доставки"
+        %th.header.list-row-action-header
+    %tbody
+      -@subdomains.each do |city|
+        %tr.list-row
+          %td.list-column=city.id
+          %td.list-column=city.city
+          %td.list-column=city.price
+          %td.list-column.list-row-action
+            .list-row-action-wrapper
+              =link_to tag_icon(:edit), :href => url(:'delivery/subdomains', :edit, :id => city.id), :rel => :tooltip, :title => "#{pat(:edit)} city", :class => 'list-row-action-wrapper-link'
+- if !@search
+  !=will_paginate @subdomains

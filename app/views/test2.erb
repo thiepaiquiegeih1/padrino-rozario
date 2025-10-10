@@ -1,0 +1,24 @@
+﻿<%
+  require 'msgpack'
+  obj = {"foo" => "bar", "foo2" => "bar2", "foo3" => "bar3"}
+  # msg = MessagePack.pack(obj)  # or
+  msg = obj.to_msgpack
+  i=0
+  arr = []
+%>
+
+<%=msg.to_s.force_encoding("UTF-8")%>
+
+
+
+<%#MessagePack.unpack(key)%>
+
+<%#  q = JSON.parse(@params[:data]) %>
+
+
+<%#=JSON.parse(@subdomain.morph)['loc2']%>
+
+
+<%#=@wtf%><%#<br />%>
+
+<%#=@data%>

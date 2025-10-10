@@ -1,0 +1,217 @@
+- # encoding: utf-8
+%h2 Start Compressing
+#MAIN
+  %a.btn6{:href => "#", :onclick => 'fetchGruntTask("cssmin")'} CSS
+  %a.btn2{:href => "#", :onclick => 'fetchGruntTask("uglify")'} JS
+  %a.btn3{:href => "#"} IMG
+  / %a.btn1{:href => "#"} Button
+  / %a.btn4{:href => "#"} Button
+  / %a.btn5{:href => "#"} Button
+%div
+  %pre.output Task not running
+.load
+  %hr/
+  %hr/
+  %hr/
+  %hr/
+
+:css
+  /* Based on https://codepen.io/Mohamed_Abdulsalam/pen/vYqVXdx */
+  html, body { height: auto !important; margin: 0; padding: 0; background: radial-gradient(at right top, #A8AEC6, #9D53B1 100%); }
+  .container.main { min-height: calc(100vh - 40px); }
+  h2 {
+    margin: 10% 0 36px;
+    color: #FFF;
+    text-align: center;
+  }
+  .output {
+    margin-top: 24px;
+  }
+  #MAIN {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 50px;
+    font-family: Arial, Helvetica, sans-serif;
+  }
+
+  #MAIN a {
+    position: relative;
+    padding: 36px 36px;
+    color: #fff;
+    text-decoration: none;
+    display: inline-block;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    font-size: 1.5em;
+    border: 2px solid transparent;
+    transition: 0.5s;
+    -webkit-transition: 0.5s;
+    -moz-transition: 0.5s;
+    -ms-transition: 0.5s;
+    -o-transition: 0.5s;
+  }
+
+  #MAIN a:hover {
+    border: 2px solid #fff
+  }
+
+  #MAIN a::before {
+    content: '';
+    position: absolute;
+    inset: 0 8px;
+    border-left: 2px solid #fff;
+    border-right: 2px solid #fff;
+    transition: 1s;
+    -webkit-transition: 1s;
+    -moz-transition: 1s;
+    -ms-transition: 1s;
+    -o-transition: 1s;
+  }
+
+  #MAIN a::after {
+    content: '';
+    position: absolute;
+    inset: 8px 0;
+    border-top: 2px solid #fff;
+    border-bottom: 2px solid #fff;
+    transition: 1s;
+    -webkit-transition: 1s;
+    -moz-transition: 1s;
+    -ms-transition: 1s;
+    -o-transition: 1s;
+  }
+
+  #MAIN a.btn1:hover::before {
+    inset: 16px 8px;
+  }
+
+  #MAIN a.btn1:hover::after {
+    inset: 8px 16px 8px;
+  }
+
+  #MAIN a.btn2:hover::before {
+    inset: 0px 8px;
+    transform: rotateY(180deg);
+    -webkit-transform: rotateY(180deg);
+    -moz-transform: rotateY(180deg);
+    -ms-transform: rotateY(180deg);
+    -o-transform: rotateY(180deg);
+  }
+
+  #MAIN a.btn2:hover::after {
+    inset: 8px 0px;
+    transform: rotateX(180deg);
+    -webkit-transform: rotateX(180deg);
+    -moz-transform: rotateX(180deg);
+    -ms-transform: rotateX(180deg);
+    -o-transform: rotateX(180deg);
+  }
+
+  #MAIN a.btn3:hover::before {
+    inset: 0px -12px;
+    transform: skewY(15deg);
+    -webkit-transform: skewY(15deg);
+    -moz-transform: skewY(15deg);
+    -ms-transform: skewY(15deg);
+    -o-transform: skewY(15deg);
+  }
+
+  #MAIN a.btn3:hover::after {
+    inset: -12px 0px;
+    transform: skewX(15deg);
+    -webkit-transform: skewX(15deg);
+    -moz-transform: skewX(15deg);
+    -ms-transform: skewX(15deg);
+    -o-transform: skewX(15deg);
+  }
+
+  #MAIN a.btn4:hover,
+  #MAIN a.btn5:hover,
+  #MAIN a.btn6:hover {
+    border-color: transparent;
+  }
+
+  #MAIN a.btn4:hover::before {
+    inset: 0px 30px;
+    transform: skew(25deg);
+    -webkit-transform: skew(25deg);
+    -moz-transform: skew(25deg);
+    -ms-transform: skew(25deg);
+    -o-transform: skew(25deg);
+  }
+
+  #MAIN .btn4:hover::after {
+    inset: 10px 0px;
+    transform: skew(-25deg);
+    -webkit-transform: skew(-25deg);
+    -moz-transform: skew(-25deg);
+    -ms-transform: skew(-25deg);
+    -o-transform: skew(-25deg);
+  }
+
+  #MAIN a.btn5:hover::before,
+  #MAIN a.btn5:hover::after {
+    inset: 0px;
+  }
+
+  #MAIN a.btn6:hover::before {
+    inset: 0 0;
+    transform: rotate(-10deg);
+    -webkit-transform: rotate(-10deg);
+    -moz-transform: rotate(-10deg);
+    -ms-transform: rotate(-10deg);
+    -o-transform: rotate(-10deg);
+  }
+
+  #MAIN a.btn6:hover::after {
+    inset: 0 -4px;
+    transform: rotate(5deg);
+    -webkit-transform: rotate(5deg);
+    -moz-transform: rotate(5deg);
+    -ms-transform: rotate(5deg);
+    -o-transform: rotate(5deg);
+  }
+
+  .load { 
+    opacity: 0.9;
+    zoom: 2;
+    border: 2px solid cyan;
+    border-radius: 25%;
+    padding: 8px; width: 100px; height: 100px;
+    background: #FFF;
+    position:absolute;top:50%;left:50%;transform:translate(-50%, -50%);
+    /*change these sizes to fit into your project*/
+  }
+  .load hr{border:0;margin:0;width:32%;height:32%;position:absolute;border-radius:50%;animation:spin 2s ease infinite}
+  .load :first-child{background:#19A68C;animation-delay:-1.5s}
+  .load :nth-child(2){background:#F63D3A;animation-delay:-1s}
+  .load :nth-child(3){background:#FDA543;animation-delay:-0.5s}
+  .load :last-child{background:#193B48}
+  @keyframes spin{
+    0%,100%{transform:translate(0)}
+    25%{transform:translate(160%)}
+    50%{transform:translate(160%, 160%)}
+    75%{transform:translate(0, 160%)}
+  }
+
+:javascript
+  load = document.querySelector('.load');
+  load.style.display = 'none';
+  async function fetchGruntTask(task) {
+    load.style.display = 'block';
+    output_element = document.querySelector('.output');
+    try {
+      const response = await fetch(`/fastapi/grunt/${task}`);
+      if (!response.ok) { throw new Error(`Error HTTP: ${response.status}`); }
+      const data = await response.text();
+      output_element.textContent = data;
+      load.style.display = 'none';
+    } catch (error) {
+      console.error('Error executing request:', error);
+      output_element.textContent = `Error: ${error.message}`;
+      load.style.display = 'none';
+    }
+  }

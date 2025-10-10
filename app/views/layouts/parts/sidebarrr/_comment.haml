@@ -1,0 +1,26 @@
+﻿%article{:itemscope => 'itemscope', :itemtype => 'http://schema.org/Review'}
+  -# %a{:itemprop => 'url', :href => ''}
+  %div{:itemprop => 'itemReviewed', :itemscope => 'itemscope', :itemtype => 'http://schema.org/Organization'}
+    %meta{:content => "88002506470", :itemprop => 'telephone'}
+    %meta{:content => "Розарио.Цветы", :itemprop => 'name'}
+    %meta{:content => @subdomain.ya_address, :itemprop => 'address'}
+  %div{:itemscope => 'itemscope', :itemprop => 'author', :itemtype => 'http://schema.org/Person'}
+    %b.name{:itemprop => "name"}= @comment.name
+  %div{:itemprop => 'reviewRating', :itemscope => 'itemscope', :itemtype => 'http://schema.org/Rating'}
+    %meta{:itemprop => 'ratingValue', :content => '5'}
+  - date = @comment.date.present? ? @comment.date.strftime("%d.%m.%Y") : @comment.created_at.strftime("%d.%m.%Y")
+  %meta{:itemprop => 'datePublished', :content => "#{date.to_time.iso8601}"}
+  %br
+  %span.date=date
+  .body{:itemprop => 'description'}!=@comment.body
+  %div
+  %span.star-rating
+    - star = @comment
+    - rate = star.rating || 0
+    - (0...rate).each do |a|
+      %i
+  %span.star-rating.remainder
+    - rmndr = 5 - rate
+    - (0...rmndr).each do |a|
+      %i
+

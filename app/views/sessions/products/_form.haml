@@ -1,0 +1,123 @@
+-# coding: utf-8
+
+:plain
+  <script>
+    $(function() {
+      $('.selectpicker').selectpicker();
+      $('.selectpicker').selectpicker('val', [#{@pc_ids}]);
+      $('.selectpicker').selectpicker('render');
+      $('.selectpicker2').selectpicker();
+      $('.selectpicker2').selectpicker('val', [#{@pt_ids}]);
+      $('.selectpicker2').selectpicker('render');
+      $('.selectpicker3').selectpicker();
+      $('.selectpicker3').selectpicker('val', [#{@pct_ids}]);
+      $('.selectpicker3').selectpicker('render');
+      window.complects_preloaded = #{@product_complects};
+      window.tags_preloaded = #{@tag_complects};
+    });
+  </script>
+
+- error = @product.errors.include?(:category_id)
+%fieldset.control-group{:class => error ? 'has-error' : ''}
+  =f.label :category_id, :class => 'control-label'
+  .controls
+    =f.select(:category_id, :collection => @categories, :fields => [:title, :id], :class => 'selectpicker input-xlarge input-with-feedback', :autofocus => true, :multiple => true, :data => {:live_search => "true"})
+    %span.help-inline=error ? f.error_message_on(:category_id, :class => 'text-error') : 'Категория'
+
+- error = @product.errors.include?(:header)
+%fieldset.control-group{:class => error ? 'has-error' : ''}
+  =f.label :header, :class => 'control-label'
+  .controls
+    =f.text_field :header, :class => 'input-xlarge input-with-feedback'
+    %span.help-inline=error ? f.error_message_on(:header, :class => 'text-error') : 'Название (h1)'
+
+- error = @product.errors.include?(:slug)
+%fieldset.control-group{:class => error ? 'has-error' : ''}
+  =f.label :slug, :class => 'control-label'
+  .controls
+    =f.text_field :slug, :class => 'input-xlarge input-with-feedback', :autofocus => true
+    %span.help-inline=error ? f.error_message_on(:slug, :class => 'text-error') : 'URI (по-умолчанию транслитерация поля header, повторения недопустимы)'
+
+- error = @product.errors.include?(:announce)
+%fieldset.control-group{:class => error ? 'has-error' : ''}
+  =f.label :announce, :class => 'control-label'
+  .controls
+    =f.text_area :announce, :class => 'input-xlarge input-with-feedback ckeditor'
+    %span.help-inline=error ? f.error_message_on(:announce, :class => 'text-error') : 'Краткое описание'
+
+- error = @product.errors.include?(:complect_id)
+%fieldset.control-group{:class => error ? 'has-error' : ''}
+  =f.label :complect_id, :class => 'control-label'
+  .controls
+    =f.select(:complect_id, :collection => @complects, :fields => [:title, :id], :class => 'selectpicker3 input-xlarge input-with-feedback', :autofocus => true, :multiple => true, :data => {:live_search => "true"})
+    %span.help-inline=error ? f.error_message_on(:complect_id, :class => 'text-error') : 'Комплект'
+
+#images
+
+- error = @product.errors.include?(:alt)
+%fieldset.control-group{:class => error ? 'has-error' : ''}
+  =f.label :alt, :class => 'control-label'
+  .controls
+    =f.text_field :alt, :class => 'input-xlarge input-with-feedback'
+    %span.help-inline=error ? f.error_message_on(:alt, :class => 'text-error') : 'Alt Тег'
+
+- error = @product.errors.include?(:trick_price)
+%fieldset.control-group{:class => error ? 'has-error' : ''}
+  =f.label :trick_price, :class => 'control-label'
+  .controls
+    =f.check_box :trick_price, :class => 'input-xlarge input-with-feedback'
+    %span.help-inline=error ? f.error_message_on(:trick_price, :class => 'text-error') : 'Выводить в каталоге указанные вручную цену и изображение. Если параметр не активен, выводится изображение и цена Стандартного варианта'
+
+- error = @product.errors.include?(:default_image)
+%fieldset.control-group{:class => error ? 'has-error' : ''}
+  =f.label :default_image, :class => 'control-label'
+  .controls
+    =f.select(:default_image, :collection => [], :fields => [:title, :id], :class => 'input-xlarge input-with-feedback default_image',:data => { :value => @product.default_image })
+    %span.help-inline=error ? f.error_message_on(:default_image, :class => 'text-error') : 'Изображение для каталога'
+
+- error = @product.errors.include?(:default_price)
+%fieldset.control-group{:class => error ? 'has-error' : ''}
+  =f.label :default_price, :class => 'control-label'
+  .controls
+    =f.select(:default_price, :collection => [], :fields => [:title, :id], :class => 'input-xlarge input-with-feedback default_price', :data => { :value => @product.default_price })
+    %span.help-inline=error ? f.error_message_on(:default_price, :class => 'text-error') : 'Цена для каталога'
+
+- error = @product.errors.include?(:text)
+%fieldset.control-group{:class => error ? 'has-error' : ''}
+  =f.label :text, :class => 'control-label'
+  .controls
+    =f.text_area :text, :class => 'input-xlarge input-with-feedback ckeditor'
+    %span.help-inline=error ? f.error_message_on(:text, :class => 'text-error') : 'Полное описание'
+
+%h3 Состав букета
+#counts
+
+%h3
+  Цены
+
+#prices
+
+/= partial("products/prices.html", :engine => :erb)
+- error = @product.errors.include?(:discount)
+%fieldset.control-group{:class => error ? 'has-error' : ''}
+  =f.label :discount, :class => 'control-label'
+  .controls
+    =f.text_field :discount, :class => 'input-xlarge input-with-feedback'
+    %span.help-inline=error ? f.error_message_on(:discount, :class => 'text-error') : 'Скидка на товар (в процентах)'
+
+- error = @product.errors.include?(:tag_id)
+%fieldset.control-group{:class => error ? 'has-error' : ''}
+  =f.label :tag_id, :class => 'control-label'
+  .controls
+    =f.select(:tag_id, :collection => @tags, :fields => [:title, :id], :class => 'selectpicker2 input-xlarge input-with-feedback', :autofocus => true, :multiple => true, :data => {:live_search => "true"})
+    %span.help-inline=error ? f.error_message_on(:tag_id, :class => 'text-error') : 'Цветы с'
+
+- error = @product.errors.include?(:color)
+
+=partial 'seo/seo_fields', locals: { f: f, data: @product, h1: false}
+
+.form-actions
+  =f.submit pat(:save), :class => 'btn btn-primary'
+  =f.submit pat(:save_and_continue), :class => 'btn btn-info', :name => 'save_and_continue'
+  &nbsp;
+  =link_to pat(:cancel), url(:products, :index), :class => 'btn'

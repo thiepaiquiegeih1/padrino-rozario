@@ -1,0 +1,90 @@
+﻿<h2>Ваши контакты</h2>
+<h2>test</h2>
+<% if @cart.blank? %>
+
+  <p> Ваша корзина пуста.</p>
+
+<% else %>
+  <div cg-busy="{promise:checkoutPromise,message:'Оформление заказа',templateUrl:'/busy.html'}"></div>
+
+<form method="post" class="form checkout" name="checkoutForm" id='checkoutForm' style="max-width: 100%;">
+  <fieldset class="control-group">
+    <label for="user_account_surname" class="control-label">Ф.И.О.: </label>
+    <div class="controls">
+      <input type="text" name="user_account[surname]" id="user_account_surname" autofocus="autofocus" class="input-xlarge input-with-feedback" placeholder="Иванов Иван Иванович" ng-init="formData.name = '<%= current_account.nil? ? params[:name] : current_account.surname %>'" ng-model="formData.name" required>
+      <span class="help-inline"></span>
+    </div>
+  </fieldset>
+  <fieldset class="control-group">
+    <label for="user_account_tel" class="control-label">Телефон: </label>
+    <div class="controls">
+      <!-- <input type="text" name="user_account[tel]" id="user_account_tel" class="input-xlarge input-with-feedback" ng-init="formData.tel = '<%= current_account.nil? ? params[:tel] : current_account.tel %>'" ng-model="formData.tel" <%#ng-pattern="/^(\+|\d)(\d|-){1,}$/" pattern="^(\+|\d)(\d|-){1,}$"%> title="Номер телефона может состоять только из цифр" required> -->
+      <input type="text" id="user_account_tel" value="7" size="25" name="user_account[tel]" class="user_account_tel input-xlarge input-with-feedback" ng-init="formData.tel = '<%= current_account.nil? ? params[:tel] : current_account.tel %>'" ng-model="formData.tel" required style="width: auto"><br>
+      <!-- <input type="checkbox" id="phone_mask_3" checked style="display:none"> -->
+      <!-- <label id="descr3" for="phone_mask_3" style="display:inline;font-size:14px;"></label> -->
+      <span class="help-inline"></span>
+      <script type="text/javascript">
+        $(function() {
+          var ID19574475 = setInterval(function() {
+            if ($('#user_account_tel').is('input')) {
+              setTimeout(function() {
+                $('.user_account_tel').phonecode({ preferCo: 'ru' });
+              }, 5000);
+              clearInterval(ID19574475);
+            }
+          },100);
+        });
+      </script>
+    </div>
+  </fieldset>
+  <fieldset class="control-group">
+    <label for="user_account_email" class="control-label">Почта: </label>
+    <div class="controls">
+      <input type="email" name="user_account[email]" id="user_account_email" class="input-xlarge input-with-feedback" placeholder="user@yandex.ru" ng-init="formData.email = '<%= current_account.nil? ? params[:email] : current_account.email %>'" ng-model="formData.email" required>
+      <span class="help-inline"></span>
+    </div>
+  </fieldset>
+  <fieldset class="control-group" onload="alert('hello')">
+    <label for="user_account_payment_type" class="control-label">Способ оплаты: </label>
+    <% if @dt == 1 %>
+      <%= select_tag(:payment_type, :options => {'Самостоятельно в цветочном центре' => 3, 'Оплатить на сайте' => 4}, :selected => '4', 'ng-init' => "formData.payment_type = '4'", 'ng-model' => "formData.payment_type") %>
+    <% else %>
+      <%= select_tag(:payment_type, :options => {'Наличными курьеру' => 1,  'Пластиковой картой курьеру' => 2,  'Самостоятельно в цветочном центре' => 3, 'Оплатить на сайте' => 4}, :selected => '4', 'ng-init' => "formData.payment_type = '4'", 'ng-model' => "formData.payment_type") %>
+    <% end %>
+  </fieldset>
+  <fieldset class="control-group">
+    <label for="user_account_comment" class="control-label">Ваш комментарий к заказу:</label>
+    <%= text_area_tag :comment, 'ng-model' => "formData.comment" %>
+  </fieldset>
+  <% if @dt != 1 %>
+  <fieldset class="control-group">
+    <label for="user_account_make_photo" class="control-label" style="margin-bottom:4px;font-size:15px;"     >Сделать фото получателя в момент вручения?</label>
+    <% field_set_tag(:style => 'margin-bottom: 12px;') do %>
+      <%= radio_button_tag :make_photo, :value => '1', :id => 'make_photo1', 'ng-init' => "formData.make_photo = 0", 'ng-model' => "formData.make_photo", :checked => '' %>
+      <%= label_tag :make_photo1, :caption => 'Да', :style => 'display:inline-block;margin-right:12px;padding-left:4px;' %>
+      <%= radio_button_tag :make_photo, :value => '0', :id => 'make_photo2', 'ng-model' => "formData.make_photo" %>
+      <%= label_tag :make_photo2, :caption => 'Нет', :style => 'display: inline-block;padding-left:4px;' %>
+    <% end %>
+  </fieldset>
+  <% field_set_tag do %>
+    <%= label_tag :ostav, :caption => 'Можно оставить букет соседям/родственникам?', :style => 'margin-bottom:4px;font-size:15px;' %>
+    <% field_set_tag(:style => 'margin-bottom: 12px;') do %>
+      <%= radio_button_tag :ostav, :value => '1', :id => 'ostav1', :checked => '', 'ng-init' => "formData.ostav = 0", 'ng-model' => "formData.ostav" %>
+      <%= label_tag :ostav1, :caption => 'Да', :style => 'display:inline-block;margin-right:12px;padding-left:4px;' %>
+      <%= radio_button_tag :ostav, :value => '0', :id => 'ostav2', 'ng-model' => "formData.ostav" %>
+      <%= label_tag :ostav2, :caption => 'Нет', :style => 'display:inline-block;padding-left:4px;' %>
+    <% end %>
+  <% end %>
+  <% end %>
+<div class="form-actions">
+  <a class="btn btn-primary" ng-click="loginFormBack()">Назад</a>
+  <button type="submit" class="btn btn-primary" onclick="ym(21751030,'reachGoal','order'); return true;" ng-click="checkoutFormSubmit(checkoutForm.$valid)">Далее</button>
+  <div>"lol"</div>
+</div>
+</form>
+<script>
+  $(document).ready(function(){
+    $('#checkoutForm').sisyphus();
+  });
+</script>
+<% end %>

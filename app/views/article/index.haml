@@ -1,0 +1,6 @@
+- # encoding: utf-8
+- @title = "Статьи"
+%div.hidden-xs.hidden-sm{style:"height: 44px"}
+.top-menu-margin
+  %h1{:style => "font-size:20px;margin-top:32px;"}=@seo[:h1] # 'Статьи'
+  #articles-list= partial 'article/article', :collection => @articles

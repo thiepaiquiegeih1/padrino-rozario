@@ -1,0 +1,8 @@
+﻿%span.star-rating
+  - rate = @rating
+  - (0...rate).each do |a|
+    %i
+%span.star-rating.remainder
+  - rmndr = 5 - rate
+  - (0...rmndr).each do |a|
+    %i

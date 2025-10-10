@@ -1,0 +1,113 @@
+<div class="row hidden-lg hidden-md" style="margin-top:-40px">
+  <div class="filters" style="min-height:30px;width:auto;background-color:#ff961d">
+    <a name="top"></a>
+
+    <div class="col-md-4 col-sm-4 col-xs-5">
+      <div class="">
+
+        <div class="head31" onclick="document.querySelector('.type_filters').classList.add('hidden');document.querySelector('.price_filters').classList.add('hidden');document.querySelector('.tag_filters').classList.toggle('hidden');return false;">
+          <strong>Состав букета</strong>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-3 col-sm-4 col-xs-3">
+      <div class="">
+        <div class="head31" onclick="document.querySelector('.tag_filters').classList.add('hidden');document.querySelector('.price_filters').classList.add('hidden');document.querySelector('.type_filters').classList.toggle('hidden'); return false;">
+          <strong>Виды</strong>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-3 col-sm-4 col-xs-4">
+      <div style="">
+        <div class="head31" onclick="document.querySelector('.type_filters').classList.add('hidden');document.querySelector('.tag_filters').classList.add('hidden');document.querySelector('.price_filters').classList.toggle('hidden'); return false;">
+          <strong>Цена</strong>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row hidden-lg hidden-md filters" style="margin:10px 0px 0px; border-radius:5px;background-color:#faf2e9;">
+  <div class="col-xs-12 tag_filters hidden" >
+    <% for tag in @tags %>
+      <div ng-class="{selected: navigator.itemExist(<%= tag.id %>,'tags')}" class="link" style="line-height:30px;min-width:50px;display:inline-block;">
+        <a href="javascript:void(0)" ng-click="navigator.toggleItem(<%= tag.id %>,'tags')"><%= tag.title %></a>
+        <a href="javascript:void(0)" class="pull-right" ng-show="navigator.itemExist(<%= tag.id %>,'tags')" ng-click="navigator.toggleItem(<%= tag.id %>,'tags')"></a>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="col-xs-12 type_filters hidden" >
+    <% for vid in @vidy %>
+      <div class="span2 link" ng-class="{selected: navigator.itemExist(<%= vid[1] %>,'categories')}" style="line-height:30px;min-width:50px;display:inline-block;">
+        <a href="javascript:void(0)" ng-click="navigator.toggleItem(<%= vid[1] %>,'categories',true)"><%= vid[0] %></a>
+        <a href="javascript:void(0)" class="pull-right" ng-show="navigator.itemExist(<%= vid[1] %>,'categories')" ng-click="navigator.toggleItem(<%= vid[1] %>,'categories',true)"></a>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="col-xs-12 price_filters hidden" >
+    <div ng-class="{selected: navigator.maxPrice === 2000}" class="span2 link" style="line-height:30px;min-width:50px;display:inline-block;">
+      <a href="javascript:void(0)" ng-click="navigator.toggleMaxPrice(2000)">до 2000 руб.</a>
+    </div>
+    <div ng-class="{selected: navigator.maxPrice === 4000}" class="span2 link" style="line-height:30px;min-width:50px;display:inline-block;">
+      <a href="javascript:void(0)" ng-click="navigator.toggleMaxPrice(4000)">до 4000 руб.</a>
+    </div>
+    <div ng-class="{selected: navigator.minPrice === 4000}" class="span2 link" style="line-height:30px;min-width:50px;display:inline-block;">
+      <a href="javascript:void(0)" ng-click="navigator.toggleMinPrice(4000)">свыше 4000 руб.</a>
+    </div>
+  </div>
+</div>
+
+<div class="row hidden-sm hidden-xs" style="padding-left:33px;">
+  <div class="col-md-12">
+    <div class="filters">
+      <a name="top"></a>
+      <div class="tags block">
+        <div class="head3">
+          <h3 class='no-margin'><strong>Состав букета</strong></h3>
+        </div>
+        <% for tag in @tags %>
+          <div ng-class="{selected: navigator.itemExist(<%= tag.id %>,'tags')}" class="link">
+            <a href="javascript:void(0)" ng-click="navigator.toggleItem(<%= tag.id %>,'tags')"><h4 class='no-margin'><strong><%= tag.title %></strong></h4></a>
+            <a href="javascript:void(0)" class="pull-right" ng-show="navigator.itemExist(<%= tag.id %>,'tags')" ng-click="navigator.toggleItem(<%= tag.id %>,'tags')"></a>
+          </div>
+        <% end %>
+      </div>
+      <div class="vidy span2 block">
+        <div class="head3">
+          <h3 class='no-margin'><strong>Виды</strong></h3>
+        </div>
+        <% for vid in @vidy %>
+          <div ng-class="{selected: navigator.itemExist(<%= vid[1] %>,'categories')}" class="span2 link">
+            <a href="javascript:void(0)" ng-click="navigator.toggleItem(<%= vid[1] %>,'categories',true)"><h4 class='no-margin'><strong><%= vid[0] %></strong></h4></a>
+            <a href="javascript:void(0)" class="pull-right" ng-show="navigator.itemExist(<%= vid[1] %>,'categories')" ng-click="navigator.toggleItem(<%= vid[1] %>,'categories',true)"></a>
+          </div>
+        <% end %>
+      </div>
+      <div class="span2 block price">
+        <div class="head3">
+          <h3 class='no-margin'><strong>Цена</strong></h3>
+        </div>
+        <div class="span2 link" ng-class="{selected: navigator.maxPrice === 2000}">
+          <a href="javascript:void(0)" ng-click="navigator.toggleMaxPrice(2000)"><h4 class='no-margin'><strong>до 2000 руб.</strong></h4></a>
+          <a href="javascript:void(0)" class="pull-right" ng-show="navigator.maxPrice === 2000" ng-click="navigator.toggleMaxPrice(2000)"></a>
+        </div>
+        <div class="span2 link" ng-class="{selected: navigator.maxPrice === 4000}">
+          <a href="javascript:void(0)" ng-click="navigator.toggleMaxPrice(4000)"><h4 class='no-margin'><strong>до 4000 руб.</strong></h4></a>
+          <a href="javascript:void(0)" class="pull-right" ng-show="navigator.maxPrice === 4000" ng-click="navigator.toggleMaxPrice(4000)"></a>
+        </div>
+        <div class="span2 link" ng-class="{selected: navigator.minPrice === 4000}">
+          <a href="javascript:void(0)" ng-click="navigator.toggleMinPrice(4000)"><h4 class='no-margin'><strong>свыше 4000 руб.</strong></h4></a>
+          <a href="javascript:void(0)" class="pull-right" ng-show="navigator.minPrice === 4000" ng-click="navigator.toggleMinPrice(4000)"></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  console.log('app/views/category/_filters.html.erb');
+</script>

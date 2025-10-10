@@ -1,0 +1,200 @@
+<div class="hidden-xs hidden-sm" style="height: 70px"></div>
+<div class="container" id='yandex-money' style="width: 100%">
+  <br>
+  <span>Уважаемый наш покупатель, мы делаем все для Вашего удобства! Если Вы знаете номер заказа и сумму, то можете оплатить его, заполнив следующие поля:<br></span>
+  <br> 
+  <form class="well form-horizontal" method="post">
+        <fieldset >
+    <div class="form-group" id='yandex-money-form'>
+      <label class="col-md-3 control-label" id='yandex-money-label'>Сумма*</label>  
+        <div class="col-md-9 inputGroupContainer">
+        <div class="input-group">
+            <span class="input-group-addon"><i class="glyphicon glyphicon-ruble"></i></span>
+      <input id="pred_sum" name="sum"  placeholder="Укажите сумму" class="form-control" type="number" value="" pattern="\d*" required>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group" id='yandex-money-form'>
+      <label class="col-md-3 control-label" id='yandex-money-label'>Номер заказа*</label>
+        <div class="col-md-9 inputGroupContainer" id='yandex-money-control'>
+        <div class="input-group">
+            <span class="input-group-addon"><i class="glyphicon glyphicon-pencil"></i></span>
+              <input id="pred_number" class="form-control" style="width: 100%" name="orderDetails" placeholder="Номер заказа" type="number" pattern="\d*" required></input>
+      </div>
+      </div>
+    </div>
+
+
+    <div class="form-group" id='yandex-money-form'>
+      <label class="col-md-3 control-label"></label>
+      <div class="col-md-9">
+        <button type="button" id='yandex-money-form' style="width: 100%" class="btn btn-warning" disabled>Далее <span class="glyphicon glyphicon-send"></span></button>
+      </div>
+    </div>
+    </fieldset>
+  </form>
+  <br> 
+<h2 class="bold" style="display: none;">Вы можете оплатить Ваш заказ одним из следующих способов:</h2>
+<center>
+  <div id="celebs" style="display:none">
+    <ul id="accordion">
+      <li><img class="img" src="/uploads/visa.png" /> <font size="4px">Банковская Карта</font>
+      <ul style="display: none;">
+        <li><font size="2px" width="auto">У нас есть возможность принимать оплату с помощью <b>Visa, MasterCard,American Express</b>. С помощью банковской карты вы можете быстро и удобно расчитаться, не выходя из дома.</font>
+        <p><a href="#" id="a_client1" onclick="document.getElementById('client1').style.display='block';document.getElementById('client1').style.margin='0px 0px 25px 0px';return false;" style="BORDER-BOTTOM: #d27f36 1px dashed; COLOR: #d27f36; TEXT-DECORATION: none;font-size: 14px ">Как провести оплату?</a></p>
+
+        <div id="client1" style="display:none">
+        <div class="spora">После оформления заказа и выбора пункта "оплатить на сайте" вы перейдёте на страницу оплаты, где будет необходимо ввести номер карты (написан на передней стороне вашей карточки),ФИО держателя карты, срок годности и CVC код (3-х значный на обратной стороне карты). Далее будет необходимо ввести мобильный телефон формата 7 *** *** ** **, к которому прикреплена банковская карта и ввести код подтверждения, который прийдёт в SMS сообщении на Ваш телефон.</div>
+        </div>
+
+        <p><a href="#" id="a_client2" onclick="document.getElementById('client2').style.display='block';document.getElementById('client2').style.margin='0px 0px 25px 0px';return false;" style="BORDER-BOTTOM: #d27f36 1px dashed; COLOR: #d27f36; TEXT-DECORATION: none;font-size: 14px ">Безопастность</a></p>
+
+        <div id="client2" style="display:none">
+        <div class="spora">Оплата заказа в нашем интернет магазине пластиковой картой проводится при помощи защищенного SSL-соединения, который установлен между нашим сервером и платежной компании PayMaster. Протокол https, через который проходит авторизация платежа, абсолютно безопасен для вас.</div>
+        </div>
+        </li>
+      </ul>
+      </li>
+      <li><img class="img" src="/uploads/yaMoney.png" /> <font size="4px">Яндекс Деньги</font>
+      <ul style="display: none;">
+        <li><font align="center" size="2px">Если у вас есть кошелёк в системе <a href="https://money.yandex.ru/actions">Яндекс Деньги </a>то вы можете с лёгкостью провести оплату данным способом на нашем сайте.<br />
+        C принципом работы Яндекс Денег Вы можете ознакомиться на <a href="https://www.money.yandex.ru/"> cайте компании </a> </font></li>
+      </ul>
+      </li>
+      <li><img class="img" src="/uploads/webMoney.png" /> <font size="4px">Web Money</font>
+      <ul style="display: none;">
+        <li><font size="2px">После выбора формы оплаты <b>WebMoney</b> Вам будет необходимо ввести логин и пароль от своего личного кабинета и произвести оплату.<br />
+        Если Вам необхоимо чтобы мы выставили Вам счёт, свяжитесь с нами и сообщите свой <b>WMID</b> и номер кошелька.</font></li>
+      </ul>
+      </li>
+      <li><img class="img" src="/uploads/beznal.png" /> <font size="4px">Безналичный Расчёт </font>
+      <ul style="display: none;">
+        <li><font size="2px">Данный способ оплаты предназначен для Корпоративных Клиентов </font>
+        <p><a href="#" id="a_client3" onclick="document.getElementById('client3').style.display='block';document.getElementById('client3').style.margin='0px 0px 25px 0px';return false;" style="BORDER-BOTTOM: #d27f36 1px dashed; COLOR: #d27f36; TEXT-DECORATION: none;font-size: 14px ">Как провести оплату</a></p>
+
+        <div id="client3" style="display:none">
+        <div class="spora">Отправьте на наш электронный адресс <a href="mailto:info@rozariofl.ru">info@rozariofl.ru</a> свои реквизиты, после чего мы выставим счёт для оплаты.<br />
+        Мы выполним заказ как только денежные средства поступят на наш расчётный счёт<br />
+        Обратите внимание, срок поступления средств составляет до 3-х банковских дней. Если есть необходимость ускорить выполнение заказа отправьте на нашу электронную почту <a href="mailto:info@rozariofl.ru">info@rozariofl.ru</a> копию платёжного документа.</div>
+        </div>
+        </li>
+      </ul>
+      </li>
+      <li><img class="img" src="/uploads/mob.png" /> <font size="4px">Мобильный телефон</font>
+      <ul style="display: none;">
+        <li><font align="center" size="2px">В данный момент использовать оплату через мобильный телефон возможно только у двух операторов связи <b>МТС</b> и <b>Би-Лайн.</b> В дальнейшем количество операторов будет увеличиваться. Следите за новостями сайта.</font></li>
+      </ul>
+      </li>
+      <li><img class="img" src="/uploads/qiwi.png" /> <font size="4px">Qiwi кошелёк</font>
+      <ul style="display: none;">
+        <li><font size="2px">Свой заказ Вы можете оплатить в любом терминале <b>QIWI</b> или терминале <b>Элекснет</b> по системе HandyBank.</font></li>
+      </ul>
+      </li>
+      <li><img class="img" src="/uploads/kurer.png" /> <font size="4px">Наличными курьеру</font> <!-- <p><a href="#" id="a_client4" onclick="document.getElementById('client4').style.display='block';document.getElementById('client4').style.margin='0px 0px 25px 0px';return false;" style="BORDER-BOTTOM: #d27f36 1px dashed; COLOR: #d27f36; TEXT-DECORATION: none;font-size: 14px ">Список городов, в которые возможна оплата наличными</a></p> -->
+      <div id="client4" style="display:none">
+      <div class="spora">Санкт-Петербург<br />
+      Мурманск</div>
+      </div>
+
+      <ul style="display: none;">
+        <li><font size="2px">Вы можете рассчитаться наличными деньгами по факту получения цветов. Только если заказчик и получатель одно лицо. </font></li>
+      </ul>
+      </li>
+    </ul>
+  </div>
+</center>
+</div>
+
+<div id="scriptloader">
+  <p id="first_name"></p>
+  <p id="Country_name"></p>
+  <p id="comment"></p>
+</div>
+
+<style>
+  @media only screen and (max-width: 992px) {
+    .delivery-lg {
+      display: none !important;
+    }
+  }
+</style>
+
+<script>
+$(document).ready( function() {
+  $('html, body').animate({
+    scrollTop: $(".page").offset().top
+  }, 100);
+});
+$('input').on('input change', function (){
+  if($('#pred_sum').val().length > 0 && $('#pred_number').val().length > 0){
+    $('button').removeAttr('disabled');
+  } else {
+    $('button').attr('disabled', 'disabled');
+  }
+});
+function errorHandler(emsg) {
+  console.error('ERROR:', emsg);
+  alert('Мы сожалеем, но произошла ошибка. Пожалуста, выберите иной способ оплаты или попробуйте позднее...');
+  window.location.href = '/cart#/order';
+}
+$('button').click(function (){
+  $('#first_name').html($('input[name=custName]').val());
+  $('#Country_name').html($('input[name=sum]').val());
+  $('#comment').html($('textarea[name=orderDetails]').val());
+  var value1 = $('input[name=sum]').val();
+  var value3 = document.getElementById("pred_number").value;
+  var value4 = $('input[name=custName]').val();
+
+
+  setTimeout(function() {
+    $('html, body').animate({
+      scrollTop: $(".page").offset().top - 56
+    }, 100);
+  }, 1000);
+
+  var xhr = new XMLHttpRequest();
+  xhr.open('POST', '/payment', true);
+  xhr.setRequestHeader('Content-Type', 'application/json');
+  xhr.send(JSON.stringify({
+    'amount': {
+      'value': value1,
+      'currency': 'RUB'
+    }, 'metadata': { 'orderNumber': value3, 'surcharge': true },
+    'description': 'Платёж (через форму предоплаты) за заказ № '+value3+', в интернет-магазине Розарио.Цветы',
+  }));
+  xhr.onload = function() { if (xhr.status === 200) { var response = JSON.parse(xhr.responseText);
+    if (response.metadata.orderNumber.split('D')[0] == value3) {
+      if (response.confirmation.type == 'redirect') {
+        // var otherWindow = window.open(); otherWindow.opener = null; otherWindow.location = response.confirmation.confirmation_url; // Safety open in new window (https://habr.com/ru/articles/282880/) // Popup blocking issues
+        // window.location.href = response.confirmation.confirmation_url; // Simulate a mouse click // https://www.w3schools.com/howto/howto_js_redirect_webpage.asp
+        window.location.replace(response.confirmation.confirmation_url); // Simulate an HTTP redirect // https://www.w3schools.com/howto/howto_js_redirect_webpage.asp
+      } else { errorHandler('No link for redirect');       }
+    } else   { errorHandler('Order numbers do not match'); }
+  } else     { errorHandler(xhr.statusText);               }};  
+  
+  <!-- sberbtn -->
+  //ipayCheckout({
+  //  order_number: value3,
+  //  amount: value1,
+  //  description: 'Платёж за заказ ' + value3 + ' в интернет-магазине Розарио.Цветы',
+  //  currency: 'RUB'
+  //})
+  document.body.style="overflow:hidden"
+  
+});
+
+  if ($('.pmwidget.pmwidgetDone').length){
+          $('#yandex-money').detach();
+          $('#scriptloader').detach();
+          var element1 = $('.pmwidget.pmwidgetDone').detach();
+          $('.page').append(element1);
+          $('#pmOpenAmount').val($('input[name=LMI_PAYMENT_AMOUNT]').val());
+          $('#pmOpenAmount').css('display', 'none');
+          $('#pmOpenAmount').after($('input[name=LMI_PAYMENT_AMOUNT]').val());
+          
+      };
+
+</script>
+
+<style> .feedback { display: none; } </style>

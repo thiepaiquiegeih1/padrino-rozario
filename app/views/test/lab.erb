@@ -1,0 +1,65 @@
+<!DOCTYPE html><html><head>
+  <meta charset="utf-8" />
+  <title>test</title>
+  <!-- <script src="//ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script> -->
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <%=javascript_include_tag'//rawgit.com/kawanet/msgpack-lite/master/dist/msgpack.min.js'%>
+  <%#=javascript_include_tag'test'%>
+  <%#=stylesheet_link_tag'test'%>
+  <style type="text/css">
+    body { background: url('/images/horizon-wide.jpg'); background-size: cover; padding: 48px; background-attachment: fixed; }
+    main { margin: 0 auto; max-width: 1280px; min-height: 600px; padding: 24px; background: rgba(0,0,0,0.75); color: #FFF; border-radius: 12px; }
+    main section { padding: 24px; border: 1px solid #FFF; font-family: monospace; }
+    main section a { background: #000; padding: 2px; }
+    table { width: 100%; }
+    table td { border: 1px solid #F0F }
+  </style>
+</head><body><main>
+
+  <section>
+  <%
+    # Product.find('202').categories.each_with_index { |x, i|
+    #   %><%#=x.id%><%
+    # } #.check_availability(@subdomain_pool)
+  %>
+  </section>
+  <section>
+    <%
+      # CategoriesSubdomainPool.where(subdomain_pool_id: @subdomain_pool.id).each { |x|
+      #   if !arr.include?(x.category_id)
+      #     %><%#=x.category_id%><br /><%
+      #   end
+      # }
+
+      # arr_category_id = []
+
+      # CategoriesProducts.where(product_id: 202).each_with_index { |x, i|
+      #   arr_category_id[i] = x.category_id
+      # }
+
+
+    %>
+  </section>
+
+  <section>
+    <%
+    
+      # arr_category_id.each { |x|
+      #   CategoriesCategorygroup.where(category_id: x).each { |x|
+      #     categorygroup_id = x.categorygroup_id
+      #     %><%#=categorygroup_id%><br /><%
+      #   }
+      # }
+
+      # arr_category_id = []
+
+      # CategoriesSubdomain.where(subdomain_id: @subdomain.id).each_with_index { |x, i|
+      #   arr_category_id[i] = x.category_id
+      # }
+
+    %>
+  </section>
+  
+  <%#=arr_category_id%><br />
+
+</main></body></html>

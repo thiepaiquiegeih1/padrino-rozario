@@ -1,0 +1,9 @@
+- # encoding: utf-8
+%ul.nav.nav-tabs
+  %li=link_to tag_icon(:list, pat(:list)), url(:'discounts/discount_periods', :index)
+  %li=link_to tag_icon(:plus, pat(:new)), url(:'discounts/discount_periods', :new)
+  %li.active=link_to tag_icon(:edit, pat(:edit)), url(:'discounts/discount_periods', :edit, :id => @discount_periods.id)
+
+.tabs-content
+  -form_for :discount_periods, url(:'discounts/discount_periods', :update, :id => @discount_periods.id), :method => :put, :class => 'form-horizontal' do |f|
+    =partial 'discounts/discount_periods/form', :locals => { :f => f }

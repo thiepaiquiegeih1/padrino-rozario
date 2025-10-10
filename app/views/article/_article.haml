@@ -1,0 +1,8 @@
+%article.clearfix
+	-if article.slug.present?
+		%h3.title
+			=link_to article.title, abs_url_for(:article, :index, :slug => article.slug)
+	-else
+		%h3.title
+			=link_to article.title, abs_url_for(:article, :index, :slug => article)
+	.ann!= article.announce

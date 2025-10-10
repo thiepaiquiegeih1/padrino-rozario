@@ -1,0 +1,56 @@
+- # encoding: utf-8
+=partial 'delivery/tabs', :locals => {:entity => :murmanskstreets, :action => :list}
+-form_tag url(:'delivery/murmanskstreets', :search), :method => :get, :class => 'form-horizontal' do
+  %fieldset.control-group
+    =text_field_tag :query, :class => 'search_field', :placeholder => 'поиск'
+
+.tabs-content
+  %table#list.table.table-striped.table-hover.table-condensed
+    %thead
+      %tr
+        %th.header.list-menu
+          .dropdown
+            %a.list-menu-toggle.dropdown-toggle{:href => '#', :'data-toggle' => :dropdown}
+              =tag_icon :magic
+              %span.caret
+            %ul.list-menu.dropdown-menu{:role => :menu}
+              %li.list-menu-wrapper=link_to tag_icon(:check, pat(:select_all)), '#', :id => 'select-all', :class => 'list-menu-link'
+              %li.list-menu-wrapper.list-menu-wrapper-disabled
+                =link_to tag_icon(:'check-empty', pat(:deselect_all)), '#', :id => 'deselect-all', :class => 'list-menu-link list-menu-link-disabled'
+              %li.list-menu-divider.divider
+              %li.list-menu-wrapper.list-menu-wrapper-disabled
+                =link_to tag_icon(:trash, pat(:delete_selected)), '#', :id => 'delete-selected', :class => 'list-menu-link list-menu-link-disabled'
+                .list-menu-popover-delete-selected.popover.right
+                  .arrow
+                  %h3.popover-title=pat(:delete_selected_title)
+                  .popover-content
+                    -form_tag url(:'delivery/murmanskstreets', :destroy_many), :method => :delete do
+                      =hidden_field_tag :murmanskstreet_ids, :'data-delete-many-ids' => true
+                      =submit_tag pat(:delete), :class =>'list-menu-popover-delete-selected-btn btn btn-danger btn-small'
+                      .btn.btn-small.cancel=pat(:cancel)
+        %th.header= :id
+        %th.header= :name
+        %th.header= :price
+        %th.header.list-row-action-header
+
+    %tbody
+      -@murmanskstreets.each do |murmanskstreet|
+        %tr.list-row
+          %td.list-column.list-selectable
+            =check_box_tag 'murmanskstreet_ids[]', :value => murmanskstreet.id, :class => 'list-selectable-checkbox'
+          %td.list-column=murmanskstreet.id
+          %td.list-column=murmanskstreet.name
+          %td.list-column=murmanskstreet.price
+          %td.list-column.list-row-action
+            .list-row-action-wrapper
+              =link_to tag_icon(:edit), :href => url(:'delivery/murmanskstreets', :edit, :id => murmanskstreet.id), :rel => :tooltip, :title => "#{pat(:edit)} murmanskstreet", :class => 'list-row-action-wrapper-link'
+              =link_to tag_icon(:trash), :rel => :tooltip, :title => "#{pat(:delete)} murmanskstreet", :class => 'list-row-action-delete-one list-row-action-wrapper-link'
+              .popover.list-row-action-popover-delete-one.left
+                .arrow
+                %h3.popover-title=pat(:delete, :model => "murmanskstreet")
+                .popover-content
+                  -form_tag url(:'delivery/murmanskstreets', :destroy, :id => murmanskstreet.id), :method => :delete do
+                    =submit_tag pat(:delete), :class =>'list-row-action-popover-delete-one-btn btn btn-danger btn-small'
+                    .btn.btn-small.cancel=pat(:cancel)
+- if !@search
+  !=will_paginate @murmanskstreets

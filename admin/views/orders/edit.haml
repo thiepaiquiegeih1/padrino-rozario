@@ -1,0 +1,14 @@
+- # encoding: utf-8
+-form_for :order, url(:orders, :update, :id => @order.id), :method => :put, :class => 'form-horizontal' do |f|
+
+  - error = @order.errors.include?(:status_id)
+  %fieldset.control-group{:class => error ? 'has-error' : ''}
+    =f.label "Статус", :class => 'control-label'
+    .controls
+      =f.select(:status_id, :collection => @statuses, :fields => [:title, :id], :class => 'input-xlarge input-with-feedback', :selected => @order.status.id)
+      %span.help-inline=error ? f.error_message_on(:status_id, :class => 'text-error') : ""
+
+  .form-actions
+    =f.submit pat(:save), :class => 'btn btn-primary'
+    &nbsp;
+    =link_to pat(:cancel), url(:orders, :index), :class => 'btn'

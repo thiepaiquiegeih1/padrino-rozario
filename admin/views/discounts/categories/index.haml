@@ -1,0 +1,6 @@
+- # encoding: utf-8
+=partial 'discounts/tabs', :locals => {:entity => :categories, :action => :list}
+
+.tabs-content
+  -form_for :category, url(:'discounts/categories', :update), :method => :put, :class => 'form-horizontal' do |f|
+    =partial 'discounts/categories/form', :locals => { :f => f }

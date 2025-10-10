@@ -1,0 +1,231 @@
+<%=erb :'erbhf/header'%>
+
+<% 
+  # WebPage Schema.org markup for delivery page
+  page_url = @subdomain.url != 'murmansk' ? 
+    "https://#{@subdomain.url}.#{CURRENT_DOMAIN}/page/dostavka" : 
+    "https://#{CURRENT_DOMAIN}/page/dostavka"
+  
+  # Dynamic page title with city context
+  city_name = @subdomain.city.present? ? @subdomain.city : "Мурманск"
+  page_title = @seo[:title] || "Доставка цветов в #{city_name}"
+  page_description = @seo[:description] || "Информация о доставке букетов и подарков Rozario Flowers: сроки, виды доставки, условия вручения, форс-мажоры, конфиденциальность."
+%>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "name": "<%= page_title %>",
+  "url": "<%= page_url %>",
+  "description": "<%= page_description %>",
+  "inLanguage": "ru-RU",
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": "Rozario Flowers",
+    "url": "<%= @subdomain.url != 'murmansk' ? "https://#{@subdomain.url}.#{CURRENT_DOMAIN}/" : "https://#{CURRENT_DOMAIN}/" %>"
+  },
+  "about": "Информационная страница о доставке цветов",
+  "publisher": {
+    "@type": "Organization",
+    "name": "Rozario Flowers"
+  }
+}
+</script>
+
+<%# <div style="height: 84px;"></div> %>
+
+<style type="text/css">
+
+  @media screen and (width <= 1024px) {
+    #sidebarrr {display: none;}
+  }
+
+  .feedback {display: block;}
+  .vki4 {
+    clear: both;
+    border-top: 1px solid #dadec5;
+    margin-bottom: 15px;
+  }
+  .vki5 {
+    clear: both;
+    border-top: 1px solid #dadec5;
+  }
+  .vki4 div:hover {
+    text-decoration: underline;
+  }
+  .vuk {
+    margin-top: 30px;
+  }
+  .vyk {
+    
+  }
+  .vak {
+    margin-top: 40px;
+  }
+  .vuk h2, .vak h2 {
+    /*margin: 10px 0;*/
+  }
+  .dostavka h3 {
+    margin: 0;
+    padding: 15px 0px 8px 0px;
+    font-size: 17px;
+  }
+  .spora {
+    padding-left: 30px;
+  }
+  .dostavka table.prices_table {
+    border: 1px solid #d27f36;
+    text-align: center;
+    margin-left: 20px;
+    font-size:14px; 
+    line-height: 20px;
+  }
+  .dostavka table.prices_table td, .dostavka table.prices_table th {
+    border: 1px solid #d27f36;
+    padding: 10px 10px 10px 15px !important;
+  }
+  @media only screen and (max-width: 992px) {
+    .delivery-lg {
+      display: none;
+    }
+  }
+  @media only screen and (max-width: 768px) {
+    #mainnn {
+      padding: 24px;
+    }
+    #sidebarrr { display: none; }
+  }
+</style>
+
+<div class="dostavka">
+
+  <%# <h1 style="font-size: 20px;"><%=@seo[:h1].html_safe </h1> %>
+
+  <p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;<img alt="" src="/uploads/o nas/shipping24.png" style="max-width: 400px; width: 100%;" /></p>
+
+  <h4>Время доставки</h4>
+
+<div>
+
+<style type="text/css">
+  @media only screen and (max-width: 992px) {
+    .prices_table {
+      width: calc(100% - 48px);
+    }
+  }
+</style>
+
+<table cellpadding="4" cellspacing="1" class="prices_table">
+  <tbody>
+    <tr>
+      <td align="left" width="170"><strong>Город</strong></td>
+      <td align="left" width="270"><strong>Время доставки, час</strong></td>
+    </tr>
+    <tr>
+      <td align="left" rowspan="2" width="170"><%=@subdomain.city%></td>
+      <td align="left" width="270">урочное время: 8.00-21.00</td>
+    </tr>
+    <tr>
+      <td align="left" width="270">неурочное время: 21.00-8.00</td>
+    </tr>
+    <tr>
+      <td align="left" colspan="3" width="120"><strong>Доставка в <%=@subdomain.city%></strong> осуществляется круглосуточно. Возможность и стоимость доставки до начала и после окончания работы салонов (неурочное время), а также доставки к точному времени будет отображена на странице оформления заказа.</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<h3>Возможные виды доставки</h3>
+
+<p>Компания «Розарио» предлагает вам два возможных вида доставки:</p>
+
+<ul>
+  <li>
+  <p><strong>Доставка продукции с предварительным звонком.</strong></p>
+
+  <p>Такой способ подразумевает то, что наши менеджеры накануне доставки (за 1-2 дня) связываются по телефону с получателем, уточняют координаты и время. При этом, по вашему желанию, могут не раскрывать всю информацию о заказчике.</p>
+  </li>
+  <li>
+  <p><strong>Доставка продукции без предварительного звонка.</strong></p>
+
+  <p>Данный способ подразумевает то, что наши менеджеры предварительно не связываются по телефону с получателем, сохраняя до момента доставки эффект сюрприза.</p>
+
+  <p><a href="#" id="a_client1" onclick="document.getElementById('client1').style.display='block';document.getElementById('client1').style.margin='0px 0px 25px 0px';return false;" style="BORDER-BOTTOM: #d27f36 1px dashed; COLOR: #d27f36; TEXT-DECORATION: none;font-size: 14px ">Условия доставки без предварительного звонка получателю</a></p>
+
+  <div id="client1" style="display:none">
+  <div class="spora">
+  <p>Главное условие доставки цветов или подарков от компании «Розарио» – это то, что заказ вручается получателю лично в руки, и не может быть передан третьим лицам (соседям, знакомым, друзьям и т.д.). При отсутствии получателя на время доставки, курьер может ожидать его не более 20 минут. Для осуществления повторной доставки, заказчику необходимо произвести доплату. Если же доставка была оформлена на рабочий адрес получателя, то курьер может оставить заказ на вахте или у сослуживцев, однако при условии предоставления доказательств того, что в данное время получатель присутствует на рабочем месте.</p>
+  </div>
+  </div>
+  </li>
+</ul>
+
+<h4>Особенности доставки заказа</h4>
+
+<ul>
+  <li>
+  <p style="padding-top:9px; margin-bottom:0.3em;"><strong>Доставка нашей продукции на дом.</strong></p>
+
+  <p>Букет цветов или подарок передается только лично в руки получателю. В том случае, если получатель будет отсутствовать на время доставки, заказ не может быть отдан другим лицам.</p>
+  </li>
+  <li>
+  <p style="padding-top:6px; margin-bottom:0.3em;"><strong>Доставка нашей продукции на рабочий адрес или в гостиницу.</strong></p>
+
+  <p>Если доставка оформлена на рабочий адрес или адрес гостиницы, то, как правило, мы ручаемся лишь за доставку до ресепшена, поскольку курьеру зачастую отказывают в посещении номера или офиса (где живет или работает получатель). Поэтому мы всегда рекомендуем указывать не только номер телефона, но и номер комнаты гостиницы или номер офиса получателя.</p>
+  </li>
+</ul>
+
+<h4>Форс мажорные обстоятельства</h4>
+
+<ul>
+  <li>
+  <p><a href="#" id="a_client2" onclick="document.getElementById('client2').style.display='block';document.getElementById('client2').style.margin='0px 0px 25px 0px';return false;" style="BORDER-BOTTOM: #d27f36 1px dashed; COLOR: #d27f36; TEXT-DECORATION: none;font-size: 14px ">Отсутствие получателя на время доставки</a></p>
+
+  <div id="client2" style="display:none">
+  <div class="spora">
+  <p>При отсутствии получателя на время доставки, курьер может ожидать его не более 20 минут.</p>
+
+  <p>Если получатель не может в обозначенное время принять букет цветов или подарок, то наши менеджеры немедленно свяжутся с вами, дабы определить более удобное для получателя время.</p>
+
+  <p>Для осуществления повторной доставки, заказчику будет необходимо произвести доплату.</p>
+  </div>
+  </div>
+  </li>
+  <li>
+  <p><a href="#" id="a_client3" onclick="document.getElementById('client3').style.display='block';document.getElementById('client3').style.margin='0px 0px 25px 0px';return false;" style="BORDER-BOTTOM: #d27f36 1px dashed; COLOR: #d27f36; TEXT-DECORATION: none;font-size: 14px ">Контактные данные получателя указаны не правильно.</a></p>
+
+  <div id="client3" style="display:none">
+  <div class="spora">
+  <p>В случае если контактные данные получателя указаны не правильно или не полностью, то осуществление доставки вашего заказа может существенно задержаться. Для того чтобы избежать такого рода ситуаций, во время оформления заказа следует внимательно проверить все контактные данные получателя.</p>
+  </div>
+  </div>
+  </li>
+  <li>
+  <p><a href="#" id="a_client4" onclick="document.getElementById('client4').style.display='block';document.getElementById('client4').style.margin='0px 0px 25px 0px';return false;" style="BORDER-BOTTOM: #d27f36 1px dashed; COLOR: #d27f36; TEXT-DECORATION: none;font-size: 14px ">Заказ не доставлен вследствие различных причин (пропускная система, запертая подъездная дверь и т.д.).</a></p>
+
+  <div id="client4" style="display:none">
+  <div class="spora">
+  <p>Чтобы вам не пришлось заказывать повторную доставку, при оформлении документов следует указывать о всевозможных препятствиях и способах их преодоления (указать код домофона, каким образом можно пройти пропускную систему и т.д.).</p>
+  </div>
+  </div>
+  </li>
+</ul>
+
+<a name="4"></a>
+
+<div class="vak">
+<h3>Отслеживание статуса вашего заказа</h3>
+</div>
+
+<p>Вы можете отследить статус своего заказа в личном кабинете или, если будет такая необходимость, получить всю необходимую информацию у <a href="/page/contacts">наших специалистов</a>.</p>
+<a name="6"></a>
+
+<div class="vak">
+<h3>Конфиденциальная информация</h3>
+</div>
+
+<p>Компания «Розарио» не открывает получателю никакой информации (имя клиента и т.д.). При передаче заказа, курьер сообщает лишь о том, что это оплаченный букет цветов или подарок. В том случае, если вы хотите сообщить получателю какую-либо дополнительную информацию, то вы можете указать ее в открытке, прилагающейся к букету или подарку.</p>
+</div>
+
+<%=erb :'erbhf/footer'%>

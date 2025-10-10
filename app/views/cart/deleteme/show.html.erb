@@ -1,0 +1,163 @@
+<% if @cart.blank? %>
+  <h2 style="margin-top: 38px;">Корзина</h2>
+  <p>Ваша корзина пуста. Перейдите в <a href="/">каталог букетов.</a></p>
+<% else %>
+  <div id=app></div>
+<% end %>
+<div class="row">
+  <div class="col-md-12">
+    <h3>Смотрите также</h3>
+
+    <div class="clearfix hidden-xs" id="cross">
+      <% @cross_cats.each_slice(8) do |items| %>
+        <div class="frame">
+          <% items.each_with_index do |item, index| %>
+            <div class="<%= ("nomr" if index % 4 == 3) %> item">
+              <div class="image">
+                <a class="fancybox" href="#citems-<%= item.slug %>" title="<%= item.title %>">
+                  <%= image_tag(item.image, :alt => item.title, class: 'img-responsive') %>
+                </a>
+              </div>
+              <div class="title">
+                <%= item.title %>
+              </div>
+              <div class="citems" id="citems-<%= item.slug %>">
+                <% item.products.take(15).each do |pitem| i_title = wrap_seo_params(title: pitem.header)[:title] %>
+                  <div class="pitem">
+                    <div class="image">
+                      <%= link_to image_tag(pitem.image, :alt => pitem.alt), pitem.image, :class => 'csfb', :title => i_title %>
+                    </div>
+                    <div class="title">
+                      <span>
+                        <%= i_title %>
+                      </span>
+                    </div>
+                    <div class="price">
+                      <%= "Цена: #{pitem.price}" %>
+                      &nbsp;<i class="fa fa-rub" aria-hidden="true"></i>
+                    </div>
+                    <div class="tocart">
+                      <% form_tag url(:cart, :add, pitem.id), :method => 'get', :class => 'form tocartf' do |f| %>
+                        <%= text_field_tag :quantity, :value => "1", :class => 'quantity' %>
+                        <%= submit_tag 'В корзину', :class => 'btn' %>
+                      <% end %>
+                    </div>
+                  </div>
+                <% end %>
+              </div>
+            </div>
+            <% if (index) % 4 == 3 %>
+              <div class="clearfix"></div>
+            <% end %>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+
+    <div class="clearfix hidden-lg hidden-md hidden-sm" id="cross">
+      <% @cross_cats.each_slice(8) do |items| %>
+        <div class="frame">
+          <% items.each_with_index do |item, index| %>
+            <div class="<%= ("nomr" if index % 4 == 3) %> item" style="width:100%">
+              <div class="image text-center" style="background-color:#fff">
+                <a class="fancybox" href="#citems-<%= item.slug %>" title="<%= item.title %>">
+                  <%= image_tag(item.image, :alt => item.title, style: 'width:auto') %>
+                </a>
+              </div>
+              <div class="title">
+                <%= item.title %>
+              </div>
+              <div class="citems" id="citems-<%= item.slug %>">
+                <% item.products.take(15).each do |pitem| i_title = wrap_seo_params(title: pitem.header)[:title] %>
+
+                  <div class="pitem">
+                    <div class="image">
+                      <%= link_to image_tag(pitem.image, :alt => pitem.alt), pitem.image, :class => 'csfb', :title => i_title %>
+                    </div>
+                    <div class="title">
+                      <span>
+                        <%= i_title %>
+                      </span>
+                    </div>
+                    <div class="price">
+                      <%= "Цена: #{pitem.price}" %>
+                      &nbsp;<i class="fa fa-rub" aria-hidden="true"></i>
+                    </div>
+                    <div class="tocart">
+                      <% form_tag url(:cart, :add, pitem.id), :method => 'get', :class => 'form tocartf' do |f| %>
+                        <%= text_field_tag :quantity, :value => "1", :class => 'quantity' %>
+                        <%= submit_tag 'В корзину', :class => 'btn' %>
+                      <% end %>
+                    </div>
+                  </div>
+
+                <% end %>
+              </div>
+            </div>
+            <% if (index) % 4 == 3 %>
+              <div class="clearfix"></div>
+            <% end %>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
+<script type=module src=vue/js/chunk-vendors.a7c244bf.js></script>
+<script type=module src=vue/js/app.c2da5a71.js></script>
+<script>
+  ! function() {
+    var e = document,
+      t = e.createElement("script");
+    if (!("noModule" in t) && "onbeforeload" in t) {
+      var n = !1;
+      e.addEventListener("beforeload", function(e) {
+        if (e.target === t) n = !0;
+        else if (!e.target.hasAttribute("nomodule") || !n) return;
+        e.preventDefault()
+      }, !0), t.type = "module", t.src = ".", e.head.appendChild(t), t.remove()
+    }
+  }();
+  $(document).ready(function(){
+    $(".delivery.delivery-lg").css("cssText", "display: none !important;");
+  });
+</script>
+</script>
+<script src=vue/js/chunk-vendors-legacy.289ba039.js nomodule></script>
+<script src=vue/js/app-legacy.57f46b3e.js nomodule></script>
+<script>
+alert(2345) 
+function insertAfter(elem, refElem) {
+  return refElem.parentNode.insertBefore(elem, refElem.nextSibling);
+} 
+window.onload = function() {
+  var timerId = setInterval(function() {
+    if(document.querySelector("input[name=LMI_PAYMENT_AMOUNT]")){
+      var inpt = document.querySelector('#pmOpenAmount');
+      var val_sum = document.querySelector("input[name=LMI_PAYMENT_AMOUNT]").value;
+      inpt.value = val_sum;
+      inpt.style = "display: none";
+      var elem = document.createElement('span');
+      elem.innerHTML = val_sum;
+      insertAfter(elem, inpt);      
+
+      if(document.querySelector("input[name=LMI_PAYMENT_AMOUNT]").value){
+        var pay_del = document.querySelector("input[value='Доставка']");
+        var def_name = pay_del.name.split('.');
+        var curr_name = def_name;
+        curr_name[2] = "PRICE";
+        curr_name = curr_name.join('.');
+        if(!document.querySelector('input[name="'+ curr_name +'"]')){
+          console.log('true');
+          var elem2 = document.createElement('input');
+          elem2.name = curr_name;
+          elem2.type = "hidden";
+          elem2.value = "0";
+          insertAfter(elem2, pay_del);
+        }
+        clearInterval(timerId);
+      }
+    }
+    }, 1000);
+};
+</script>

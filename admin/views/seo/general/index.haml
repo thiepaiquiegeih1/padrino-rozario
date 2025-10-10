@@ -1,0 +1,26 @@
+- # encoding: utf-8
+=partial 'seo/tabs', :locals => {:entity => :general, :action => :list}
+.tabs-content
+  %table#list.table.table-striped.table-hover.table-condensed
+    %thead
+      %tr
+        %th.header= :id
+        %th.header Тип
+        %th.header Заголовок (title)
+        %th.header Описание (description)
+        %th.header Ключивые слова (keywords)
+        %th.header Последнее обновление
+        %th.header.list-row-action-header
+
+    %tbody
+      -@general.each do |g|
+        %tr.list-row
+          %td.list-column=g.id
+          %td.list-column=g.name
+          %td.list-column=g.title
+          %td.list-column=g.description
+          %td.list-column=g.keywords
+          %td.list-column=time_ago_in_words g.updated_at
+          %td.list-column.list-row-action
+            .list-row-action-wrapper
+              =link_to tag_icon(:edit), :href => url(:'seo/general', :edit, :id => g.id), :rel => :tooltip, :title => "#{pat(:edit)} general", :class => 'list-row-action-wrapper-link'

@@ -1,0 +1,23 @@
+-# coding: utf-8
+-tab_list = [{entity:'subdomains', title: 'Поддомены', new: true}, {entity:'subdomain_pools',  title: 'Пулы поддоменов', new: true}]
+
+-#-entity
+-#-action
+-#-
+-entity = entity.to_s
+-action = action.to_s
+-p entity.to_s
+-p action
+%ul.nav.nav-tabs
+  -tab_list.each  do |tab_name|
+    -icon_name = :list
+    -icon_name = tab_name[:icon] unless tab_name[:icon].nil?
+    %li{:class => ('active' if entity == tab_name[:entity] && action == 'list')}=link_to tag_icon(icon_name, pat(tab_name[:title])), url(:"regions/#{tab_name[:entity]}", :index)
+    -if entity == tab_name[:entity]
+      -if action.to_s == :edit.to_s
+        -entity_var = instance_variable_get("@#{tab_name[:entity].singularize}")
+        %li.active=link_to tag_icon(:edit, pat(:edit)), url(:"regions/#{tab_name[:entity]}", :edit, :id => entity_var.id)
+      -if tab_name[:new]
+        %li{:class => ('active' if entity == tab_name[:entity] && action == 'new')}=link_to tag_icon(:plus, pat(:new)), url("regions/#{tab_name[:entity]}/new")
+      -if tab_name[:show] && action == 'show'
+        %li{:class => ('active' if entity == tab_name[:entity] && action == 'show')}=link_to tag_icon('zoom-in', pat(:show)), url("regions/#{tab_name[:entity]}/show")

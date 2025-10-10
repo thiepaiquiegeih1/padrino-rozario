@@ -1,0 +1,15 @@
+-# coding: utf-8
+%li 
+  -# %strong= link_to 'Все букеты', '/'
+- @lf_catlist.where(parentcat_id: 0).order("sequence").each do |cat|
+
+  - if @lf_catlist.where(parentcat_id: cat.category_id).count !=0
+    
+    %li.dropdown-submenu
+      %strong= link_to cat.category.title, '/category/' + cat.category_id.to_s, :tabindex => "-1",  :id => 'i'+ cat.category_id.to_s
+      %ul.dropdown-menu
+        - @lf_catlist.where(parentcat_id: cat.category_id).each do |subcat|
+          %li= link_to subcat.category.title, '/category/' + subcat.category_id.to_s, :tabindex => "-1", :id => 'i'+ subcat.category_id.to_s
+  -else
+    %li
+      %strong= link_to cat.category.title, '/category/' + cat.slug.to_s, :id => 'i'+ cat.category_id.to_s

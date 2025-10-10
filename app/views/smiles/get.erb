@@ -1,0 +1,19 @@
+<% i = 0 + @offset; @posts.each do | post | %>
+  <% if i % 5 == 0; big = 'big'; else; big = ''; end; %>
+  <div class="post-item <%=big%>"><div class="wrapper hvr-grow">
+    <%#<h2></h2>%>
+    <hr />
+    <p>
+      <% ext = File.extname(post.images.current_path) %>
+      <% base = File.basename(post.images.current_path, ".*").to_s %>
+      <% fname = base + '_tn' + ext %>
+      <% File.file?(fname) ? fname : fname = File.basename(post.images.current_path) %>
+      <a href="/smiles/<%=post.id%>/"><img class="show-smile" type="button" src="<%='/uploads/smiles/' + fname %>" /></a>
+    </p>
+    <p >
+      <a class="btn rm" href="/smiles/<%=post.id%>/">Подробнее</a>
+    </p>
+  </div></div>
+<% i = i + 1; end; %>
+
+<% if @lastget %><style>.get-more{display:none}</style><% end %>

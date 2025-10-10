@@ -1,0 +1,67 @@
+- # encoding: utf-8
+-form_tag url(:smiles, :search), :method => :get, :class => 'form-horizontal' do
+  %fieldset.control-group
+    =select_tag :type, :options => Smile.attribute_names, :selected => 'id', :style => "width:20%"
+    =text_field_tag :query, :class => 'search_field', :placeholder => 'поиск', :style => "width:60%"
+    =submit_tag pat('Поиск'), :class => 'btn btn-primary'
+%ul.nav.nav-tabs
+  %li.active=link_to tag_icon(:list, pat(:list)), url(:smiles, :index)
+  %li=link_to tag_icon(:plus, pat(:new)), url(:smiles, :new)
+
+.tabs-content
+  %table#list.table.table-striped.table-hover.table-condensed
+    %thead
+      %tr
+        %th.header.list-menu
+          .dropdown
+            %a.list-menu-toggle.dropdown-toggle{:href => '#', :'data-toggle' => :dropdown}
+              =tag_icon :magic
+              %span.caret
+            %ul.list-menu.dropdown-menu{:role => :menu}
+              %li.list-menu-wrapper=link_to tag_icon(:check, pat(:select_all)), '#', :id => 'select-all', :class => 'list-menu-link'
+              %li.list-menu-wrapper.list-menu-wrapper-disabled
+                =link_to tag_icon(:'check-empty', pat(:deselect_all)), '#', :id => 'deselect-all', :class => 'list-menu-link list-menu-link-disabled'
+              %li.list-menu-divider.divider
+              %li.list-menu-wrapper.list-menu-wrapper-disabled
+                =link_to tag_icon(:trash, pat(:delete_selected)), '#', :id => 'delete-selected', :class => 'list-menu-link list-menu-link-disabled'
+                .list-menu-popover-delete-selected.popover.right
+                  .arrow
+                  %h3.popover-title=pat(:delete_selected_title)
+                  .popover-content
+                    -form_tag url(:smiles, :destroy_many), :method => :delete do
+                      =hidden_field_tag :smile_ids, :'data-delete-many-ids' => true
+                      =submit_tag pat(:delete), :class =>'list-menu-popover-delete-selected-btn btn btn-danger btn-small'
+                      .btn.btn-small.cancel=pat(:cancel)
+        %th.header= :id
+        %th.header= :title
+        %th.header Фото
+        %th.header Описание
+        %th.header Дата
+        %th.header Рейтинг
+        %th.header Sidebar
+        %th.header.list-row-action-header
+
+    %tbody
+      -@smile.each do |smile|
+        %tr.list-row
+          %td.list-column.list-selectable
+            =check_box_tag 'smile_ids[]', :value => smile.id, :class => 'list-selectable-checkbox'
+          %td.list-column=smile.id
+          %td.list-column=smile.title
+          %td.list-column=image_tag(smile.images, :class => 'img-rounded', :style => 'max-width:200px;')
+          %td.list-column=smile.body.truncate(25)
+          %td.list-column=smile.date
+          %td.list-column=smile.rating
+          %td.list-column=smile.sidebar
+          %td.list-column.list-row-action
+            .list-row-action-wrapper
+              =link_to tag_icon(:edit), :href => url(:smiles, :edit, :id => smile.id), :rel => :tooltip, :title => "#{pat(:edit)} smile", :class => 'list-row-action-wrapper-link'
+              =link_to tag_icon(:trash), :rel => :tooltip, :title => "#{pat(:delete)} smile", :class => 'list-row-action-delete-one list-row-action-wrapper-link'
+              .popover.list-row-action-popover-delete-one.left
+                .arrow
+                %h3.popover-title=pat(:delete, :model => "smile")
+                .popover-content
+                  -form_tag url(:smiles, :destroy, :id => smile.id), :method => :delete do
+                    =submit_tag pat(:delete), :class =>'list-row-action-popover-delete-one-btn btn btn-danger btn-small'
+                    .btn.btn-small.cancel=pat(:cancel)
+!=will_paginate @smile

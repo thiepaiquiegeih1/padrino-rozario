@@ -1,0 +1,94 @@
+-# coding: utf-8
+
+:plain
+  <script>
+    $(function() {
+      $('.selectpicker').selectpicker();
+      $('.selectpicker').selectpicker('val', [#{@subdomain_ids}]);
+      $('.selectpicker').selectpicker('render');
+    });
+  </script>
+
+- error = @subdomain_pool.errors.include?(:name)
+%fieldset.control-group{:class => error ? 'has-error' : ''}
+  =f.label :name, :class => 'control-label'
+  .controls
+    =f.text_field :name, :class => 'input-xlarge input-with-feedback', :autofocus => true
+    %span.help-inline=error ? f.error_message_on(:name, :class => 'text-error') : pat(:example)
+
+- error = @subdomain_pool.errors.include?(:subdomain)
+%fieldset.control-group
+  =f.label 'Поддомены', :class => 'control-label'
+  .controls
+    =f.select :subdomain_ids, :options => Subdomain.all.collect { |s| [ " * #{s.city}#{s.suffix}", s.id ] }, :class => 'selectpicker input-xlarge input-with-feedback', :autofocus => true, :multiple => true, :data => {:live_search => "true"}, 'data-selected' => @subdomain_pool.subdomain_ids.try(:split, ',')
+
+%fieldset.control-group
+  =f.label 'Включены категории', :class => 'control-label'
+  .controls
+    =f.check_box :enable_categories, :class => 'input-xlarge input-with-feedback'
+    %span.help-inline
+      - if @cat_display != nil
+        %b= 'Подключенные категории пула:'
+        - @cat_display.each do |c|
+          %span= c.title + '(' + c.id.to_s + ')' + ', '
+
+%fieldset.control-group
+  =f.label :Категории, :class => 'control-label'
+  .controls
+    =f.select(:category_ids, collection: Category.all, :fields => [:title, :id], :class => 'selectpicker input-xlarge input-with-feedback', :autofocus => true, :multiple => true, :data => {:live_search => "true"})
+    %span.help-inline='Добавить категории из общего списка категорий'
+
+%fieldset.control-group
+  =f.label 'Группы категорий', :class => 'control-label'
+  .controls
+    =f.select(:categorygroup_ids, collection: Categorygroup.all, :fields => [:title, :id], :class => 'selectpicker input-xlarge input-with-feedback', :autofocus => true, :multiple => true, :data => {:live_search => "true"})
+    %span.help-inline='Добавить группу категорий из общего списка групп'
+
+%fieldset.control-group{:class => error ? 'has-error' : ''}
+  =f.label "Группа категорий в корзине", :class => 'control-label'
+  .controls
+    =f.select(:crosssel_categorygroup_id, :collection => @group_collection, fields: [:title, :id], :class => 'selectpicker input-xlarge input-with-feedback', :autofocus => true, :data => {:live_search => "true"}, 'data-selected' => [@subdomain_pool.crosssel_categorygroup_id], :include_blank => 'Ничего не выбрано')
+    %span.help-inline='Выбрать группу категорий для отображения в корзине из списка подключенных групп'
+
+%fieldset.control-group{:class => error ? 'has-error' : ''}
+  =f.label "Категория умолчанию", :class => 'control-label'
+  .controls
+    =f.select(:default_category_id, :collection => @cat_display, fields: [:title, :id], :class => 'selectpicker input-xlarge', :autofocus => true, :data => {:live_search => "true"}, 'data-selected' => [@subdomain_pool.default_category_id], :include_blank => 'Ничего не выбрано')
+    %span.help-inline='Выбрать категорию для отображения на главной из списка подключенных категорий'
+
+%fieldset.control-group
+  =f.label 'Левое меню', :class => 'control-label'
+  .controls
+    =f.select(:leftmenu_id, collection: Leftmenu.all, :fields => [:title, :id], :class => 'selectpicker input-xlarge input-with-feedback', :autofocus => true, :data => {:live_search => "true"}, :include_blank => 'Ничего не выбрано')
+    %span.help-inline='Выбрать левое меню из общего списка меню'
+
+%fieldset.control-group
+  =f.label 'Ссылка "Коорпоративным клиентам"', :class => 'control-label'
+  .controls
+    =f.check_box :coop_clients, :class => 'input-xlarge input-with-feedback'
+    %span.help-inline
+
+%fieldset.control-group{:class => error ? 'has-error' : ''}
+  =f.label "Слайдшоу на главной", :class => 'control-label'
+  .controls
+    =f.select(:slideshow_main_id, collection: Slideshow.all, fields: [:title, :id], :class => 'selectpicker input-xlarge input-with-feedback', :autofocus => true, :data => {:live_search => "true"}, 'data-selected' => [@subdomain_pool.slideshow_main_id])
+    %span.help-inline='Слайдшоу'
+
+%fieldset.control-group{:class => error ? 'has-error' : ''}
+  =f.label "Слайдшоу в корзине", :class => 'control-label'
+  .controls
+    =f.select(:slideshow_cart_id, collection: Slideshow.all, fields: [:title, :id], :class => 'selectpicker input-xlarge input-with-feedback', :autofocus => true, :data => {:live_search => "true"}, 'data-selected' => [@subdomain_pool.slideshow_cart_id])
+    %span.help-inline='Слайдшоу в корзине'
+
+%fieldset.control-group
+  =f.label 'Включены Слайдшоу', :class => 'control-label'
+  .controls
+    =f.check_box :enable_slideshows, :class => 'input-xlarge input-with-feedback'
+    %span.help-inline
+
+.form-actions
+  =f.submit pat(:save), :class => 'btn btn-primary'
+  &nbsp;
+  =f.submit pat(:save_and_continue), :class => 'btn btn-info', :name => 'save_and_continue'
+  &nbsp;
+  =link_to pat(:cancel), url('regions/subdomain_pools', :index), :class => 'btn'

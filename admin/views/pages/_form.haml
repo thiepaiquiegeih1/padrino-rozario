@@ -1,0 +1,29 @@
+-# coding: utf-8
+- error = @page.errors.include?(:header)
+%fieldset.control-group{:class => error ? 'has-error' : ''}
+  =f.label :header, :class => 'control-label'
+  .controls
+    =f.text_field :header, :class => 'input-xlarge input-with-feedback'
+    %span.help-inline=error ? f.error_message_on(:header, :class => 'text-error') : 'Заголовок'
+- error = @page.errors.include?(:slug)
+%fieldset.control-group{:class => error ? 'has-error' : ''}
+  =f.label :slug, :class => 'control-label'
+  .controls
+    =f.text_field :slug, :class => 'input-xlarge input-with-feedback', :autofocus => true
+    %span.help-inline=error ? f.error_message_on(:slug, :class => 'text-error') : 'URI (по-умолчанию транслитерация поля header, повторения недопустимы)'
+- if @page.uri != 'index'
+  - error = @page.errors.include?(:body)
+  %fieldset.control-group{:class => error ? 'has-error' : ''}
+    =f.label :body, :class => 'control-label'
+    .controls
+      =f.text_area :body, :class => 'input-xlarge input-with-feedback ckeditor'
+      %span.help-inline=error ? f.error_message_on(:body, :class => 'text-error') : 'Текст'
+
+=partial 'seo/seo_fields', locals: { f: f, data: @page, h1: true}
+
+.form-actions
+  =f.submit pat(:save), :class => 'btn btn-primary'
+  &nbsp;
+  =f.submit pat(:save_and_continue), :class => 'btn btn-info', :name => 'save_and_continue'
+  &nbsp;
+  =link_to pat(:cancel), url(:pages, :index), :class => 'btn'

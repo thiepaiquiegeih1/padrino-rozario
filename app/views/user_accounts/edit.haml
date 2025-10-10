@@ -1,0 +1,57 @@
+- # encoding: utf-8
+
+%div#crutch-indent{style:'height:80px'}
+
+%h1 Редактировать данные
+
+-form_for :user_account, url(:user_accounts, :update, :id => @user_account.id), :method => :put, :class => "form edit-account" do |f|
+
+  = flash_tag(:error)
+
+  - error = @user_account.errors.include?(:surname)
+  %fieldset.control-group{:class => error ? 'has-error' : ''}
+    =f.label "Ф.И.О.", :class => "control-label"
+    .controls
+      =f.text_field :surname, :class => "input-xlarge input-with-feedback", :autofocus => true
+      %span.help-inline=error ? f.error_message_on(:surname, :class => "text-error") : nil
+
+  - error = @user_account.errors.include?(:email)
+  %fieldset.control-group{:class => error ? "has-error" : ""}
+    =f.label "Эл. почта", :class => "control-label"
+    .controls
+      =f.text_field :email, :class => "input-xlarge input-with-feedback"
+      %span.help-inline=error ? f.error_message_on(:email, :class => "text-error") : nil
+
+  - error = @user_account.errors.include?(:tel)
+  %fieldset.control-group{:class => error ? 'has-error' : ''}
+    =f.label "Контактный телефон", :class => 'control-label'
+    .controls
+      =f.text_field :tel, :class => 'input-xlarge input-with-feedback'
+      %span.help-inline=error ? f.error_message_on(:tel, :class => 'text-error') : nil
+
+  - error = @user_account.errors.include?(:discount_code)
+  %fieldset.control-group{:class => error ? 'has-error' : ''}
+    =f.label "Номер дисконтной карты", :class => 'control-label'
+    .controls
+      =f.text_field :discount_code1, :value => @user_account.discount_code[0..4], :maxlength => '5', :class => 'input-xlarge input-with-feedback ilb big'
+      =f.text_field :discount_code2, :value => @user_account.discount_code[5..8], :maxlength => '4', :class => 'input-xlarge input-with-feedback ilb'
+      =f.text_field :discount_code3, :value => @user_account.discount_code[9..12], :maxlength => '4', :class => 'input-xlarge input-with-feedback ilb'
+      %span.help-inline=error ? f.error_message_on(:discount_code1, :class => 'text-error') : nil
+
+  - error = @user_account.errors.include?(:password)
+  %fieldset.control-group{:class => error ? 'has-error' : ''}
+    =f.label "Пароль", :class => 'control-label'
+    .controls
+      =f.password_field :password, :class => 'input-xlarge input-with-feedback'
+      %span.help-inline=error ? f.error_message_on(:password, :class => 'error') : nil
+
+  - error = @user_account.errors.include?(:password_confirmation)
+  %fieldset.control-group{:class => error ? 'has-error' : ''}
+    =f.label "Подтвердите пароль", :class => 'control-label'
+    .controls
+      =f.password_field :password_confirmation, :class => 'input-xlarge input-with-feedback'
+      %span.help-inline=error ? f.error_message_on(:password_confirmation, :class => 'text-error') : nil
+
+  .form-actions
+    =f.submit pat(:save), :class => "btn btn-primary"
+    =link_to "Вернуться", url(:user_accounts, :profile), :class => "btn btn-primary", :style => "background: #FFB259;"

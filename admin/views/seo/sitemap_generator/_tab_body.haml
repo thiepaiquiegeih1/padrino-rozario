@@ -1,0 +1,13 @@
+-#coding: utf-8
+%tbody
+  -data.each do |d|
+    -d.slug ? slug = d.slug : d.id ? slug = d.id.to_s : slug = ''
+    %tr.list-row
+      %td.list-column=d.id
+      %td.list-column='/' + @title + '/' + slug
+      %td.list-column=partial 'seo/sitemap_generator/checkbox', locals: {data: d, title: @title}
+      %td.list-column=time_ago_in_words d.updated_at
+      %td.list-column.list-row-action
+        .list-row-action-wrapper
+          =link_to tag_icon('external-link'), :href => '/' + @type + '/' + slug, :rel => :tooltip, :title => "#{pat(:view_page)}", :class => 'list-row-action-wrapper-link', :target => '_blank'
+          =link_to tag_icon(:edit), :href => url(:"#{@title}", :edit, :id => d.id), :rel => :tooltip, :title => "#{pat(:edit)} general", :class => 'list-row-action-wrapper-link', :target => '_blank'

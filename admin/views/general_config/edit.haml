@@ -1,0 +1,9 @@
+- # encoding: utf-8
+%ul.nav.nav-tabs
+  %li=link_to tag_icon(:list, pat(:list)), url(:general_config, :index)
+  %li=link_to tag_icon(:plus, pat(:new)), url(:general_config, :new)
+  %li.active=link_to tag_icon(:edit, pat(:edit)), url(:general_config, :edit, :id => @general_config.id)
+
+.tabs-content
+  -form_for :general_config, url(:general_config, :update, :id => @general_config.id), :method => :put, :class => 'form-horizontal' do |f|
+    =partial 'general_config/form', :locals => { :f => f }

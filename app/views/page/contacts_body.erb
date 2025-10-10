@@ -1,0 +1,71 @@
+﻿<h1 style="font-size:20px;margin-top:-22px;margin-bottom:16px;"><%=@seo[:h1].html_safe %></h1>
+
+<div class="container-fluid" id="CONTENT">
+  <div class="row">
+    <div class="col-md-12" style="margin: 0 !important; background-color: #FAF2E9; -webkit-border-radius: 10px; -moz-border-radius: 10px; border-radius: 10px; margin-left: 15px; margin-right: 10px;">
+    <table class="table table-hover" style="margin-left: auto; margin-right: auto;">
+      <thead>
+        <tr>
+          <td style="text-align: center; -webkit-border-radius: 4px; -moz-border-radius: 4px; border-radius: 4px;"><span style="font-size:18px;"><span style="color:#3A4F10;"><strong><%=@subdomain.ya_address%></strong></span></span></td>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="text-align: center;">
+            <p><span style="font-size:16px;">Мы работаем: с Пн-Вс, с 8:00 до 21:00</span></p>
+            <p>Доставка круглосуточно!</p>
+            <p id="contact-call" style="text-align: center;"></p>
+          </td>
+        </tr>
+        <tr>
+          <td style="text-align: center;">
+            <p>
+              <strong>
+                <a href="tel:88002506470" style="font-size:16px;">8&nbsp;(800)&nbsp;250-64-70</a>
+              </strong>
+              (бесплатно по России)
+            </p>
+            <p>
+              <strong>
+                <a href="tel:88002506470" style="font-size:16px;">8&nbsp;(934)&nbsp;447-67-00</a>
+              </strong>
+            </p>
+            <%# <p id="contact-call" style="text-align: center;"><a button="" class="btn btn-default" href="tel:88002506470" type="button">Позвонить</a></p> %>
+          </td>
+        </tr>
+        <tr>
+          <td style="text-align: center;"><span style="font-size:16px;"><a href="<%=@subdomain.ya_url%>" target="_blank"><span style="color:#43433A;"><strong>Посмотреть на <span style="color:#ed1c24">Я</span>ндекс Карте</strong> </span></a></span></td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+  <div class="row" style="padding: 0;">
+    <div class="col-md-6" style="margin-left: 0; margin-right: 0; padding-left: 0;">
+      <div id="contact-md-5" style="margin-right: 0; margin-left: 0; padding: 16px; width: 100%;">
+        <a href="/category/118"><font color="#6d6f6e" size="3px"><img alt=" <%=@subdomain.city%> - букет цветов" src="http://<%=@subdomain.url%>.<%=CURRENT_DOMAIN%>/images/image-roses.jpg" style="border-radius: 8px; width: 100%; height: auto;" /> </font></a>
+        <h3><font color="#3a4f10" size="3" style="text-align: center;"><b>Букеты на любой вкус!</b></font></h3>
+        <p style="text-align: justify;">Профессионализм флористов позволяет создавать креативные букеты для Вас и Ваших близких, у нас всегда только свежие цветы!</p>
+        <p style="text-align: center;"><a class="btn btn-primary" href="/category/118">Подробнее</a></p>
+      </div>
+    </div>
+    <div class="col-md-6" style="margin-left: 0; margin-right: 0; padding-right: 0;">
+      <div id="contact-md-5" style="margin-right: 0; margin-left: 0; padding: 16px; width: 100%;">
+        <a href="/category/66"><font color="#6d6f6e" size="3px"><img alt=" <%=@subdomain.city%> - комнатные растения" src="http://<%=@subdomain.url%>.<%=CURRENT_DOMAIN%>/images/image-gorsh.JPG" style="border-radius: 8px; width: 100%; height: auto;" /> </font></a>
+        <h3><strong><font color="#6d6f6e" size="3px"><font color="#6d6f6e" size="3px"><font color="#3A4F10" size="3px">Широкий ассортимент растений!</font></font></font></strong></h3>
+        <p style="text-align: justify;">В нашем магазине представлены как популярные цветы, так и экзотические растения. Вы можете заказать корзины с цветами</p>
+        <p style="text-align: center;"><a class="btn btn-primary" href="/category/66">Подробнее</a></p>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12" id="contact-md-12" style="margin-left: 0; margin-right: 0;">
+      <p>Как показывает любящая точность статистика, цветы – это самый популярный подарок по всему миру. Цветочный букет – не только приятный сюрприз и знак внимания, но и неотъемлемая деталь этикета, принятого в наше время. Мы дарим цветы по разным поводам: будь то признание в любви своей второй половинке, поздравление родных и близких, дань уважения коллегам. Объединяет эти случаи одно – радость и удовольствие тех, кто дарит и тех, кто принимает великолепный и благоухающий букет. Как известно, цветы имеют свой язык, могут выражать различные эмоции и чувства дарящего, передавать скрытый смысл и сообщать намерения. Если вы хотите сделать подарок, который всегда будет уместен, живые цветы – это по-настоящему отличный вариант!</p>
+    </div>
+  </div>
+</div>
+<style>
+  @media (max-width: 990px) {
+    #CONTENT .col-md-6 { padding: 0 !important; }
+  }
+</style>

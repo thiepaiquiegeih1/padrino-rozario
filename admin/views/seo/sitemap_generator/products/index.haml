@@ -1,0 +1,31 @@
+- # encoding: utf-8
+=partial 'seo/sitemap_generator/tabs_sitemap', :locals => {:entity => :products, :action => :list}
+:javascript
+  $(".chk_index").on('click', function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    e.stopImmediatePropagation();
+    var chk = $(this)
+    var t;
+    console.log($(this).prop('checked'))
+    $(this).prop('checked') ? t = "Разрешить" : t = 'Запретить'
+    	if (confirm(t + " поисковикам индексировать страницу?")) {
+      $.ajax({
+        type: "PUT",
+        url: $(location).attr('origin') + "/admin/products/update/" + $(this).attr('data_id'),
+        data: {
+          product: {
+            seo_attributes:{
+              id: $(this).attr('data_seo_id'),
+              index: $(this).prop('checked')
+            }
+          }
+        },
+        success: function(){
+          chk.prop('checked') ? chk.removeAttr('checked') : chk.attr('checked','checked');
+        }
+      });
+    	} else {
+        console.log('false')
+    	}
+  });

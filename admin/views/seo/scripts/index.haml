@@ -1,0 +1,57 @@
+- # encoding: utf-8
+=partial 'seo/tabs', :locals => {:entity => :scripts, :action => :list}
+.tabs-content
+  %table#list.table.table-striped.table-hover.table-condensed
+    %thead
+      %tr
+        %th.header.list-menu
+          .dropdown
+            %a.list-menu-toggle.dropdown-toggle{:href => '#', :'data-toggle' => :dropdown}
+              =tag_icon :magic
+              %span.caret
+            %ul.list-menu.dropdown-menu{:role => :menu}
+              %li.list-menu-wrapper=link_to tag_icon(:check, pat(:select_all)), '#', :id => 'select-all', :class => 'list-menu-link'
+              %li.list-menu-wrapper.list-menu-wrapper-disabled
+                =link_to tag_icon(:'check-empty', pat(:deselect_all)), '#', :id => 'deselect-all', :class => 'list-menu-link list-menu-link-disabled'
+              %li.list-menu-divider.divider
+              %li.list-menu-wrapper.list-menu-wrapper-disabled
+                =link_to tag_icon(:trash, pat(:delete_selected)), '#', :id => 'delete-selected', :class => 'list-menu-link list-menu-link-disabled'
+                .list-menu-popover-delete-selected.popover.right
+                  .arrow
+                  %h3.popover-title=pat(:delete_selected_title)
+                  .popover-content
+                    -form_tag url(:'seo/scripts', :destroy_many), :method => :delete do
+                      =hidden_field_tag :scripts_ids, :'data-delete-many-ids' => true
+                      =submit_tag pat(:delete), :class =>'list-menu-popover-delete-selected-btn btn btn-danger btn-small'
+                      .btn.btn-small.cancel=pat(:cancel)
+        %th.header= :id
+        %th.header= :title
+        %th.header= :seo_title
+        %th.header= :seo_description
+        %th.header= :seo_keywords
+        %th.header= :comment
+        %th.header.list-row-action-header
+    %tbody
+      -@scripts.each do |script|
+        %tr.list-row
+          %td.list-column.list-selectable
+            =check_box_tag 'script_ids[]', :value => script.id, :class => 'list-selectable-checkbox'
+          %td.list-column=script.id
+          %td.list-column=script.title
+          %td.list-column=script.seo_title
+          %td.list-column=script.seo_description
+          %td.list-column=script.seo_keywords
+          %td.list-column=script.comment
+          %td.list-column=time_ago_in_words script.created_at
+          %td.list-column=time_ago_in_words script.updated_at
+          %td.list-column.list-row-action
+            .list-row-action-wrapper
+              =link_to tag_icon(:edit), :href => url(:'seo/scripts', :edit, :id => script.id), :rel => :tooltip, :title => "#{pat(:edit)} script", :class => 'list-row-action-wrapper-link'
+              =link_to tag_icon(:trash), :rel => :tooltip, :title => "#{pat(:delete)} script", :class => 'list-row-action-delete-one list-row-action-wrapper-link'
+              .popover.list-row-action-popover-delete-one.left
+                .arrow
+                %h3.popover-title=pat(:delete, :model => "script")
+                .popover-content
+                  -form_tag url(:'seo/scripts', :destroy, :id => script.id), :method => :delete do
+                    =submit_tag pat(:delete), :class =>'list-row-action-popover-delete-one-btn btn btn-danger btn-small'
+                    .btn.btn-small.cancel=pat(:cancel)

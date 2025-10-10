@@ -1,0 +1,74 @@
+- # encoding: utf-8
+!!! 5
+%html{lang: "en"}
+  %head
+    %meta{content: "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}/
+    %meta{charset: "UTF-8"}/
+    %meta{content: "width=device-width, initial-scale=1.0", name: "viewport"}/
+    %title TinyMDE
+    %link{href: "https://unpkg.com/tiny-markdown-editor/dist/tiny-mde.min.css", rel: "stylesheet", type: "text/css"}/
+  %body
+    #toolbar
+    #editor
+    %script{src: "https://unpkg.com/tiny-markdown-editor/dist/tiny-mde.min.js"}
+:css
+  body { box-sizing: border-box; margin: 0; width: 100%; height: 100%; padding: 0; }
+  canvas{ display: block; vertical-align: bottom; }
+  .TinyMDE { background: rgba(255, 235, 255, 0.75); overflow: auto; }
+  .TMCommandBar { position: fixed; left: 0; right: 0; z-index: 1; }
+
+  #editor { position: relative; top: 32px; }
+
+:javascript
+  const content = `#{@content}`;
+  const tinyMDE = new TinyMDE.Editor({
+    element: "editor",
+    content: content
+  });
+  const commandBar = new TinyMDE.CommandBar({
+    element: "toolbar",
+    editor: tinyMDE
+  });
+
+  window.save = async function () {
+    const x = tinyMDE.getContent().split('\n').map(line => line.trimStart()).join('\n');
+    const slug = window.location.pathname.split('/').pop();
+    try {
+      const response = await fetch(`/admin/seo_texts/update/${slug}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'X-Requested-With': 'XMLHttpRequest',
+          // 'X-CSRF-Token': getCsrfToken() // Если у вас используется CSRF-защита
+        },
+        body: JSON.stringify({ content: x })
+      });
+      // const result = await response.json();
+
+      // Явно обрабатываем статусы, чтобы не падать в .json() без тела
+      if (!response.ok) {
+        const text = await response.text().catch(() => '');
+        throw new Error(`HTTP ${response.status} ${response.statusText}${text ? ` — ${text.slice(0, 200)}` : ''}`);
+      }
+
+      // Осторожный парсинг JSON (на случай пустого тела)
+      let result = {};
+      const raw = await response.text();
+      if (raw) {
+        try { result = JSON.parse(raw); } catch (e) {
+          throw new Error(`Ожидался JSON, но получен другой ответ: ${raw.slice(0, 200)}`);
+        }
+      }
+
+      if (result.success) { alert('Изменения успешно сохранены'); }
+      else { alert('Ошибка при сохранении: ' + result.error); }
+    } catch (error) { console.log('Произошла ошибка: ' + error); }
+  }
+
+  // function getCsrfToken() { // Функция для получения CSRF-токена (если используется)
+  //   // Возвращаем CSRF-токен из meta-тега или другого источника
+  //   // Пример:
+  //   // return document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+  //   return '';
+  // }

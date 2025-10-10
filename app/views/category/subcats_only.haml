@@ -1,0 +1,24 @@
+- # encoding: utf-8
+.alert 'subcats_only.haml'
+
+.row
+  .col-md-12
+    %h2= @category.title
+
+- if !@childrens.empty?
+  .row
+    .col-md-12
+      %h2 Виды
+  .row
+    #category-list-sub.clearfix
+      - @childrens.each_with_index do |category, index|
+        - if category.id != 32
+          %div{:class => "item col-md-6 col-sm-6 col-xs-12", :id => "ci_#{category.id}"}
+            .image
+              -# =link_to image_tag(category.image, :alt => category.title), url_for(:category, :index, category.slug.force_encoding("UTF-8")), :title => category.title
+              =link_to image_tag(category.image, :alt => category.title), "/category/#{Category.find(category.parent_id).slug.force_encoding("UTF-8")}/#{category.slug.force_encoding("UTF-8")}", :title => category.title
+            %h3.title= link_to category.title, "/category/#{Category.find(category.parent_id).slug.force_encoding("UTF-8")}/#{category.slug.force_encoding("UTF-8")}"
+            .text!= category.text
+
+:javascript
+  console.log('app/views/category/subcats_only.haml');

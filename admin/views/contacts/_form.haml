@@ -1,0 +1,65 @@
+-# coding: utf-8
+=javascript_include_tag 'contacts.js'
+- error = @contact.errors.include?(:name)
+%fieldset.control-group{:class => error ? 'has-error' : ''}
+  =f.label :name, :class => 'control-label'
+  .controls
+    =f.text_field :name, :class => 'input-xlarge input-with-feedback', :autofocus => true
+    %span.help-inline=error ? f.error_message_on(:name, :class => 'text-error') : 'Имя'
+- error = @contact.errors.include?(:header)
+%fieldset.control-group{:class => error ? 'has-error' : ''}
+  =f.label :header, :class => 'control-label'
+  .controls
+    =f.text_field :header, :class => 'input-xlarge input-with-feedback'
+    %span.help-inline=error ? f.error_message_on(:header, :class => 'text-error') : 'Заголовок'
+- error = @contact.errors.include?(:address)
+%fieldset.control-group{:class => error ? 'has-error' : ''}
+  =f.label :address, :class => 'control-label'
+  .controls
+    =f.text_field :address, :class => 'input-xlarge input-with-feedback', value: @contact.new_record? ? '' : @subdomain.ya_address
+    %span.help-inline=error ? f.error_message_on(:header, :class => 'text-error') : 'Адрес'
+
+- error = @contact.errors.include?(:url)
+%fieldset.control-group{:class => error ? 'has-error' : ''}
+  =f.label :url, :class => 'control-label'
+  .controls
+    =f.text_field :url, :class => 'input-xlarge input-with-feedback', value: @contact.new_record? ? '' : @subdomain.ya_url
+    %span.help-inline=error ? f.error_message_on(:header, :class => 'text-error') : 'Ссылка на карту'
+
+-# - error = @contact.errors.include?(:body)
+-# %fieldset.control-group{:class => error ? 'has-error' : ''}
+-#   =f.label :body, :class => 'control-label'
+-#   .controls
+-#     =f.text_area :body, :class => 'input-xlarge  ckeditor'
+-#     %span.help-inline=error ? f.error_message_on(:body, :class => 'text-error') : 'Текст'
+
+- unless @contact.id == 1
+  - error = @contact.errors.include?(:subdomain_id)
+  %fieldset.control-group{:class => error ? 'has-error' : ''}
+    =f.label :subdomain_id, :class => 'control-label'
+    .controls
+      =f.select(:subdomain_id, :collection => Subdomain.order(:city), :fields => [:city, :id], :class => 'selectpicker3 input-xlarge input-with-feedback', :autofocus => true, :data => {:live_search => "true"})
+      %span.help-inline=error ? f.error_message_on(:subdomain_id, :class => 'text-error') : 'Поддомен'
+
+- error = @contact.errors.include?(:enabled)
+%fieldset.control-group{:class => error ? 'has-error' : ''}
+  =f.label :enabled, :class => 'control-label'
+  .controls
+    =f.check_box :enabled, :class => 'input-xlarge input-with-feedback'
+    %span.help-inline=error ? f.error_message_on(:enabled, :class => 'text-error') : ''
+-# - error = @contact.errors.include?(:about_us_short)
+-# %fieldset.control-group{:class => error ? 'has-error' : ''}
+-#   =f.label :about_us_short, :class => 'control-label'
+-#   .controls
+-#     =f.text_area :about_us_short, :class => 'input-xlarge ckeditor'
+-#     %span.help-inline=error ? f.error_message_on(:about_us_short, :class => 'text-error') : 'About us'
+
+
+
+
+.form-actions
+  =f.submit pat(:save), :class => 'btn btn-primary'
+  &nbsp;
+  =f.submit pat(:save_and_continue), :class => 'btn btn-info', :name => 'save_and_continue'
+  &nbsp;
+  =link_to pat(:cancel), url(:contacts, :index), :class => 'btn'

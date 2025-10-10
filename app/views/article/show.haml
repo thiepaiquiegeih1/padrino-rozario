@@ -1,0 +1,11 @@
+- # encoding: utf-8
+- @title= @article.title
+
+%div.hidden-xs.hidden-sm{style:"height: 88px"}
+%article.articles
+  %h1= @article.title
+  .body!= @article.body
+  %p.more= link_to "Все статьи", url_for(:article, :index)
+
+-# VideoObject Schema.org markup for videos in content
+= generate_video_schemas_from_content(@article.body, @article.title, @article.created_at)

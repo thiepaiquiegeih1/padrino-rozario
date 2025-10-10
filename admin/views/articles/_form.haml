@@ -1,0 +1,34 @@
+-# coding: utf-8
+- error = @article.errors.include?(:title)
+%fieldset.control-group{:class => error ? 'has-error' : ''}
+  =f.label :title, :class => 'control-label'
+  .controls
+    =f.text_field :title, :class => 'input-xlarge input-with-feedback', :autofocus => true
+    %span.help-inline=error ? f.error_message_on(:title, :class => 'text-error') : 'Заголовок (h1)'
+- error = @article.errors.include?(:slug)
+%fieldset.control-group{:class => error ? 'has-error' : ''}
+  =f.label :slug, :class => 'control-label'
+  .controls
+    =f.text_field :slug, :class => 'input-xlarge input-with-feedback', :autofocus => true
+    %span.help-inline=error ? f.error_message_on(:slug, :class => 'text-error') : 'URI (по-умолчанию транслитерация поля title, повторения недопустимы)'
+- error = @article.errors.include?(:announce)
+%fieldset.control-group{:class => error ? 'has-error' : ''}
+  =f.label :announce, :class => 'control-label'
+  .controls
+    =f.text_area :announce, :class => 'input-xlarge input-with-feedback ckeditor'
+    %span.help-inline=error ? f.error_message_on(:announce, :class => 'text-error') : 'Анонс'
+- error = @article.errors.include?(:body)
+%fieldset.control-group{:class => error ? 'has-error' : ''}
+  =f.label :body, :class => 'control-label'
+  .controls
+    =f.text_area :body, :class => 'input-xlarge input-with-feedback ckeditor'
+    %span.help-inline=error ? f.error_message_on(:body, :class => 'text-error') : 'Текст'
+
+=partial 'seo/seo_fields', locals: { f: f, data: @article, h1: false}
+
+.form-actions
+  =f.submit pat(:save), :class => 'btn btn-primary'
+  &nbsp;
+  =f.submit pat(:save_and_continue), :class => 'btn btn-info', :name => 'save_and_continue'
+  &nbsp;
+  =link_to pat(:cancel), url(:articles, :index), :class => 'btn'

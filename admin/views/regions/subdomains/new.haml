@@ -1,0 +1,8 @@
+- # encoding: utf-8
+%ul.nav.nav-tabs
+  %li=link_to tag_icon(:list, pat(:list)), url(:'regions/subdomains', :index)
+  %li.active=link_to tag_icon(:plus, pat(:new)), url(:'regions/subdomains', :new)
+
+.tabs-content
+  -form_for :subdomain, url(:'regions/subdomains', :create), multipart: true, :class => 'form-horizontal' do |f|
+    =partial 'regions/subdomains/form', :locals => { :f => f }

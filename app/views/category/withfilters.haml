@@ -1,0 +1,14 @@
+- # encoding: utf-8
+
+.alert 'withfilters.haml'
+
+- if @items.count > 0
+
+  .row.text-center{style: 'padding:16px;'}
+    #category-list
+      = partial 'product/cardplace'
+
+  /= partial("category/item_modal.html", :engine => :erb)
+
+:javascript
+  console.log('app/views/category/withfilters.haml');

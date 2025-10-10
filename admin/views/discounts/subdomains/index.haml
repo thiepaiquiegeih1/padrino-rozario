@@ -1,0 +1,26 @@
+- # encoding: utf-8
+=partial 'discounts/tabs', :locals => {:entity => :subdomains, :action => :list}
+-form_tag url(:'discounts/subdomains', :search), :method => :get, :class => 'form-horizontal' do
+  %fieldset.control-group
+    =text_field_tag :query, :class => 'search_field', :placeholder => 'поиск'
+
+.tabs-content
+  %table#list.table.table-striped.table-hover.table-condensed
+    %thead
+      %tr
+        %th.header= :id
+        %th.header URL
+        %th.header Заголовок
+        %th.header.list-row-action-header
+
+    %tbody
+      -@subdomains.each do |subdomain|
+        %tr.list-row
+          %td.list-column=subdomain.id
+          %td.list-column=subdomain.url
+          %td.list-column=subdomain.city
+          %td.list-column.list-row-action
+            .list-row-action-wrapper
+              =link_to tag_icon(:edit), :href => url(:'discounts/subdomains', :edit, :id => subdomain.id), :rel => :tooltip, :title => "#{pat(:edit)} subdomain", :class => 'list-row-action-wrapper-link'
+- if !@search
+  !=will_paginate @subdomains

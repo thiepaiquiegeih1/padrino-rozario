@@ -1,0 +1,76 @@
+-# coding: utf-8
+:plain
+  <script>
+    $( function() {
+      $( ".datepicker" ).datepicker({
+        dateFormat: "yy-mm-dd"
+      });
+
+      $('.timepicker').timepicker({
+          timeFormat: 'HH:mm',
+          dynamic: false,
+          dropdown: true,
+          scrollbar: true
+      });
+
+    });
+  </script>
+
+- error = @overtime_delivery.errors.include?(:title)
+%fieldset.control-group{:class => error ? 'has-error' : ''}
+  =f.label "Название", :class => 'control-label'
+  .controls
+    =f.text_field :title, :class => 'input-xlarge input-with-feedback', :autofocus => true
+
+- error = @overtime_delivery.errors.include?(:price)
+%fieldset.control-group{:class => error ? 'has-error' : ''}
+  =f.label "Стоимость", :class => 'control-label'
+  .controls
+    =f.text_field :price, :class => 'input-xlarge input-with-feedback'
+
+- error = @overtime_delivery.errors.include?(:start_time)
+%fieldset.control-group{:class => error ? 'has-error' : ''}
+  =f.label "Время старта", :class => 'control-label'
+  .controls
+    - if @overtime_delivery.start_time
+      =f.text_field :start_time, :value => @overtime_delivery.start_time.strftime("%H:%M"), :class => 'input-xlarge input-with-feedback timepicker'
+    - else
+      =f.text_field :start_time, :class => 'input-xlarge input-with-feedback timepicker'
+    %span.help-inline=error ? f.error_message_on(:start_time, :class => 'text-error') : pat("Введите время начала")
+
+- error = @overtime_delivery.errors.include?(:end_time)
+%fieldset.control-group{:class => error ? 'has-error' : ''}
+  =f.label "Время окончания", :class => 'control-label'
+  .controls
+    - if @overtime_delivery.end_time
+      =f.text_field :end_time, :value => @overtime_delivery.end_time.strftime("%H:%M"), :class => 'input-xlarge input-with-feedback timepicker'
+    - else
+      =f.text_field :end_time, :class => 'input-xlarge input-with-feedback timepicker'
+    %span.help-inline=error ? f.error_message_on(:end_time, :class => 'text-error') : pat("Введите время окончания")
+
+- error = @overtime_delivery.errors.include?(:eachyear_repeat)
+%fieldset.control-group{:class => error ? 'has-error' : ''}
+  =f.label "Ежегодное повторение", :class => 'control-label'
+  .controls
+    =f.check_box :eachyear_repeat, :class => 'input-xlarge input-with-feedback'
+
+- error = @overtime_delivery.errors.include?(:start_date)
+%fieldset.control-group{:class => error ? 'has-error' : ''}
+  =f.label "Дата старта", :class => 'control-label'
+  .controls
+    =f.text_field :start_date, :class => 'input-xlarge input-with-feedback datepicker'
+    %span.help-inline=error ? f.error_message_on(:start_date, :class => 'text-error') : pat("Оставьте поле пустым для ежедневного правила, или заполните и отметьте чекбокс для ежегодного повторения")
+
+- error = @overtime_delivery.errors.include?(:end_date)
+%fieldset.control-group{:class => error ? 'has-error' : ''}
+  =f.label "Дата окончания", :class => 'control-label'
+  .controls
+    =f.text_field :end_date, :class => 'input-xlarge input-with-feedback datepicker'
+    %span.help-inline=error ? f.error_message_on(:end_date, :class => 'text-error') : pat("Оставьте поле пустым для ежедневного правила, или заполните и отметьте чекбокс для ежегодного повторения")
+
+.form-actions
+  =f.submit pat(:save), :class => 'btn btn-primary'
+  &nbsp;
+  =f.submit pat(:save_and_continue), :class => 'btn btn-info', :name => 'save_and_continue'
+  &nbsp;
+  =link_to pat(:cancel), url(:'delivery/overtime_deliveries', :index), :class => 'btn'

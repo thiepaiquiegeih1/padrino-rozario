@@ -1,0 +1,26 @@
+- # encoding: utf-8
+
+:plain
+  <script>
+    $(function() {
+      $('.selectpicker').selectpicker().selectpicker('val',#{@category.id}).on('change',function(ev){
+        if(ev.target.value) window.location.href = '/admin/categories/showcase?id='+ev.target.value;
+      });
+    });
+  </script>
+%link{ href: "/admin/stylesheets/showcase.css", rel: "stylesheet" }
+%script{ src: "/admin/javascripts/jquery-ui.js" }
+%script{ src: "/admin/javascripts/showcase.js" }
+.span12
+  =select_tag(:category_id,collection: @categories, fields: [:title,:id], class: "selectpicker input-xlarge input-with-feedback",:multiple => false, :data => {:live_search => "true"})
+  %ul.sortable
+    - @products.each do |x|
+      - url = x.image.present? ? x.image.url : ''
+      %li.product{ data: { pid: x.id, cid: @category.id } }
+        .title
+          %a{ href: "/admin/products/edit/#{x.id}"}= x.header
+        %img{ src: url }
+        .price
+          = "#{x.price}"
+          &nbsp;
+          %i.fa.fa-rub{"aria-hidden" => true}

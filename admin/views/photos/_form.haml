@@ -1,0 +1,29 @@
+-# coding: utf-8
+- error = @photo.errors.include?(:album_id)
+%fieldset.control-group{:class => error ? 'has-error' : ''}
+  =f.label :album_id, :class => 'control-label'
+  .controls
+    =f.select(:album_id, :collection => @albums, :fields => [:title, :id], :class => 'input-xlarge input-with-feedback', :selected => "")
+    -#=f.text_field :album_id, :class => 'input-xlarge input-with-feedback', :autofocus => true
+    %span.help-inline=error ? f.error_message_on(:album_id, :class => 'text-error') : pat(:example)
+- error = @photo.errors.include?(:title)
+%fieldset.control-group{:class => error ? 'has-error' : ''}
+  =f.label :title, :class => 'control-label'
+  .controls
+    =f.text_field :title, :class => 'input-xlarge input-with-feedback'
+    %span.help-inline=error ? f.error_message_on(:title, :class => 'text-error') : pat(:example)
+- error = @photo.errors.include?(:image)
+%fieldset.control-group{:class => error ? 'has-error' : ''}
+  =f.label :image, :class => 'control-label'
+  .controls
+    %span.btn.btn-file
+      Загрузить
+      =f.file_field :image, :class => 'input-xlarge input-with-feedback'
+    %span.help-inline=error ? f.error_message_on(:image, :class => 'text-error') : pat(:example)
+
+.form-actions
+  =f.submit pat(:save), :class => 'btn btn-primary'
+  &nbsp;
+  =f.submit pat(:save_and_continue), :class => 'btn btn-info', :name => 'save_and_continue'
+  &nbsp;
+  =link_to pat(:cancel), url(:photos, :index), :class => 'btn'

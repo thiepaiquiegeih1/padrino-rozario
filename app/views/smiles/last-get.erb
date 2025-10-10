@@ -1,0 +1,19 @@
+<% i = 0 + @offset; @posts.each do | post | %>
+  <% if i % 5 == 0; big = 'big'; else; big = ''; end; %>
+  <div class="post-item <%=big%>"><div class="wrapper hvr-grow">
+    <%#<h2></h2>%>
+    <hr />
+    <p>
+      <img class="show-smile" type="button" data-toggle="modal" data-target="#myModalBox" data-id="<%=post.id%>" data-num="<%=i%>" src="<%='/uploads/smiles/'+post.images%>" />
+    </p>
+    <p>
+      <%#= if (post.content.length < 128); post.content; else; post.content[0..128]+' [...]'; end; %>
+      <!-- <a class="btn rm" href="/smiles/<%=post.id%>/">ПОДРОБНЕЕ</a> -->
+      <button
+        name="readmore" type="button" data-toggle="modal" data-target="#myModalBox" data-id="<%=post.id%>" data-num="<%=i%>"
+        class="btn rm trnstn show-smile"
+        >ПОДРОБНЕЕ</button>
+    </p>
+  </div></div>
+<% i = i + 1; end; %>
+

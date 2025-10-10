@@ -1,0 +1,23 @@
+- # encoding: utf-8
+
+-#=stylesheet_link_tag 'bootstrap-span'
+
+.alert 'subcatfilters.haml'
+
+=#partial("category/filters.html", :engine => :erb)
+
+- if !@childrens.empty?
+  #category-list-sub.clearfix.row
+    - @childrens.each_with_index do |category, index|
+      - if category.id != 32
+        %div{:class => "item col-md-6", :id => "ci_#{category.id}"}
+          .image
+            =link_to image_tag(category.image, :alt => category.title), url_for(:category, :index, category.id), :title => category.title
+          .title= link_to category.title, url_for(:category, :index, category.id)
+          .text!= category.text
+
+
+= partial("category/scripts.html", :engine => :erb)
+
+:javascript
+  console.log('app/views/category/subcatsfilters.haml');

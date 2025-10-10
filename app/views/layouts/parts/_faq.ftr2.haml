@@ -1,0 +1,126 @@
+﻿.row.colored
+  #sh-about.text-left{ style: 'padding: 16px; margin-bottom: 24px;' }
+    .cat-description{ style: 'background: #FAF2E9; padding: 16px; border-radius: 8px; '}
+      .finfo
+        %h2 Ответы на часто задаваемые вопросы
+        .hideforh2
+          %p В этом разделе мы собираем и дополняем ответы на ваши вопросы, возникающие в процессе использования нашего сервиса.
+          / %div{:itemscope => true, :itemtype => "http://schema.org/Question"}
+          %div
+            / %h3{:itemprop => "name"}
+            %h3 Куда можно заказать цветы с доставкой?
+            .hideforh3
+              / %meta{:content => "5", :itemprop => "upvoteCount"}/
+              / %div{:itemprop => "acceptedAnswer", :itemscope => true, :itemtype => "http://schema.org/Answer"}
+              %div
+                / %p{:itemprop => "text"}
+                %p Наш сервис работает по всей территории России. Если вашего населенного пункта не оказалось в списке, звоните, и мы решим, как отвезти букет в нужный город.
+          / %div{:itemscope => true, :itemtype => "http://schema.org/Question"}
+          %div
+            / %h3{:itemprop => "name"}
+            %h3 Какие сроки и стоимость доставки цветов? 
+            / в #{@subdomain.get_morph('loc2')}? 
+            .hideforh3
+              / %meta{:content => "5", :itemprop => "upvoteCount"}/
+              / %div{:itemprop => "acceptedAnswer", :itemscope => true, :itemtype => "http://schema.org/Answer"}
+              %div
+                / %p{:itemprop => "text"}
+                %p Минимальные сроки доставки в течении 2х часов. Возможно смещение по времени в большую или меньшую сторону в зависимости от многих факторов. Уточняйте у оператора. Бесплатная доставка осуществляется круглосуточно. Ознакомиться с действующими тарифами Вы можете
+                = succeed "." do
+                  %a{:href => "/page/dostavka/", rel: 'nofollow'} здесь
+          / %div{:itemscope => true, :itemtype => "http://schema.org/Question"}
+          %div
+            / %h3{:itemprop => "name"}
+            %h3 Как получить цветы к точному времени?
+            .hideforh3
+              / %meta{:content => "5", :itemprop => "upvoteCount"}/
+              / %div{:itemprop => "acceptedAnswer", :itemscope => true, :itemtype => "http://schema.org/Answer"}
+              %div
+                / %p{:itemprop => "text"}
+                %p Напишите время в примечаниях, и курьер приедет к точному времени +\- 15 минут.
+          / %div{:itemscope => true, :itemtype => "http://schema.org/Question"}
+          %div
+            / %h3{:itemprop => "name"}
+            %h3 Как узнать где мой букет?
+            .hideforh3
+              / %meta{:content => "5", :itemprop => "upvoteCount"}/
+              / %div{:itemprop => "acceptedAnswer", :itemscope => true, :itemtype => "http://schema.org/Answer"}
+              %div
+                / %p{:itemprop => "text"}
+                %p Отследить доставку Вы можете по телефону 8 (800) 250-64-70 (бесплатно по России).
+          / %div{:itemscope => true, :itemtype => "http://schema.org/Question"}
+          %div
+            / %h3{:itemprop => "name"}
+            %h3 Можно ли доставить цветы за город?
+            .hideforh3
+              / %meta{:content => "5", :itemprop => "upvoteCount"}/
+              / %div{:itemprop => "acceptedAnswer", :itemscope => true, :itemtype => "http://schema.org/Answer"}
+              %div
+                / %p{:itemprop => "text"}
+                %p Наши агенты могут отвезти цветы в область. Стоимость составляет 20 рублей за километр от города.
+          / %div{:itemscope => true, :itemtype => "http://schema.org/Question"}
+          %div
+            / %h3{:itemprop => "name"}
+            %h3 Возможна ли оплата картой на сайте?
+            .hideforh3
+              / %meta{:content => "5", :itemprop => "upvoteCount"}/
+              / %div{:itemprop => "acceptedAnswer", :itemscope => true, :itemtype => "http://schema.org/Answer"}
+              %div
+                / %p{:itemprop => "text"}
+                %p Да, Вы можете оплатить букет на сайте без комиссии при оформлении в корзине.
+          / %div{:itemscope => true, :itemtype => "http://schema.org/Question"}
+          %div
+            / %h3{:itemprop => "name"}
+            %h3 Какие гарантии, что цветы привезут?
+            .hideforh3
+              / %meta{:content => "5", :itemprop => "upvoteCount"}/
+              / %div{:itemprop => "acceptedAnswer", :itemscope => true, :itemtype => "  http://schema.org/Answer"}
+              %div
+                / %p{:itemprop => "text"}
+                %p Наша компания давно работает на цветочном рынке. За это время в интернете скопилось много положительных отзывов, с которыми можно ознакомиться. Мы дорожим, нашей репутацией.
+          / %div{:itemscope => true, :itemtype => "http://schema.org/Question"}
+          %div
+            / %h3{:itemprop => "name"}
+            %h3 Как доставить цветы анонимно?
+            .hideforh3
+              / %meta{:content => "5", :itemprop => "upvoteCount"}/
+              / %div{:itemprop => "acceptedAnswer", :itemscope => true, :itemtype => "    http://schema.org/Answer"}
+              %div
+                / %p{:itemprop => "text"}
+                %p Достаточно не подписывать открытку. Мы не говорим получателю от кого цветы.
+          / %div{:itemscope => true, :itemtype => "http://schema.org/Question"}
+          %div
+            / %h3{:itemprop => "name"}
+            %h3 Можно ли увидеть фото букета?
+            .hideforh3
+              / %meta{:content => "5", :itemprop => "upvoteCount"}/
+              / %div{:itemprop => "acceptedAnswer", :itemscope => true, :itemtype => "    http://schema.org/Answer"}
+              %div
+                / %p{:itemprop => "text"}
+                %p Флористы бесплатно сфотографируют букет и отправят Вам фото. Можем сфотографировать получателя с букетом, при его согласии.
+          / %div{:itemscope => true, :itemtype => "http://schema.org/Question"}
+          %div
+            / %h3{:itemprop => "name"}
+            %h3 Как подписать открытку к букету?
+            .hideforh3
+              / %meta{:content => "5", :itemprop => "upvoteCount"}/
+              / %div{:itemprop => "acceptedAnswer", :itemscope => true, :itemtype => "    http://schema.org/Answer"}
+              %div
+                / %p{:itemprop => "text"}
+                %p Вы можете написать пожелание в открытку и подписаться совершенно бесплатно при оформлении в корзине.
+          / %div{:itemscope => true, :itemtype => "http://schema.org/Question"}
+          %div
+            / %h3{:itemprop => "name"}
+            %h3 Можно ли доставить букет, не зная адреса?
+            .hideforh3
+              / %meta{:content => "5", :itemprop => "upvoteCount"}/
+              / %div{:itemprop => "acceptedAnswer", :itemscope => true, :itemtype => "    http://schema.org/Answer"}
+              %div
+                / %p{:itemprop => "text"}
+                %p Вам нужно оставить номер телефона получателя, и мы уточним адрес и время.
+      .finfo
+        .clear-both
+      .clear-both
+    / %h2
+    /   = getpage('company-short').title`
+    / != @subdomain.about_us

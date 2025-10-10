@@ -1,0 +1,271 @@
+-# coding: utf-8
+- error = @disabled_date.errors.include?(:name)
+%fieldset.control-group{:class => error ? 'has-error' : ''}
+  =f.label "Название", :class => 'control-label'
+  .controls
+    =f.text_field :name, :class => 'input-xlarge input-with-feedback'
+    %span.help-inline=error ? f.error_message_on(:name, :class => 'text-error') : 'Название'
+%div#disabled_dates
+  - error = @disabled_date.errors.include?(:date)
+  %fieldset.control-group{:class => error ? 'has-error' : ''}
+    =f.label "Число", :class => 'control-label'
+    .container-fluid{style: "display: inline-block; margin-left: 15px; width: 80%;"}
+      .controls
+        %div
+          - if error
+            %span.text-error Выбирете дату!
+          -else
+            %span.help-inline Число Месяц Год
+          %input#disabled_date_date{:name => "disabled_date[date]", :type => "hidden", "value" => ""}/
+          %date-picker{"enabled-value" => @disabled_date.enabled,
+                       "date-value" => @disabled_date.date,
+                       "only-delivery" => @disabled_date.only_delivery,
+                       "except-delivery" => @disabled_date.except_delivery}
+  %fieldset.control-group{:class => error ? 'has-error' : ''}
+    =f.label "Субдомены", :class => 'control-label'
+    .container-fluid
+      .controls
+        %div{ style: "display: inline-block; margin-left: 15px; width: 80%;"}
+          %v-select{":all-options" => @subdomains.to_json, ":selected-value" => @selected.to_json}
+            %span{"slot" => "no-options"} Список пуст.
+.form-actions
+  =f.submit pat(:save), :class => 'btn btn-primary'
+  &nbsp;
+  =f.submit pat(:save_and_continue), :class => 'btn btn-info', :name => 'save_and_continue'
+  &nbsp;
+  =link_to pat(:cancel), url(:disabled_dates, :index), :class => 'btn'
+
+%script{:src => "https://unpkg.com/vuejs-datepicker"}
+:javascript
+  var DatePicker = Vue.component('data-picker', {
+    props: {
+      dateValue: {
+        type: String,
+        default: ""
+      },
+      enabledValue:{
+        type: Boolean,
+        default: false
+      },
+      onlyDelivery:{
+        type: Boolean,
+        default: false
+      },
+      exceptDelivery:{
+        type: Boolean,
+        default: false
+      },
+    },
+    components: {vuejsDatepicker},
+    data: function() {
+      return {
+        date: this.dateValue,
+        flag: this.enabledValue,
+        flag2: this.exceptDelivery,
+        flag3: this.onlyDelivery
+      }
+    },
+    watch:{
+      date: function(){
+        document.getElementById('disabled_date_date').value = this.date
+      }
+    },
+    computed:{
+      trigger:{
+        get: function(){
+          return this.flag;
+        },
+        set: function(val){
+          this.flag = val;
+        }
+      },
+      trigger2:{
+        get: function(){
+          return this.flag2;
+        },
+        set: function(val){
+          this.flag2 = val;
+        }
+      },
+      trigger3:{
+        get: function(){
+          return this.flag3;
+        },
+        set: function(val){
+          this.flag3 = val;
+        }
+      },
+      currDate: function(){
+        var d = new Date(Date.parse(this.date));
+        var date = d.getDate() + "." + parseInt(d.getMonth() + 1)  + "."+ d.getFullYear();
+        return date
+      }
+    },
+    mounted: function(){
+      document.getElementById('disabled_date_date').value = this.dateValue;
+    },
+    template: `
+              <div>
+                <vuejs-datepicker
+                  style="width:300px;"
+                  v-model="date"
+                  class="float-left"
+                  input-class="bg-white"
+                  :language="{ 'language': 'Russian',
+                               'months': [ 'Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь' ],
+                               'monthsAbbr': [ 'Янв', 'Февр', 'Март', 'Апр', 'Май', 'Июнь', 'Июль', 'Авг', 'Сент', 'Окт', 'Нояб', 'Дек' ],
+                               'days': [ 'Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб' ],
+                               'rtl': false,
+                               'ymd': false,
+                               'yearSuffix': '' }"
+                  format="dd MMMM yyyy"
+                  placeholder="Выберите дату"
+                ></vuejs-datepicker>
+                <div class="span2" style="padding: 3px 0; margin-left: 16px; width: 100px;">
+                  <input v-if="trigger" id="disabled_date_enabled" name="disabled_date[enabled]" value="true" type="hidden">
+                  <input v-else id="disabled_date_enabled" name="disabled_date[enabled]" value="false" type="hidden">
+                  <input
+                    id="date_trigger"
+                    class="tgl tgl-skewed visibility-hidden float-left"
+                    type="checkbox"
+                    v-model="trigger"
+                  >
+                  <label class="tgl-btn" data-tg-off="Выкл." data-tg-on="Вкл." for="date_trigger"></label>
+                </div>
+                <div class="clearfix"></div>
+                <div class="clearfix"></div>
+                <div class="span2" style="float: none; width: 400px; margin-top: 20px;">
+                  <h4 style="width: 300px; float: left">Исключить самовывоз?</h4>
+                  <input v-if="trigger2" id="disabled_date_except_delivery" name="disabled_date[except_delivery]" value="true" type="hidden">
+                  <input v-else id="disabled_date_except_delivery" name="disabled_date[except_delivery]" value="false" type="hidden">
+                  <input
+                    id="date_trigger2"
+                    class="tgl tgl-skewed visibility-hidden float-left"
+                    type="checkbox"
+                    v-model="trigger2"
+                    @click="trigger3 = false"
+                  >
+                  <label class="tgl-btn" data-tg-off="Нет" data-tg-on="Да" for="date_trigger2"></label>
+                </div>
+                <div class="clearfix"></div>
+                <div class="clearfix"></div>
+                <div class="span2" style="float: none; width: 400px; margin-top: 10px;">
+                  <h4 style="width: 300px; float: left">Только самовывоз?</h4>
+                  <input v-if="trigger3" id="disabled_date_only_delivery" name="disabled_date[only_delivery]" value="true" type="hidden">
+                  <input v-else id="disabled_date_only_delivery" name="disabled_date[only_delivery]" value="false" type="hidden">
+                  <input
+                    id="date_trigger3"
+                    class="tgl tgl-skewed visibility-hidden float-left"
+                    type="checkbox"
+                    v-model="trigger3"
+                    @click="trigger2 = false"
+                  >
+                  <label class="tgl-btn" data-tg-off="Нет" data-tg-on="Да" for="date_trigger3"></label>
+                </div>
+              </div>
+              `
+  });
+  var VSelect = Vue.component('v-select', {
+    components:{
+      "multiselect": window.VueMultiselect.default
+    },
+    props:{
+      allOptions: {
+        type: Array,
+        default: function(){
+          return [];
+        }
+      },
+      selectedValue: {
+        type: Array,
+        default: function(){
+          return [];
+        }
+      }
+    },
+    data: function() {
+      return {
+        selected: this.selectedValue,
+        value: [],
+        showSelected: false,
+        clearAsk: false
+      }
+    },
+    computed:{
+      selectedIds: function(){
+        var res = [];
+        if(this.selected != null){
+          this.selected.forEach(function(s, i){res[i] = s.id;})
+        }
+        return res;
+      }
+    },
+    methods:{
+      changeValue: function(){
+        this.$nextTick(function () {
+          document.querySelectorAll(".multiselect__single").forEach( function(e,i) {
+          	if(i >= 1){
+              e.classList.add('single_hide')
+          	}
+            });
+          });
+      }
+    },
+    mounted:  function(){
+      this.changeValue();
+    },
+    template: `
+              <div>
+                <multiselect
+                  :options=allOptions
+                  v-model="selected"
+                  :multiple="true"
+                  :close-on-select="false"
+                  :clear-on-select="false"
+                  :preserve-search="true"
+                  placeholder="Выберите город"
+                  selectLabel="Нажмите чтобы выбрать (enter, ЛКМ)"
+                  selectedLabel="Выбран"
+                  deselectLabel="Нажмите чтобы снять выделение (enter, ЛКМ)"
+                  label="name"
+                  track-by="name"
+                  :preselect-first="false"
+                  @input="changeValue()"
+                >
+                  <template slot="tag" slot-scope="{ options }" v-if="!showSelected">
+                    <span class="multiselect__single">
+                      Городов выбрано: {{ selected.length }}
+                    </span>
+                  </template>
+                </multiselect>
+                <input type="hidden" v-model="selectedIds" id="disabled_date_subdomains" name="disabled_date[subdomains]">
+                <div class="clearfix"></div>
+                <div style="margin-top: 10px">
+                  <button class="btn btn-primary" @click.prevent="selected = allOptions; changeValue()"> Выбрать все </button>
+                  <button class="btn btn-primary" @click.prevent="showSelected = !showSelected; changeValue()">
+                    {{showSelected ? "Скрыть города" : "Показать"}}
+                  </button>
+                  <button class="btn btn-primary" @click.prevent="clearAsk = !clearAsk" v-if="!clearAsk"> Очистить</button>
+                  <span v-if="clearAsk">Вы уверены?</span>
+                  <button class="btn btn-primary" @click.prevent="selected = []; clearAsk = !clearAsk" v-if="clearAsk"> Да</button>
+                  <button class="btn btn-primary" @click.prevent="clearAsk = !clearAsk" v-if="clearAsk"> Нет</button>
+                </div>
+              </div>
+              `
+  });
+  new Vue({
+    el: '#disabled_dates',
+    components: {
+      DatePicker,
+      "v-select": VSelect
+    },
+    data: function() {
+      return {
+        date: '',
+        selected: []
+      }
+    },
+    methods: {
+    },
+
+  });

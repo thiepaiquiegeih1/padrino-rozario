@@ -1,0 +1,21 @@
+- # encoding: utf-8
+
+%h2 Импорт пользователей из 1С
+
+-form_for "mailing", url(:mailing, :import_emails), multipart: true, :class => 'form-horizontal' do |f|
+
+  %fieldset.control-group
+    =f.label "Файл", :class => 'control-label'
+    .controls
+      %span.btn.btn-file
+        Загрузить
+        =f.file_field :file, :class => 'input-xlarge input-with-feedback'
+      %span.help-inline='Загрузите xlsx файл из 1С'
+
+
+  %p{style: "text-align:center;"} Пожалуйста, не закрывайте страницу после нажатия кнопки «Отправить». Дождитесь сообщения об успешной отправке или об ошибке.
+
+  .form-actions
+    =f.submit "Отправить", :class => 'btn btn-primary'
+    &nbsp;
+    =link_to pat(:cancel), url(:mailing, :index), :class => 'btn'

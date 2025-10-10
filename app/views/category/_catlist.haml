@@ -1,0 +1,18 @@
+-# coding: utf-8
+
+.alert 'app/views/category/_catlist.haml'
+-if catlist.slug.present?
+  .col-md-5.col-lg-5.col-xs-12.col-sm-5.item
+    =link_to image_tag(catlist.image, :alt => ""), abs_url_for(:category, :index, :slug => catlist.slug), :class => "image"
+    .title
+      =link_to catlist.title, abs_url_for(:category, :index, :slug => catlist.slug)
+    .ann!= catlist.announce
+-else
+  .col-md-5.col-lg-5.col-xs-12.col-sm-5.item
+    =link_to image_tag(catlist.image, :alt => ""), abs_url_for(:category, :index, :id => catlist), :class => "image"
+    .title
+      =link_to catlist.title, abs_url_for(:category, :index, :id => catlist)
+    .ann!= catlist.announce
+
+:javascript
+  console.log('app/views/category/_catlist.haml');

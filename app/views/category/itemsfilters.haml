@@ -1,0 +1,111 @@
+- # encoding: utf-8
+
+:ruby
+  # CollectionPage Schema.org markup  
+  if defined?(@category) && @category
+    current_domain = CURRENT_DOMAIN
+    # Use proper subdomain logic with murmansk handling
+    base_url = @subdomain.url != 'murmansk' ? "https://#{@subdomain.url}.#{current_domain}" : "https://#{current_domain}"
+    category_title = @category.title
+    category_slug = @category.slug ? @category.slug.force_encoding('UTF-8') : @category.id.to_s
+    
+    if @category.parent_id && @category.parent_id != 32
+      parent_category = Category.find(@category.parent_id)
+      parent_slug = parent_category.slug ? parent_category.slug.force_encoding('UTF-8') : parent_category.id.to_s
+      parent_url = base_url + "/category/" + parent_slug
+      category_url = base_url + "/category/" + parent_slug + "/" + category_slug
+      breadcrumbs = [
+        { name: parent_category.title, url: parent_url },
+        { name: category_title, url: category_url }
+      ]
+      canonical_url = category_url
+    else
+      category_url = base_url + "/category/" + category_slug
+      breadcrumbs = [
+        { name: "Главная", url: base_url },
+        { name: category_title, url: category_url }
+      ]
+      canonical_url = category_url
+    end
+    
+    collection_options = {
+      name: category_title,
+      description: (@category.announce || category_title),
+      about: "Каталог товаров в категории " + category_title.to_s,
+      url: canonical_url,
+      breadcrumbs: breadcrumbs,
+      items: (defined?(@items) ? @items : []),
+      date_published: (@category.created_at ? @category.created_at.strftime('%Y-%m-%d') : Date.current.strftime('%Y-%m-%d')),
+      date_modified: (@category.updated_at ? @category.updated_at.strftime('%Y-%m-%d') : Date.current.strftime('%Y-%m-%d'))
+    }
+  end
+
+- if defined?(collection_options)
+  = collection_page_schema(collection_options)
+- content_for :head do
+  -#stylesheet_link_tag 'bootstrap-span'
+  / =javascript_include_tag 'jquery.zoom.min'
+  =javascript_include_tag 'ang/angular4.min'
+  =javascript_include_tag 'ang/lodash.underscore.min'
+  =javascript_include_tag 'ang/restangular.min'
+  =javascript_include_tag 'ang/angular-busy.min'
+  =javascript_include_tag 'ang/navigator'
+
+  =javascript_include_tag 'ang/catalog'
+  / =stylesheet_link_tag 'angular-busy'
+
+.alert '/app/views/category/itemsfilters.haml'
+
+
+= # partial("category/filters.html", :engine => :erb)
+
+%div#crutch-indent{style:'height:1px'}
+
+- if !@category.products.empty?
+  .row
+    .col-md-12.hidden-xs.hidden-sm{ style: "padding-left:48px" }
+      .filter
+        .line1
+          - if params[:all].blank?
+            .dropdown{ style: "text-align: right; padding-right: 35px;" }
+              %a.dropdown-toggle.W72SUDHW{"data-toggle" => "dropdown", :href => "#"}
+                Сортировка товаров
+                %b.caret
+              %ul.dropdown-menu{ style: "right: 0; left: auto;" }
+                %li
+                  =link_to "по алфавиту", "javascript:void(0)", { :'ng-click' => 'navigator.toggleSort("title")', :'ng-class' => '{selected: navigator.sortBy === "title"}' }
+                %li
+                  =link_to "по возрастанию цены", "javascript:void(0)", { :'ng-click' => 'navigator.toggleSort("price-asc")', :'ng-class' => '{selected: navigator.sortBy === "price-asc"}' }
+                %li
+                  =link_to "по убыванию цены", "javascript:void(0)", { :'ng-click' => 'navigator.toggleSort("price-desc")', :'ng-class' => '{selected: navigator.sortBy === "price-desc"}' }
+    .col-md-12.visible-xs.visible-sm
+      .filter
+        .line1
+          - if params[:all].blank?
+            .dropdown{ style: "text-align: right; padding-right: 35px;" }
+              %a.dropdown-toggle.UDHW72SW{"data-toggle" => "dropdown", :href => "#"}
+                Сортировка товаров
+                %b.caret
+              %ul.dropdown-menu{ style: "right: 0; left: auto;" }
+                %li
+                  =link_to "по алфавиту", "javascript:void(0)", { :'ng-click' => 'navigator.toggleSort("title")', :'ng-class' => '{selected: navigator.sortBy === "title"}' }
+                %li
+                  =link_to "по возрастанию цены", "javascript:void(0)", { :'ng-click' => 'navigator.toggleSort("price-asc")', :'ng-class' => '{selected: navigator.sortBy === "price-asc"}' }
+                %li
+                  =link_to "по убыванию цены", "javascript:void(0)", { :'ng-click' => 'navigator.toggleSort("price-desc")', :'ng-class' => '{selected: navigator.sortBy === "price-desc"}' }
+  .autop-wrapper
+    .row.text-center{style: 'padding: 0 16px;'}
+      #category-list
+        = partial 'product/cardplace'
+
+    /= partial("category/item_modal.html", :engine => :erb)
+
+.row
+  .col-md-12.text-center#morebtn{style:'padding:24px 0;'}
+    %button.btn.btn-default{ :'ng-hide' => 'navigator.auto', :'ng-click' => 'navigator.startAuto()' } Показать ещё
+    %img.block-center{ :'ng-show' => 'navigator.inProcess', src: "/images/preloader.gif", style: 'width:50px;' }
+
+<style>@media only screen and (max-width: 992px) { .delivery-lg { margin-bottom: 8px !important; } }</style>
+
+:javascript
+  console.log('app/views/category/itemsfilters.haml');

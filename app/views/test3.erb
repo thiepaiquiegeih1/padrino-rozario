@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/flickity/3.0.0/flickity.pkgd.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/flickity/3.0.0/flickity.min.css">
+</head>
+<body>
+
+<h1>Flickity - freeScroll, contain</h1>
+
+<!-- Flickity HTML init -->
+<div class="carousel_1"
+  data-flickity='{ "freeScroll": true, "groupCells": false, "pageDots": false, "lazyLoad": 2, "cellAlign": "left", "contain": true }'>
+  <div class="carousel-cell"></div>
+  <div class="carousel-cell"></div>
+  <div class="carousel-cell"></div>
+  <div class="carousel-cell"></div>
+  <div class="carousel-cell"></div>
+</div>
+
+<h1>Flickity - freeScroll, contain</h1>
+
+<!-- Flickity HTML init -->
+<div class="carousel_2"
+  data-flickity='{ "freeScroll": true, "groupCells": false, "pageDots": false, "lazyLoad": 2, "cellAlign": "left", "contain": true }'>
+  <div class="carousel-cell"></div>
+  <div class="carousel-cell"></div>
+  <div class="carousel-cell"></div>
+  <div class="carousel-cell"></div>
+  <div class="carousel-cell"></div>
+</div>
+
+<h1>Flickity - freeScroll, contain</h1>
+
+<!-- Flickity HTML init -->
+<div class="carousel_3"
+  data-flickity='{ "freeScroll": true, "groupCells": false, "pageDots": false, "lazyLoad": 2, "cellAlign": "left", "contain": true }'>
+  <div class="carousel-cell"></div>
+  <div class="carousel-cell"></div>
+  <div class="carousel-cell"></div>
+  <div class="carousel-cell"></div>
+  <div class="carousel-cell"></div>
+</div>
+<style type="text/css">
+/* external css: flickity.css */
+
+* { box-sizing: border-box; }
+
+body { font-family: sans-serif; }
+
+.carousel_1, .carousel_2, .carousel_3 {
+  background: #FAFAFA;
+}
+
+.carousel-cell {
+  width: 66%;
+  height: 200px;
+  margin-right: 10px;
+  background: #8C8;
+  border-radius: 5px;
+  counter-increment: carousel-cell;
+}
+
+/* cell number */
+.carousel-cell:before {
+  display: block;
+  text-align: center;
+  content: counter(carousel-cell);
+  line-height: 200px;
+  font-size: 80px;
+  color: white;
+}
+</style>
+</body>
+</html>

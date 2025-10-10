@@ -1,0 +1,117 @@
+- # encoding: utf-8
+
+- content_for :head do
+  =javascript_include_tag 'ang/angular.min'
+  -#=javascript_include_tag 'ang/ui-bootstrap-0.9.0.min'
+  -#=javascript_include_tag 'ang/ui-bootstrap-tpls-0.9.0.min'
+  =javascript_include_tag 'ang/angular-ui-router.min'
+  =javascript_include_tag 'ang/lodash.underscore.min'
+  =javascript_include_tag 'ang/restangular.min'
+  =javascript_include_tag 'ang/angular-busy.min'
+  -# =javascript_include_tag 'ang/cart'
+  %link{:as => "style", :href => "/vue/css/app.13bc69e6.css", :rel => "preload"}/
+  %link{:as => "style", :href => "/vue/css/chunk-vendors.d9ca0cb0.css", :rel => "preload"}/
+  %link{:as => "script", :href => "/vue/js/app.3d997df6.js", :rel => "modulepreload"}/
+  %link{:as => "script", :href => "/vue/js/chunk-vendors.8c886e7d.js", :rel => "modulepreload"}/
+  %link{:href => "/vue/css/chunk-vendors.d9ca0cb0.css", :rel => "stylesheet"}/
+  %link{:href => "/vue/css/app.13bc69e6.css", :rel => "stylesheet"}/
+
+  -#=javascript_include_tag 'bootstrap-spinedit'
+  -#=stylesheet_link_tag 'bootstrap-dropdown'
+
+= partial("cart/show.html", :engine => :erb)
+
+-#- if !@cross_cats.empty?
+-# =javascript_include_tag 'slick.min'
+-# =stylesheet_link_tag 'slick'
+-# :plain
+-#   <link href="/stylesheets/s" rel="stylesheet">
+-#   <script src="/javascripts/slick.min.js"></script>
+-#   <script>
+-#     $(function() {
+-#       $("#cross").slick({
+-#         slidesToShow: 1,
+-#         slidesToScroll: 1,
+-#         slide: '.frame',
+-#         dots: true
+-#       });
+-#     });
+-#   </script>
+
+-#  document.addEventListener("DOMContentLoaded", function(event) {
+-#    const apiUrl = '/api/v1/carts/current_order'; 
+-#    function handleCartApiResponse(data) { // Обрабатывает ответ от API корзины. @param {object} data - Объект, полученный от API.
+-#      if (data && data.product === "[]") { // Проверяем, является ли корзина пустой. Самый надежный способ - проверить, что поле 'product' это строка "[]".
+-#        // console.log("Корзина пуста. Никаких действий не требуется.");
+-#        return; // Выходим из функции, так как ничего делать не нужно.
+-#      }
+-#      // console.log("В корзине есть товары. Проверяем наличие элемента #cart-list."); // Если мы дошли сюда, значит в корзине есть товары.
+-#      const cartListElement = document.querySelector('#cart-list'); // Пытаемся найти элемент #cart-list на странице.
+-#      if (cartListElement) { // Если элемент найден, все в порядке.
+-#        // console.log("Элемент #cart-list найден. Все хорошо.");
+-#      } else { // Если элемент не найден, запускаем таймер.
+-#        // console.log("Элемент #cart-list не найден. Ждем 3 секунды для повторной проверки.");
+-#        setTimeout(() => { // Эта часть кода выполнится через 3000 миллисекунд (3 секунды).
+-#          // console.log("Повторная проверка наличия #cart-list...");
+-#          const cartListElementAgain = document.querySelector('#cart-list');
+-#          if (cartListElementAgain) { // Элемент успел загрузиться за эти 3 секунды.
+-#            // console.log("Элемент #cart-list теперь найден.");
+-#          } else { // Элемент так и не появился. Перезагружаем страницу.
+-#            // console.log("Элемент #cart-list все еще отсутствует. Перезагружаем страницу.");
+-#            location.reload();
+-#          }
+-#        }, 3000); // 3 секунды
+-#      }
+-#    }
+-#    function executeWhenIdIsReady() {
+-#      let checkInterval; // Переменная для хранения ID интервала, чтобы мы могли его остановить
+-#      const check = () => {
+-#        // console.log('Проверяем наличие window.SUBDOMAIN_DATA.id...');
+-#        if (window.SUBDOMAIN_DATA?.id !== undefined) {
+-#          clearInterval(checkInterval);
+-#          const postData = {city_id: window.SUBDOMAIN_DATA.id};
+-#          // console.log(JSON.stringify(postData))
+-#          fetch(apiUrl, {
+-#            method: 'POST',
+-#            headers: {'Content-Type': 'application/json'},
+-#            body: JSON.stringify(postData)
+-#          }).then(response => { // Проверяем, успешен ли ответ сервера (код 200-299)
+-#            if (!response.ok) { throw new Error('Сетевой ответ был не в порядке: ' + response.statusText); }
+-#            return response.json(); // Преобразуем ответ в JSON
+-#          }).then(data => { // Ответ успешно получен и преобразован в объект. Вызываем нашу основную функцию для обработки этого объекта.
+-#            handleCartApiResponse(data);
+-#          }).catch(error => { // Обрабатываем возможные ошибки (например, проблемы с сетью)
+-#            console.error('Возникла проблема с вашим fetch запросом:', error);
+-#          });
+-#        }
+-#      };
+-#      checkInterval = setInterval(check, 100); // Запускаем проверку каждые 100 миллисекунд
+-#      // setTimeout(() => { // Опционально: можно добавить таймаут, чтобы остановить проверку через некоторое время
+-#      //   if (checkInterval) { // Если интервал все еще активен через 10 секунд, останавливаем его
+-#      //     clearInterval(checkInterval);
+-#      //     console.error('Не удалось получить window.SUBDOMAIN_DATA.id за 10 секунд.');
+-#      //   }
+-#      // }, 10000);
+-#    }
+-#    executeWhenIdIsReady();
+-#  });
+
+:javascript
+  window.paymentMethods = #{@payment_methods.to_json}
+  window.paymentMethods.sort((a, b) => a.order - b.order);
+  // console.log(window.paymentMethods)
+  console.log('cart/check.haml')
+  document.addEventListener("DOMContentLoaded",function(t){{let e;e=setInterval(()=>{var t;void 0!==window.SUBDOMAIN_DATA?.id&&(clearInterval(e),t={city_id:window.SUBDOMAIN_DATA.id},fetch("/api/v1/carts/current_order",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(t)}).then(t=>{if(t.ok)return t.json();throw new Error("Сетевой ответ был не в порядке: "+t.statusText)}).then(t=>{(t=t)&&"[]"===t.product||document.querySelector("#cart-list")||setTimeout(()=>{document.querySelector("#cart-list")||location.reload()},3e3)}).catch(t=>{console.error("Возникла проблема с вашим fetch запросом:",t)}))},100)}});
+
+:css
+  select[name="payment_type"] {
+    -webkit-appearance: none; /* Убираем стили Safari и Chrome */
+    -moz-appearance: none;    /* Убираем стили Firefox */
+    background-image: url('/images/down-arrow-32px.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position-x: right;
+    background-size: 32px;
+    background-position-y: center;
+  }
+  

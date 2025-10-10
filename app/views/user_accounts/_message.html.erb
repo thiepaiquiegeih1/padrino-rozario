@@ -1,0 +1,19 @@
+<div id="feedback-form">
+<% form_tag url(:user_accounts, :message), :style => 'display: block;', :method => 'post', :class => 'form feedback', :multipart => true do |f| %>
+  <% field_set_tag do %>
+    <%= label_tag :name, :caption => 'Имя' %>
+    <%= text_field_tag :name, :value => current_account.surname, :readonly => true, :disabled => true %>
+  <% end %>
+  <% field_set_tag do %>
+    <%= label_tag :msg, :caption => 'Ваш вопрос' %>
+    <%= text_area_tag :msg, :value => params[:msg], :required => '' %>
+  <% end %>
+  <% field_set_tag do %>
+    <%= label_tag :file, :caption => 'Прикрепить файл' %>
+    <%= file_field_tag :file, :value => params[:file], :class => "file" %>
+  <% end %>
+  <% field_set_tag(:class => 'buttons') do %>
+    <%= submit_tag 'Отправить', :class => 'btn' %>
+  <% end %>
+<% end %>
+</div>

@@ -1,0 +1,5 @@
+﻿.row.colored
+  .col-md-12.hidden-xs.hidden-sm{ style: 'background: #FAF2E9; border-radius: 8px; margin: 0 50px; width: calc(100% - 100px);' }
+    %section#latest-news
+      = link_to '<div class="h2-seo-crutch">Статьи о цветах</div>'.html_safe, host_url('/news'), rel: 'nofollow'
+      = partial 'news/latest_news', :collection => @latest_news

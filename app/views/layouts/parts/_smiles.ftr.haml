@@ -1,0 +1,65 @@
+﻿.row.colored
+  .col-md-12
+    %section.smiles.bottom{style: 'background: #FAF2E9; border-radius: 8px; padding: 16px; margin-bottom: 24px;'}
+      - imgstyle = 'max-width: 200px; width: 80%; border-radius: 4px;'
+      %a{href: '/smiles/', rel: 'nofollow'}
+        %div{ :class => 'h2-seo-crutch', :style => 'margin:0; color: black;' } Улыбки наших получателей
+        - arr_smiles = Smile.where(sidebar: true).pluck(:id)
+        - range = arr_smiles.size
+        - if(range >= 3)
+          - a = rand(range)
+          - b = rand(range)
+          - c = rand(range)
+          - tst = lambda do |a, b, range|
+            - if    a==b && a != range-1; b += 1; tst.call(a, b, range)
+            - elsif a==b && a == range-1; b -= 1; tst.call(a, b, range)
+            - else; return b
+          - b = tst.call(a, b, range)
+          - c = tst.call(b, c, range)
+          - a = arr_smiles[a]
+          - b = arr_smiles[b]
+          - c = arr_smiles[c]
+        - elsif(range >= 2)
+          - a = arr_smiles[0]
+          - b = arr_smiles[1]
+          - c = Smile.last.id
+        - else
+          - a = Smile.first.id
+          - b = Smile.last.id
+          - c = Smile.last.id
+        .col-md-3.col-sm-4.col-xs-6{ style: "padding:0" }
+          - @post = Smile.find_by_id(a)
+          - link = File.join('/smiles/', @post.slug.present? ?  @post.slug.to_s : @post.id.to_s)
+          %a{href: link, rel: 'nofollow'}
+            - ext = File.extname(@post.images.current_path)
+            - base = File.basename(@post.images.current_path, ".*").to_s
+            - fname = base + '_tn' + ext
+            - File.file?('/var/www/rozarioflowers.ru/rozario/public/uploads/smiles/' + fname) ? fname : fname = File.basename(@post.images.current_path)
+            - link1 = '/uploads/smiles/' + fname
+            %br
+            %img{ src: link1, style: imgstyle, alt: @post.alt, loading: "lazy" }
+        .col-md-3.col-sm-4.col-xs-6{ style: "padding:0" }
+          - @post = Smile.find_by_id(b)
+          - link = File.join('/smiles/', @post.slug.present? ?  @post.slug.to_s : @post.id.to_s)
+          %a{href: link, rel: 'nofollow'}
+            - ext = File.extname(@post.images.current_path)
+            - base = File.basename(@post.images.current_path, ".*").to_s
+            - fname = base + '_tn' + ext
+            - File.file?('/var/www/rozarioflowers.ru/rozario/public/uploads/smiles/' + fname) ? fname : fname = File.basename(@post.images.current_path)
+            - link2 = '/uploads/smiles/' + fname
+            %br
+            %img{ src: link2, style: imgstyle, alt: @post.alt, loading: "lazy" }
+        .col-md-3.col-sm-4.hidden-xs{ style: "padding:0" }
+          - @post = Smile.find_by_id(c)
+          - link = File.join('/smiles/', @post.slug.present? ?  @post.slug.to_s : @post.id.to_s)
+          %a{href: link, rel: 'nofollow'}
+            - ext = File.extname(@post.images.current_path)
+            - base = File.basename(@post.images.current_path, ".*").to_s
+            - fname = base + '_tn' + ext
+            - File.file?('/var/www/rozarioflowers.ru/rozario/public/uploads/smiles/' + fname) ? fname : fname = File.basename(@post.images.current_path)
+            - link3 = '/uploads/smiles/' + fname
+            %br
+            %img{ src: link3, style: imgstyle, alt: @post.alt, loading: "lazy" }
+      .row
+        .col-md-12
+          = link_to 'Показать все'.html_safe, host_url('/smiles/'), rel: 'nofollow'

@@ -1,0 +1,288 @@
+<fieldset class="rating">
+  <!-- Звезда 1 -->
+  <input type="radio" id="star1" name="rating" value="1" />
+  <label class="full" for="star1" title="1 звезда"></label>
+  <input type="radio" id="star1half" name="rating" value="0.5" />
+  <label class="half" for="star1half" title="0.5 звезды"></label>
+  
+  <!-- Звезда 2 -->
+  <input type="radio" id="star2" name="rating" value="2" />
+  <label class="full" for="star2" title="2 звезды"></label>
+  <input type="radio" id="star2half" name="rating" value="1.5" />
+  <label class="half" for="star2half" title="1.5 звезды"></label>
+  
+  <!-- Звезда 3 -->
+  <input type="radio" id="star3" name="rating" value="3" />
+  <label class="full" for="star3" title="3 звезды"></label>
+  <input type="radio" id="star3half" name="rating" value="2.5" />
+  <label class="half" for="star3half" title="2.5 звезды"></label>
+  
+  <!-- Звезда 4 -->
+  <input type="radio" id="star4" name="rating" value="4" />
+  <label class="full" for="star4" title="4 звезды"></label>
+  <input type="radio" id="star4half" name="rating" value="3.5" />
+  <label class="half" for="star4half" title="3.5 звезды"></label>
+  
+  <!-- Звезда 5 -->
+  <input type="radio" id="star5" name="rating" value="5" />
+  <label class="full" for="star5" title="5 звёзд"></label>
+  <input type="radio" id="star5half" name="rating" value="4.5" />
+  <label class="half" for="star5half" title="4.5 звезды"></label>
+</fieldset>
+
+<style type="text/css">
+.rating {
+  margin: 15px 0;
+  padding: 0;
+  border: none;
+  display: flex;
+  align-items: center;
+  direction: ltr;
+  gap: 2px;
+}
+
+.rating > input { 
+  display: none; 
+}
+
+/* Контейнер для каждой звезды */
+.rating > label {
+  position: relative;
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  font-size: 20px;
+  color: #ddd;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+/* Символ звезды */
+.rating > label:before {
+  content: "\2605";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Полная звезда */
+.rating > .full {
+  z-index: 2;
+}
+
+/* Половинная звезда - накладываем поверх полной */
+.rating > .half {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 50%;
+  overflow: hidden;
+  z-index: 3;
+}
+
+.rating > .half:before {
+  width: 200%; /* Показываем полную звезду, но обрезаем наполовину */
+}
+
+/* Активное состояние при выборе */
+.rating > input:checked ~ label,
+.rating > input:checked ~ label ~ label {
+  color: #FFD700;
+}
+
+/* Hover эффекты - подсвечиваем все предыдущие звезды */
+.rating > label:hover,
+.rating > label:hover ~ label {
+  color: #FFD700;
+}
+
+/* Дополнительные стили для лучшего UX */
+.rating {
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.rating > label {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+/* Медиа запрос для мобильных устройств */
+@media (max-width: 768px) {
+  .rating > label {
+    width: 28px;
+    height: 28px;
+    font-size: 24px;
+  }
+}
+</style>
+
+<script type="text/javascript">
+(function() {
+  'use strict';
+  
+  function initStarRating() {
+    const rating = document.querySelector('.rating');
+    if (!rating) return;
+    
+    const stars = rating.querySelectorAll('label');
+    const inputs = rating.querySelectorAll('input[type="radio"]');
+    
+    // Создаем правильную структуру звезд
+    function setupStars() {
+      // Очищаем существующий контент
+      rating.innerHTML = '';
+      
+      // Создаем 5 звезд
+      for (let i = 1; i <= 5; i++) {
+        const starContainer = document.createElement('div');
+        starContainer.className = 'star-container';
+        starContainer.style.cssText = 'position: relative; display: inline-block; margin-right: 2px;';
+        
+        // Полная звезда
+        const fullInput = document.createElement('input');
+        fullInput.type = 'radio';
+        fullInput.id = `star${i}`;
+        fullInput.name = 'rating';
+        fullInput.value = i;
+        fullInput.style.display = 'none';
+        
+        const fullLabel = document.createElement('label');
+        fullLabel.htmlFor = `star${i}`;
+        fullLabel.className = 'full';
+        fullLabel.title = `${i} ${i === 1 ? 'звезда' : i <= 4 ? 'звезды' : 'звёзд'}`;
+        fullLabel.innerHTML = '★';
+        fullLabel.style.cssText = `
+          display: block;
+          font-size: 24px;
+          color: #ddd;
+          cursor: pointer;
+          width: 24px;
+          height: 24px;
+          line-height: 24px;
+          text-align: center;
+          transition: color 0.2s ease;
+        `;
+        
+        // Половинная звезда
+        const halfInput = document.createElement('input');
+        halfInput.type = 'radio';
+        halfInput.id = `star${i}half`;
+        halfInput.name = 'rating';
+        halfInput.value = i - 0.5;
+        halfInput.style.display = 'none';
+        
+        const halfLabel = document.createElement('label');
+        halfLabel.htmlFor = `star${i}half`;
+        halfLabel.className = 'half';
+        halfLabel.title = `${i - 0.5} ${i === 1 ? 'звезды' : 'звёзд'}`;
+        halfLabel.innerHTML = '★';
+        halfLabel.style.cssText = `
+          position: absolute;
+          top: 0;
+          left: 0;
+          display: block;
+          font-size: 24px;
+          color: #ddd;
+          cursor: pointer;
+          width: 12px;
+          height: 24px;
+          line-height: 24px;
+          text-align: left;
+          overflow: hidden;
+          transition: color 0.2s ease;
+          z-index: 2;
+        `;
+        
+        starContainer.appendChild(fullInput);
+        starContainer.appendChild(fullLabel);
+        starContainer.appendChild(halfInput);
+        starContainer.appendChild(halfLabel);
+        
+        rating.appendChild(starContainer);
+      }
+    }
+    
+    // Функция подсветки звезд
+    function highlightStars(rating) {
+      const containers = document.querySelectorAll('.star-container');
+      const ratingValue = parseFloat(rating);
+      const fullStars = Math.floor(ratingValue);
+      const hasHalf = ratingValue % 1 !== 0;
+      
+      containers.forEach((container, index) => {
+        const fullLabel = container.querySelector('.full');
+        const halfLabel = container.querySelector('.half');
+        
+        if (index < fullStars) {
+          // Полностью закрашенная звезда
+          fullLabel.style.color = '#FFD700';
+          halfLabel.style.color = '#FFD700';
+        } else if (index === fullStars && hasHalf) {
+          // Половинная звезда
+          fullLabel.style.color = '#ddd';
+          halfLabel.style.color = '#FFD700';
+        } else {
+          // Пустая звезда
+          fullLabel.style.color = '#ddd';
+          halfLabel.style.color = '#ddd';
+        }
+      });
+    }
+    
+    // Сброс всех звезд к неактивному состоянию
+    function resetStars() {
+      const labels = rating.querySelectorAll('label');
+      labels.forEach(label => {
+        label.style.color = '#ddd';
+      });
+    }
+    
+    // Инициализация
+    setupStars();
+    
+    // Добавляем обработчики событий
+    rating.addEventListener('change', function(e) {
+      if (e.target.type === 'radio') {
+        highlightStars(e.target.value);
+        console.log('Выбран рейтинг:', e.target.value);
+      }
+    });
+    
+    // Hover эффекты
+    rating.addEventListener('mouseover', function(e) {
+      if (e.target.tagName === 'LABEL') {
+        const input = document.getElementById(e.target.getAttribute('for'));
+        if (input) {
+          highlightStars(input.value);
+        }
+      }
+    });
+    
+    // Возврат к выбранному состоянию при уходе мыши
+    rating.addEventListener('mouseleave', function() {
+      const checkedInput = rating.querySelector('input[type="radio"]:checked');
+      if (checkedInput) {
+        highlightStars(checkedInput.value);
+      } else {
+        resetStars();
+      }
+    });
+  }
+  
+  // Инициализация при загрузке DOM
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initStarRating);
+  } else {
+    initStarRating();
+  }
+})();
+</script>

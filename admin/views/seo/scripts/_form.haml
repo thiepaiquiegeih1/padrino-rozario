@@ -1,0 +1,65 @@
+-# coding: utf-8
+- error = @script.errors.include?(:title)
+%fieldset.control-group{:class => error ? 'has-error' : ''}
+  =f.label :'Название скрипта', :class => 'control-label'
+  .controls
+    =f.text_field :title, :class => 'input-xlarge input-with-feedback', :autofocus => true
+    %span.help-inline=error ? f.error_message_on(:title, :class => 'text-error') : 'Название'
+- error = @script.errors.include?(:comment)
+%fieldset.control-group{:class => error ? 'has-error' : ''}
+  =f.label :'Комментарий к скрипту', :class => 'control-label'
+  .controls
+    =f.text_field :comment, :class => 'input-xlarge input-with-feedback'
+    %span.help-inline=error ? f.error_message_on(:comment, :class => 'text-error') : 'Комментарий'
+%fieldset.control-group
+  .controls
+    %pre
+      %p
+        :plain
+          Для того, чтобы не перезаписывать соответствующий тег - оставьте поле пустым
+          Возможные подстановки:
+          Общие:
+        =content_tag('span', '%patternN%', class: 'label label-default label-insert-by-click', style: 'font-size: 1.1em; cursor: pointer;', data: {label_value: '%pattern%'})
+        , где N - номер(id) текстого шаблона
+        =content_tag('span', '%slug%', class: 'label label-default label-insert-by-click', style: 'font-size: 1.1em; cursor: pointer;', data: {label_value: '%%'})
+        , где slug - шорткод текстового шаблона
+        Для текущего субдомена:
+        =content_tag('span', '%city%', class: 'label label-default label-insert-by-click', style: 'font-size: 1.1em; cursor: pointer;', data: {label_value: '%city%'})
+        \- значение поля city текущего субдомена
+        =content_tag('span', '%in_city%', class: 'label label-default label-insert-by-click', style: 'font-size: 1.1em; cursor: pointer;', data: {label_value: '%in_city%'})
+        \- шаблон формата "в г. %city%"
+        =content_tag('span', '%suffix%', class: 'label label-default label-insert-by-click', style: 'font-size: 1.1em; cursor: pointer;', data: {label_value: '%suffix%'})
+        \- значение поля suffix
+        Для продуктов:
+        =content_tag('span', '%categories%', class: 'label label-default label-insert-by-click', style: 'font-size: 1.1em; cursor: pointer;', data: {label_value: '%categories%'})
+        \- список категорий продуктов
+        =content_tag('span', '%tags%', class: 'label label-default label-insert-by-click', style: 'font-size: 1.1em; cursor: pointer;', data: {label_value: '%tags%'})
+        \- список тегов продукта
+- error = @script.errors.include?(:seo_title)
+%fieldset.control-group{:class => error ? 'has-error' : ''}
+  =f.label :seo_title, :class => 'control-label'
+  .controls
+    =f.text_field :seo_title, :class => 'input-xlarge input-with-feedback seo-seo_title-textfield'
+    %span.help-inline=error ? f.error_message_on(:seo_title, :class => 'text-error') : 'Title'
+
+- error = @script.errors.include?(:seo_description)
+%fieldset.control-group{:class => error ? 'has-error' : ''}
+  =f.label :seo_description, :class => 'control-label'
+  .controls
+    =f.text_field :seo_description, :class => 'input-xlarge input-with-feedback seo-seo_description-textfield'
+    %span.help-inline=error ? f.error_message_on(:seo_description, :class => 'text-error') : 'Description'
+
+- error = @script.errors.include?(:seo_keywords)
+%fieldset.control-group{:class => error ? 'has-error' : ''}
+  =f.label :seo_keywords, :class => 'control-label'
+  .controls
+    =f.text_field :seo_keywords, :class => 'input-xlarge input-with-feedback seo-seo_keywords-textfield'
+    %span.help-inline=error ? f.error_message_on(:seo_keywords, :class => 'text-error') : 'Keywords'
+
+
+.form-actions
+  =f.submit pat(:save), :class => 'btn btn-primary'
+  &nbsp;
+  =f.submit pat(:save_and_continue), :class => 'btn btn-info', :name => 'save_and_continue'
+  &nbsp;
+  =link_to pat(:cancel), url(:'seo/scripts', :index), :class => 'btn'

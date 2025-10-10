@@ -1,0 +1,9 @@
+%article.col-md-4.clearfix{style:'text-align: left;'}
+	.date{ style: 'text-align:left' }
+		= # latest_news.created_at.strftime("%d.%m.%Y")
+	.image
+		=link_to image_tag(latest_news.image, :alt => ""), url_for(:news, :index, :slug => latest_news.slug)
+	.title= link_to "<div class=\"h4-seo-crutch\">#{latest_news.title}</div>".html_safe, url_for(:news, :index, :slug => latest_news.slug)
+	- stuff = latest_news.body.gsub(/<\/?[^>]*>/, "").split('&nbsp;').join()
+	- if stuff.include?'.'; stout = stuff.split('.')[0].chomp+'. '+stuff.split('.')[1].chomp+'.'; if stout.include?'?'; stout = stout.split('?')[0].chomp+'? '+stout.split('?')[1].chomp+'.'; end; if stout.include?'!'; stout = stout.split('!')[0].chomp+'! '+stout.split('!')[1].chomp+'.'; end; elsif stuff.include?'?'; stout = stuff.split('?')[0].chomp+'.'; elsif stuff.include?'!'; stout = stuff.split('!')[0].chomp+'.'; else; stout = stuff; end;
+	.ann= stout+'..'

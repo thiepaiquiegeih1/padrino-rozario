@@ -1,0 +1,8 @@
+- # encoding: utf-8
+%ul.nav.nav-tabs
+  %li=link_to tag_icon(:list, pat(:list)), url(:disabled_dates, :index)
+  %li.active=link_to tag_icon(:plus, pat(:new)), url(:disabled_dates, :new)
+
+.tabs-content
+  -form_for :disabled_date, url(:disabled_dates, :create), multipart: true, :class => 'form-horizontal' do |f|
+    =partial 'disabled_dates/form', :locals => { :f => f, :disabled_dates =>  @disabled_date }

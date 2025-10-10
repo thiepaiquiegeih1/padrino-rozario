@@ -1,0 +1,14 @@
+- # encoding: utf-8
+-#seo_hash = wrap_seo_params({title: @category.seo_title.present? ? @category.seo_title : 'Каталог — ' + @category.title, description: @category.seo_description, keywords: @category.seo_keywords})
+-#-raise seo_hash.inspect
+-# @title =  seo_hash[:title]
+-# @description = seo_hash[:description]
+-# @keywords = seo_hash[:keywords]
+
+.alert '/app/views/category/index.haml'
+.top-menu-margin
+  %h2 Каталог
+  .catlist= partial 'category/catlist', :collection => @categories
+
+:javascript
+  console.log('app/views/category/index.haml');

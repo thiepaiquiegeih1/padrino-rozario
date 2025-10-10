@@ -1,0 +1,88 @@
+﻿/ is used in the following templates: "subdomain.haml", "category/withinfo.haml", "category/itemsfilters.haml", "category/withfilters.haml"
+
+-@items.each_with_index do | product, index |
+  - processing_object = '[ product.id=='+product.id.to_s+' && index=='+index.to_s+' ]'
+  - begin
+    - dflt_cmplct_id = product.default_price
+    - dflt_cmplct_ttl = dflt_cmplct_id.nil? ? Complect.find_by_id(1).title : Complect.find_by_id(dflt_cmplct_id).title
+    - price = product.get_price(@subdomain.discount_pool_id, true)
+    - price = price + @subdomain.overprsubd.to_i
+    - discount = @subdsc[0] ? @subdsc[0] : 0
+    - brdcrmbs_params_in_link = @category.parent_id && @category.id && ![745, 118].include?(@category.id) # 745, 118 - категории главной страницы (основной и субдомены)
+    - if @subdsc.include?(product.id); discount += @subdsc[product.id][dflt_cmplct_ttl]; end
+    - if !discount.nil?; price += discount; end
+    %div{:class => "col-md-12 col-sm-12 col-xs-12 text-center center-block item_full", style: "border-radius: 5px; padding-bottom:8px;", :itemscope => 'itemscope', :itemtype => 'https://schema.org/Product'}
+      %meta{:content => "Rozario Flowers", :itemprop => 'brand'}/
+
+      - product_url = @subdomain.url != 'murmansk' ? "https://#{@subdomain.url}.#{CURRENT_DOMAIN}/product/#{product.slug.to_s}" : "https://#{CURRENT_DOMAIN}/product/#{product.slug.to_s}"
+      %meta{:content => product_url, :itemprop => 'url'}/
+      - if product.description.present?
+        %meta{:content => "#{product.description}", :itemprop => 'description'}/
+      - elsif product.announce.present?
+        %meta{:content => "#{product.announce.strip_tags}", :itemprop => 'description'}/
+      - else
+        %meta{:content => "#{product.header}", :itemprop => 'description'}/
+      .popup_tocart.transition{ style: "display:block; position: absolute; /margin: auto; top:0; z-index: 10; right: 0; bottom: 0; left: 0; height 24px; padding-top: 24%; cursor: pointer;" }
+        - if brdcrmbs_params_in_link
+          = link_to 'НАЖМИТЕ ДЛЯ ПРОСМОТРА', "/product/#{product.slug.to_s}?brdcrmbs_lvl1=#{@category.parent_id}&brdcrmbs_lvl2=#{@category.id}", :class => 'btn button_hover', style: 'display:inline-block;line-height: 30px;', rel: 'nofollow'
+        - else
+          = link_to 'НАЖМИТЕ ДЛЯ ПРОСМОТРА', "/product/#{product.slug.to_s}", :class => 'btn button_hover', style: 'display:inline-block;line-height: 30px;', rel: 'nofollow'
+      .row
+        .image.order_product_hover.transition{style: 'position:relative;height:auto;'}
+          = link_to image_tag(product.thumb_image(true), class: "img-responsive", :itemprop => 'image', :alt => product.alt, style: "margin:auto;height:auto;"), "/product/" + product.slug.to_s, rel: 'nofollow'
+
+        .col-md-12{ style: 'padding: 10px 10px 0 10px;'}
+
+          = product_image_schema(product, true)
+
+      .row.hidden-sm.hidden-xs
+        .col-xs-8.text-left{ style: "padding-left: 16px; padding-top: 24px; z-index: 11" }
+          - if brdcrmbs_params_in_link
+            - parameters = "?brdcrmbs_lvl1=#{@category.parent_id}&brdcrmbs_lvl2=#{@category.id}"
+          - else
+            - parameters = ''
+          %a.title{href: "/product/#{product.slug.to_s}#{parameters}", style: "font-size: 24px; font-weight: normal;", rel: 'nofollow'}
+            %span{itemprop: "name"}
+              = product.header.strip
+          / = link_to product.header, "/product/#{product.slug.to_s}#{parameters}", class: "title", style: "font-size: 24px; font-weight: normal;", :itemprop => 'name'
+        .col-xs-4.text-right{ style: "padding: 16px; font-size: 22px;" }
+          %div{:itemprop => 'offers', :itemscope => true, :itemtype => 'https://schema.org/Offer'}
+            %meta{:content => "RUB", :itemprop => 'priceCurrency'}/
+            %link{:href => "https://schema.org/InStock", :itemprop => "availability"}/
+            %meta{:content => "https://schema.org/NewCondition", :itemprop => "itemCondition"}/
+            %span.currprice{style: ' font-size: 24px;'}
+              от
+            %span.currprice{style: 'font-weight: bold; font-size: 24px;', :itemprop => 'price'}
+              = price
+            %i.fa.fa-rub{'aria-hidden'=>true}
+      .row.visible-sm.visible-xs
+        .col-xs-6.text-left{ style: "margin-top:10px" }
+          - if brdcrmbs_params_in_link
+            = link_to product.header, "/product/#{product.slug.to_s}?brdcrmbs_lvl1=#{@category.parent_id}&brdcrmbs_lvl2=#{@category.id}", 'ng-click' => "$event.preventDefault(); show_item(#{product.id})", class: "title"
+          - else
+            = link_to product.header, "/product/#{product.slug.to_s}", 'ng-click' => "$event.preventDefault(); show_item(#{product.id})", class: "title"
+          .price{:itemprop => 'offers', :itemscope => true, :itemtype => 'https://schema.org/Offer'}
+            %meta{:content => "RUB", :itemprop => 'priceCurrency'}/
+            %link{:href => "https://schema.org/InStock", :itemprop => "availability"}/
+            %meta{:content => "https://schema.org/NewCondition", :itemprop => "itemCondition"}/
+            %span.currprice{style: ' font-size: 24px;'}
+            от
+            %span.currprice{:itemprop => 'price'}
+              = price
+            %i.fa.fa-rub{'aria-hidden'=>true}
+        .col-xs-6{ style: "z-index: 11" }
+          .tocart{ style: "margin-left:-20px; z-index: 11" }
+            - if @category.parent_id && @category.id && ![745, 118].include?(@category.id)
+              = link_to 'Выбрать букет', "/product/#{product.slug.to_s}?brdcrmbs_lvl1=#{@category.parent_id}&brdcrmbs_lvl2=#{@category.id}", :class => 'btn mc-choice', rel: 'nofollow'
+            - else
+              = link_to 'Выбрать букет', "/product/#{product.slug.to_s}", :class => 'btn mc-choice', rel: 'nofollow'
+  - rescue NoMethodError
+    :javascript
+      console.log("NoMethodError for #{processing_object}")
+
+  - rescue
+    :javascript
+      console.log("Error for #{processing_object}")
+
+:javascript
+  console.log("app/views/product/_cardplace.haml")

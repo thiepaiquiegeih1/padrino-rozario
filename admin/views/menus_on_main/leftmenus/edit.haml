@@ -1,0 +1,9 @@
+- # encoding: utf-8
+%ul.nav.nav-tabs
+  %li=link_to tag_icon(:list, pat(:list)), url(:'menus_on_main/leftmenus', :index)
+  %li=link_to tag_icon(:plus, pat(:new)), url(:'menus_on_main/leftmenus', :new)
+  %li.active=link_to tag_icon(:edit, pat(:edit)), url(:'menus_on_main/leftmenus', :edit, :id => @leftmenu.id)
+
+.tabs-content
+  -form_for :leftmenu, url(:'menus_on_main/leftmenus', :update, :id => @leftmenu.id), :method => :put, :class => 'form-horizontal' do |f|
+    =partial 'menus_on_main/leftmenus/form', :locals => { :f => f }

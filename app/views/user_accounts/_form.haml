@@ -1,0 +1,88 @@
+-# coding: utf-8
+
+= flash_tag(:error)
+- error = @user_account.errors.include?(:surname)
+.col-md-6
+  %fieldset.control-group{:class => error ? 'has-error' : ''}
+    =f.label "ФИО*", :class => 'control-label'
+    .controls.input-group
+      %span.input-group-addon
+        %i.glyphicon.glyphicon-user
+      =f.text_field :surname, :class => 'input-xlarge input-with-feedback', :autofocus => true, :required => "required"
+      %span.help-inline=error ? f.error_message_on(:surname, :class => 'text-error') : nil
+
+  - error = @user_account.errors.include?(:email)
+  %fieldset.control-group{:class => error ? 'has-error' : ''}
+    =f.label "Эл. почта*", :class => 'control-label'
+    .controls.input-group
+      %span.input-group-addon
+        %i.fa.fa-envelope{"aria-hidden" => "true"}
+      =f.email_field :email, :class => 'input-xlarge input-with-feedback zlb', :required => "required"
+      %span.help-inline=error ? f.error_message_on(:email, :class => 'text-error') : nil
+
+  - error = @user_account.errors.include?(:tel)
+  %fieldset.control-group{:class => error ? 'has-error' : ''}
+    =f.label "Телефон*", :class => 'control-label'
+    .controls.input-group
+      %span.input-group-addon
+        %i.fa.fa-phone{"aria-hidden" => "true"}
+      =f.text_field :tel, :id => 'phone', :class => 'input-xlarge input-with-feedback', :pattern => "^(\\+|\\d)(\\d|-){1,}$", :title => "Номер телефона может состоять только из цифр", :required => 'required', :placeholder => "9990000000"
+      %span.help-inline=error ? f.error_message_on(:tel, :class => 'text-error') : nil
+
+  - error = @user_account.errors.include?(:discount_code)
+  %fieldset.control-group{:class => error ? 'has-error' : ''}
+    =f.label "Дисконтная карта", :class => 'control-label'
+    .controls
+      =f.text_field :discount_code1, :maxlength => '5', :class => 'input-xlarge input-with-feedback ilb big', :pattern => "^\\d{1,}$", :title => "Номер дисконтной карты может состоять только из цифр"
+      =f.text_field :discount_code2, :maxlength => '4', :class => 'input-xlarge input-with-feedback ilb', :pattern => "^\\d{1,}$", :title => "Номер дисконтной карты может состоять только из цифр"
+      =f.text_field :discount_code3, :maxlength => '4', :class => 'input-xlarge input-with-feedback ilb', :pattern => "^\\d{1,}$", :title => "Номер дисконтной карты может состоять только из цифр"
+      %span.help-inline=error ? f.error_message_on(:discount_code1, :class => 'text-error') : nil
+
+  - error = @user_account.errors.include?(:password)
+  %fieldset.control-group{:class => error ? 'has-error' : ''}
+    =f.label "Пароль*", :class => 'control-label'
+    .controls
+      =f.password_field :password, :class => 'input-xlarge input-with-feedback', :required => "required"
+      %span.help-inline=error ? f.error_message_on(:password, :class => 'text-error') : nil
+
+  - error = @user_account.errors.include?(:password_confirmation)
+  %fieldset.control-group{:class => error ? 'has-error' : ''}
+    =f.label "Подтвердите пароль*", :class => 'control-label'
+    .controls
+      =f.password_field :password_confirmation, :class => 'input-xlarge input-with-feedback', :required => "required"
+      %span.help-inline=error ? f.error_message_on(:password_confirmation, :class => 'text-error') : nil
+
+  %fieldset.control-group{:class => error ? 'has-error' : '', :style => "margin-bottom:8px;"}
+    .controls
+      =check_box_tag :agree, :id => "agree", :checked => "checked", :style => "position:relative;top:2px;"
+      %label{:for => "agree", :style => "display:inline;font-weight:normal;font-size:14px;"} Нажимая кнопку «Продолжить» Вы даёте согласие на обработку Ваших персональных данных
+      =link_to "(подробнее)", "/page/policy", :target => "_blank"
+  .form-actions{style: 'padding: .35em .625em .75em;' }
+    =f.submit "Зарегистрироваться", :class => 'btn btn-primary'
+.col-md-6
+  %p Есть свой аккаунт?
+  %p
+    =link_to "Вход в личный кабинет", "/sessions/new", :target => "_blank", :style => 'cursor: pointer'
+
+:plain
+  <script>
+    $(function(){
+        $('#phone').phonecode({
+          preferCo: 'ru'
+        });
+    });
+    $("form.form.register").on("submit", function(e) {
+      if ($("input#agree").is(":checked") == false) {
+        alert("Для регистрации необходимо согласиться с условиями");
+        e.preventDefault();
+      }
+    });
+  </script>
+  <style>
+    @media only screen and (max-width: 992px) {
+      .delivery-lg { display:none; }
+      #crutch-indent { height: 10px !important; }
+    }
+    .smiles, .subscr, .feedback { display: none }
+    .country-phone {border: 1px solid #aaa; padding: 4px;}
+  </style>

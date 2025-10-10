@@ -1,0 +1,234 @@
+- # encoding: utf-8
+!!!
+%html#canvas1
+  %head
+    %meta{:charset => 'utf-8'}
+    %meta{:name => :viewport, :content => 'width=device-width,initial-scale=1'}
+    -get_seo_data('default', nil, true) if @seo.nil?
+    %title= @seo[:title]
+    %meta{:name => "description", :content => @seo[:description]}/
+    -# %meta{:name => "keywords", :content => @seo[:keywords]}/
+    %meta{:property => "og:type", :content => @seo[:og_type]}/
+    %meta{:property => "og:title", :content => @seo[:og_title]}/
+    %meta{:property => "og:description", :content => @seo[:og_description]}/
+    %meta{:property => "og:image", :content => @seo[:og_image]}/
+    %meta{:property => "og:url", :content => "https://www.#{CURRENT_DOMAIN}/"}/
+    %meta{:property => "og:site_name", :content => "Розарио.Цветы"}/
+    %meta{:property => "og:locale", :content => "ru_RU"}/
+    %meta{:property => "twitter:title", :content => @seo[:twitter_title]}/
+    %meta{:property => "twitter:description", :content => @seo[:twitter_description]}/
+    %meta{:property => "twitter:site", :content => "Розарио.Цветы"}
+    %meta{:property => "twitter:image", :content => @seo[:twitter_image]}/
+    %meta{:property => "twitter:image:alt", :content => "rozarioflowers logo"}/
+    - if defined?(@canonical) && @canonical
+      %link{:rel => "canonical", :href => @canonical}/
+    - unless defined?(@seo[:index]) && @seo[:index] === true
+      %meta{content: 'noindex, nofollow', name: 'robots'}/
+
+    %meta{:content => "HbgVyQwJlXC675RAvtRycHT3supIqevkUkm1ZWBv2oc", :name => "google-site-verification"}/
+    %meta{:content => "uRCjMCXaPD5owVzTt_Vvr7unM8IM4XSZB85TMY6oyxw", :name => "google-site-verification"}/
+    %meta{:content => "4aznVz6NELzN_FdpeUqYu01fkjkvPvTv3UujA-fgfDA", :name => "google-site-verification"}/
+    %meta{:content => "983F459D4DD5FFF1E29711226770B655", :name => "msvalidate.01"}/
+    =javascript_include_tag 'https://cdnjs.cloudflare.com/ajax/libs/es6-shim/0.35.3/es6-sham.min.js'
+    =javascript_include_tag 'https://cdnjs.cloudflare.com/ajax/libs/es6-shim/0.35.3/es6-shim.min.js'
+    =javascript_include_tag 'https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.2/html5shiv.min.js'
+    =javascript_include_tag 'https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.2/html5shiv-printshiv.min.js'
+    =javascript_include_tag 'https://cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.min.js'
+
+    %link{:href => "/apple-icon-57x57.png", :rel => "apple-touch-icon", :sizes => "57x57"}/
+    %link{:href => "/apple-icon-60x60.png", :rel => "apple-touch-icon", :sizes => "60x60"}/
+    %link{:href => "/apple-icon-72x72.png", :rel => "apple-touch-icon", :sizes => "72x72"}/
+    %link{:href => "/apple-icon-76x76.png", :rel => "apple-touch-icon", :sizes => "76x76"}/
+    %link{:href => "/apple-icon-114x114.png", :rel => "apple-touch-icon", :sizes => "114x114"}/
+    %link{:href => "/apple-icon-120x120.png", :rel => "apple-touch-icon", :sizes => "120x120"}/
+    %link{:href => "/apple-icon-144x144.png", :rel => "apple-touch-icon", :sizes => "144x144"}/
+    %link{:href => "/apple-icon-152x152.png", :rel => "apple-touch-icon", :sizes => "152x152"}/
+    %link{:href => "/apple-icon-180x180.png", :rel => "apple-touch-icon", :sizes => "180x180"}/
+    %link{:href => "/android-icon-192x192.png", :rel => "icon", :sizes => "192x192", :type => "image/png"}/
+    %link{:href => "/favicon-32x32.png", :rel => "icon", :sizes => "32x32", :type => "image/png"}/
+    %link{:href => "/favicon-96x96.png", :rel => "icon", :sizes => "96x96", :type => "image/png"}/
+    %link{:href => "/favicon-16x16.png", :rel => "icon", :sizes => "16x16", :type => "image/png"}/
+    %link{:href => "/manifest.json", :rel => "manifest"}/
+    %meta{:content => "#ffffff", :name => "msapplication-TileColor"}/
+    %meta{:content => "/icons/ms-icon-144x144.png", :name => "msapplication-TileImage"}/
+    %meta{:content => "#ffffff", :name => "theme-color"}/
+    =stylesheet_link_tag 'main4.css?v=1.2.5'
+    =javascript_include_tag 'es6-promise.min.js'
+    =javascript_include_tag 'hdr_plugins.js'
+    -#=javascript_include_tag 'vue.min.js'
+    -#=javascript_include_tag 'test.js'
+    -#=javascript_include_tag '//rawgit.com/kawanet/msgpack-lite/master/dist/msgpack.min.js'
+    -#=javascript_include_tag 'jquery.fancybox.pack'
+    -#=javascript_include_tag 'jquery.slides.min'
+    = yield_content :head
+    / Global site tag (gtag.js) - Google Analytics
+    -# %script{:async => "", :src => "https://www.googletagmanager.com/gtag/js?id=UA-48316319-1"}
+    %script{:async => "", :src => "https://www.googletagmanager.com/gtag/js?id=G-5TX37461LC"}
+    :javascript
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      // gtag('config', 'UA-48316319-1');
+      gtag('config', 'G-5TX37461LC');
+  
+  %body{'ng-app' => 'catalog', style: 'background-color: rgb(244, 231, 216);'}
+    #SVELTE_HEADER{style: 'position: absolute; right: 0; left: 0; z-index: 10000;'}
+    -#%noscript
+    -#  %iframe{:height => "0", :src => "https://www.googletagmanager.com/ns.html?id=GTM-K5GZQ8", :style => "display:none;visibility:hidden", :width => "0"}
+    <!--[if lt IE 7]>
+    %p.chromeframe Вы используете <strong>устаревший</strong> браузер. Пожалуйста <a href="http://browsehappy.com/">установите актуальную версию</a> или <a href="http://www.google.com/chromeframe/?redirect=true">активируйте Google Chrome Frame</a> для верного отображения сайта.
+    <![endif]-->
+    -# %canvas#canvas
+    #wr{'ng-controller' => 'itemsController'}
+      %h1#h1=@seo[:h1].html_safe
+      .container.text-center{ style: "max-width: 1000px; position: relative;" }
+        - # = partial 'layouts/parts/site-header'
+        - # = turnstile_widget
+        - # = partial 'layouts/parts/site-menu'
+        - # = partial 'layouts/parts/slideshow'
+        .row.colored#mainnn
+
+          = partial 'layouts/parts/sidebarrr'
+
+          .col-md-8.text-left#content{style:'margin-bottom:8px; '}
+            = yield
+
+        .crutch-1
+          -if @text
+            #ftr-txt.a.row.colored{style:'text-align:left;padding:35px; margin-top: 0px;'}
+              #SEO_TEXT
+                %img{src: '/uploads/wherewework.png', style: 'width: 100%; max-width: 310px; float: left; margin-right: 8px;'}
+                =@text
+          -else
+            #ftr-txt.b.row.colored{style:'text-align:left;padding:35px;'}
+              %img{src: '/uploads/wherewework.png', style: 'width: 100%; max-width: 400px; float: left; margin-right: 8px;'}
+              /!= @subdomain.about_us
+              %h2!="Цветы с доставкой в #{@subdomain.morph_predl} от Rozario Flowers!"
+              %p!="Сделать сюрприз, и заказать букет с доставкой – просто. Вы оплачиваете покупку, остальное – за нами! Составим цветочную композицию, отправим заказ с курьером по назначенному адресу, подарим, сфотографируем момент вручения. У нас работает круглосуточная доставка по #{@subdomain.morph_datel} и области."
+              %p!="Чтобы вы и получатель были довольны, компания «Розарио» подготовила заботливый сервис:"
+              %li{style: 'padding:0.25em'}!="<b>Мы работаем круглые сутки.</b> Заказать цветы букетом или поштучно можно 24 часа в сутки, в выходные и праздники ведь у нас круглосуточная служба поддержки."
+              %li{style: 'padding:0.25em'}!="<b>Свежесть в приоритете.</b> Закупаем только что срезанные растения в ассортименте у производителей, храним при специальном температурном режиме."
+              %li{style: 'padding:0.25em'}!="<b>Доставка цветов куда угодно.</b> На дом, в офис или общественное место – привозим букет прямо к адресату оформив доставку со свежими цветами."
+              %li{style: 'padding:0.25em'}!="<b>Три удобных способа оплаты.</b> Принимаем оплату банковской картой, наличными, по расчетному счету и не только."
+              %li{style: 'padding:0.25em'}!="<b>Фотоотчеты.</b> Фотографируем для заказчика составленную композицию до отправки и после получения. Отдайте предпочтение красивым цветам!"
+              %li{style: 'padding:0.25em'}!="<b>Гарантия к заказу.</b> Оставляем за вами право отказаться от букета в первые сутки."
+              %p{style: 'margin-top:50px; text-indent: 10px;'}!="Россия протянулась на 10 000 км, и расстояние становится непреодолимым, когда нужно поздравить человека, рассказать о сокровенных чувствах через нашу доставку. <b>Мы решили исправить ситуацию.</b> Теперь каждый человек, где бы он не находился: в #{@subdomain.morph_predl}, Краснодаре или Калининграде, может подарить сезонный букет не зависимо от того <a href=\"https://rozarioflowers.ru/category/po-sostavu/gvozdiki\">букет из гвоздик</a> это или из гербер – ведь у нас есть все."
+              %p{style: 'text-indent: 6px;'}!="В нашем интернет-магазине «Розарио» – свежие и красивые цветы <b>с доставкой в любую точку города #{@subdomain.morph_rodit}</b>. Все, что понадобится: выбрать букет и согласовать дату его вручения. Подарок нужен сегодня и срочно? Скажите об этом – привезем заказ в течение часа! Наш магазин «Розарио» - это место, где каждый может заказать букет в #{@subdomain.morph_predl} круглосуточно через нашу доставку."
+              %p{style: 'text-align:center'}!="Мы доставляем композиции по #{@subdomain.morph_datel} и за его пределами - быстро, удобно и недорого по любым данным в заказе. Услуга «доставка» доступна для оформления, и наша команда с удовольствием выполнит любой заказ с доставкой. Вы можете оформить заказ онлайн, выбрать нужную дату и получить прямо к двери."
+              %p{style: 'text-align:center'}
+                %span!="Flowers от Розарио - это про заботу, стиль и настроение, упакованные в свежие букеты. Наши клиенты в #{@subdomain.morph_predl} ценят нас за надёжность, скорость и великолепный выбор через каталог цветов. Для тех, кто ищет где найти много разных недорогих цветов с отличным сервисом - «Розарио Flowers» станет идеальным выбором. Вне зависимости от повода, вы всегда можете положиться на нас и оформить заказ недорого по #{@subdomain.morph_datel} и удобно через нашу доставку. Наши композиции и букеты - это больше, чем просто цветы. Это язык любви, радости и внимания - это язык цветов. Поможем купить цветы в интернете, доставим цветы «как на картинке»."
+                %br
+                %br
+                %span{style: 'text-align:center'}!="Поможем купить цветы в интернете, доставим букет цветов «как на картинке»."
+                %hr{style: 'border-top:1px solid #DCDCDC'}
+                %p{style: 'text-align:center'}
+                  %span{style: 'text-align:center; font-style: italic;'}!="Чтобы дарить эмоции любимым, не обязательно быть рядом. Достаточно позвонить нам и закажите цветы недорого у нас в магазине."
+                %hr{style: 'border-top:1px solid #DCDCDC'}
+
+        .crutch-2
+          = partial 'layouts/parts/smiles.ftr'
+          = partial 'layouts/parts/latest_news.ftr'
+          = partial 'layouts/parts/comments.ftr'
+          = partial 'layouts/parts/faq.ftr'
+
+        -#.row.text-center#footer{:itemscope => true, :itemtype => 'http://schema.org/Florist'}
+        -#  .col-12
+        -#    .row.information.visible-md.visible-lg
+        -#      .delta_l
+        -#      .delta_r
+        -#      .col-md-2
+        -#        %a{ :href=>'/page/company' } O нас
+        -#      .col-md-3
+        -#        %a{ :href=>'/page/dostavka' } Информация о доставке
+        -#      .col-md-3
+        -#        %a{ :href=>'/page/confidentiality' } Политика конфиденциальности
+        -#      .col-md-2
+        -#        %a{ :href=>'/page/contacts' } Обратная связь
+        -#      .col-md-2
+        -#        %a{ :href=>'/article' } Блог
+        -#
+        -#  %a{ :href=>"https://webmaster.yandex.ru/sqi?host=#{CURRENT_DOMAIN}"}
+        -#    %img.hidden-xs.hidden-sm{ width: "88", height: "31", alt:"", border: "0", src: "https://yandex.ru/cycounter?#{CURRENT_DOMAIN}&theme=light&lang=ru", style: 'position: absolute; right: 0px; top: 60px'}
+        -#
+        -#  .col-12{ style: 'margin-top: 15px;'}
+        -#    - morph_predl = @subdomain.get_morph('loc2')
+        -#    - if morph_predl.nil? || morph_predl == ''
+        -#      = "© 2011-#{Time.now.year} «Розарио - Доставка цветов №1»"
+        -#    - else
+        -#      = "© 2011-#{Time.now.year} «Надежная доставка цветов в #{morph_predl} — Розарио.Цветы»"
+        -#  %meta{:content => "Ростинская 9а", :itemprop => 'address'}/
+        -#  %meta{:content => "8 (800) 250-64-70", :itemprop => 'telephone'}/
+        -#  %meta{:content => "Розарио Доставка №1", :itemprop => 'name'}/
+        -#  %meta{:content => "Mo-Su", :itemprop => 'openingHours'}/
+        -#  %meta{:content => "credit card", :itemprop => 'paymentAccepted'}/
+        -#  %meta{:content => "info@rozariofl.ru", :itemprop => 'email'}/
+        -#  %meta{:itemprop => "image", :itemscope => true, :itemtype => "https://schema.org/Url"}
+        -#  %meta{:itemprop => "priceRange", :content => "RUB"}
+        -#    /%img{:src => "/images/logo.svg", loading: "lazy"}
+        -#    %link{:itemprop => "url", :href => "/images/logo.svg"}
+        -#  .col-12
+        -#    тел.: 8 (800) 250-64-70
+        -#  .col-12
+        -#    эл. почта: <a id="mail" href="mailto:info@rozariofl.ru">info@rozariofl.ru</a>
+
+    #SVELTE_FOOTER{style: 'position: relative; z-index: 9999;'}
+
+    / %link{ rel: "stylesheet", href: "/javascripts/jquery-ui-1.11.4.custom/jquery-ui.min.css" }
+    / %link{ rel: "stylesheet", href: "/javascripts/jquery-ui-1.11.4.custom/jquery-ui.theme.min.css" }
+    / %script{ src: '/javascripts/jquery-ui-1.11.4.custom/jquery-ui.min.js' }
+    / =javascript_include_tag 'phonecode'
+    / =javascript_include_tag 'city_select'
+    =javascript_include_tag 'site'
+    / %script{ src: '/javascripts/meow.js' }
+    -# = turnstile_javascript
+
+    - if PADRINO_ENV == 'production' 
+      <script type='text/javascript'>(function(d, w, m) {window.supportAPIMethod = m;var s = d.createElement('script');s.type ='text/javascript'; s.id = 'supportScript'; s.charset = 'utf-8';s.async = true;var id = 'e35d41b2deaca105dd7782f761704ae0';s.src = '//lcab.talk-me.ru/support/support.js?h='+id;var sc = d.getElementsByTagName('script')[0];w[m] = w[m] || function() { (w[m].q = w[m].q || []).push(arguments); };if (sc) sc.parentNode.insertBefore(s, sc);else d.documentElement.firstChild.appendChild(s);})(document, window, 'TalkMe');</script>
+
+    <script type="text/javascript">var ID73941098=setInterval(function(){if($("#ftr-txt").is("div")){for(var t=0;t<$("#ftr-txt > p").length;t++)if($("#ftr-txt > p:eq("+t+") > strong:eq(0)").is("strong")&&t%2==0){var r=$("#ftr-txt > p:eq("+t+") > strong:eq(0)").text();$("#ftr-txt > p:eq("+t+") > strong:eq(0)").remove(),$("#ftr-txt > p:eq("+t+")").append("<h2>"+r+"</h2>")}clearInterval(ID73941098)}},100);</script>
+
+    -#<!-- Yandex.Metrika counter --><script type="text/javascript">(function (d, w, c) { (w[c] = w[c] || []).push(function() { try { w.yaCounter24765725 = new Ya.Metrika({id:24765725, webvisor:true, clickmap:true, accurateTrackBounce:true}); w.yaCounter21751030 = new Ya.Metrika({id:21751030, webvisor:true, clickmap:true, trackLinks:true, accurateTrackBounce:true}); } catch(e) { } }); var n = d.getElementsByTagName("script")[0], s = d.createElement("script"), f = function () { n.parentNode.insertBefore(s, n); }; s.type = "text/javascript"; s.async = true; s.src = (d.location.protocol == "https:" ? "https:" : "http:") + "//mc.yandex.ru/metrika/watch.js"; if (w.opera == "[object Opera]") { d.addEventListener("DOMContentLoaded", f, false); } else { f(); } })(document, window, "yandex_metrika_callbacks");</script><noscript><div><img src="//mc.yandex.ru/watch/24765725" style="position:absolute; left:-9999px;" alt="" /></div></noscript><!-- /Yandex.Metrika counter -->
+
+    - if PADRINO_ENV == 'production'
+      / Yandex.Metrika counter
+      :javascript
+        (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+        m[i].l=1*new Date();
+        for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+        k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+        (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+
+        ym(21751030, "init", {
+             clickmap:true,
+             trackLinks:true,
+             accurateTrackBounce:true,
+             webvisor:true,
+             ecommerce:"dataLayer"
+        });
+      / /Yandex.Metrika counter
+
+    -#<!-- Calltouch -->
+    -#:javascript
+    -#  (function(w,d,n,c){w.CalltouchDataObject=n;w[n]=function(){w[n]["callbacks"].push(arguments)};if(!w[n]["callbacks"]){w[n]["callbacks"]=[]}w[n]["loaded"]=false;if(typeof c!=="object"){c=[c]}w[n]["counters"]=c;for(var i=0;i<c.length;i+=1){p(c[i])}function p(cId){var a=d.getElementsByTagName("script")[0],s=d.createElement("script"),i=function(){a.parentNode.insertBefore(s,a)};s.type="text/javascript";s.async=true;s.src="https://mod.calltouch.ru/init.js?id="+cId;if(w.opera=="[object Opera]"){d.addEventListener("DOMContentLoaded",i,false)}else{i()}}})(window,document,"ct","dw73ow73");
+    -#<!-- Calltouch -->
+
+
+    -# <script type="text/javascript"> var _paq=_paq||[];_paq.push(["trackPageView"]),_paq.push(["enableLinkTracking"]),function(){var e="//piwik.#{CURRENT_DOMAIN}/";_paq.push(["setTrackerUrl",e+"piwik.php"]),_paq.push(["setSiteId","1"]);var a=document,r=a.createElement("script"),p=a.getElementsByTagName("script")[0];r.type="text/javascript",r.async=!0,r.defer=!0,r.src=e+"piwik.js",p.parentNode.insertBefore(r,p)}(); </script> <noscript><p><img src="//piwik.#{CURRENT_DOMAIN}/piwik.php?idsite=1" style="border:0;" alt="" /></p></noscript>
+    <script type="text/javascript">(window.Image ? (new Image()) : document.createElement('img')).src = '/images/rtrg.gif';</script>
+
+    <script type="module" crossorigin src="/assets/index-Co12sWag.js?v=0.2"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-CJLuh6eo.css?v=0.2">
+
+-# :css
+-#   #SEO_TEXT ol {
+-#     list-style-type: decimal;
+-#   }
+
+:javascript
+  console.log('app/views/layout/catalog.haml')
+  $('input.cities').val('#{@subdomain.city}')
+  document.removeEventListener('contextmenu', function(e) { e.preventDefault(); }, true); // Снимаем все существующие обработчики contextmenu
+  document.addEventListener('contextmenu', function(e) { // Устанавливаем свой обработчик, который разрешает правый клик
+    e.stopImmediatePropagation(); // Останавливаем любые другие обработчики
+  }, true);
+  document.body.removeAttribute('oncontextmenu'); // Удаляем атрибут oncontextmenu, если он есть

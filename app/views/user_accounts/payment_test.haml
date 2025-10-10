@@ -1,0 +1,57 @@
+- # encoding: utf-8
+%div#crutch-indent{style:'height:44px'}
+
+%h2 Ваш заказ сохранен!
+
+/ %p Пожалуйста, выберите способ оплаты и следуйте инструкциям.
+
+%button#BANG.btn.btn-warning{style: "width: 100%", type: "button"}
+  Оплатить
+  %span.glyphicon.glyphicon-send
+
+/ / test
+/ #{@total_summ}
+/ #{@eight_digit_id}
+/ #{@include_tax}
+
+-#:plain
+-#    <script type='text/javascript' src='https://paymaster.ru/widget/Basic/1?LMI_MERCHANT_ID=c3a83105-87be-4c00-a8b5-80e7c8555b09&LMI_PAYMENT_AMOUNT=#{@total_summ}&LMI_PAYMENT_DESC=Платеж за заказ #{session[:order_id]} в интернет-магазине Розарио&LMI_CURRENCY=RUB&LMI_PAYMENT_NO=#{session[:order_id]}#{@include_tax}'></script>
+-#    <script> 
+-#        if ($('.pmwidget.pmwidgetDone').length){
+-#            $('#pmOpenAmount').val($('input[name=LMI_PAYMENT_AMOUNT]').val());
+-#            $('#pmOpenAmount').css('display', 'none');
+-#            $('#pmOpenAmount').after($('input[name=LMI_PAYMENT_AMOUNT]').val());
+-#        };
+-#    </script>
+
+:plain
+  <script>
+    total = '#{@total_summ}'.split('.')[0]
+    function errorHandler(emsg) {
+      console.error('ERROR:', emsg);
+      alert('Мы сожалеем, но произошла ошибка. Пожалуста, выберите иной способ оплаты или попробуйте позднее...');
+    }
+    function bang() {
+      var xhr = new XMLHttpRequest();
+      xhr.open('POST', '/payment/test', true);
+      xhr.setRequestHeader('Content-Type', 'application/json');
+      xhr.send(JSON.stringify({
+        'amount': {
+          'value': total,
+          'currency': 'RUB'
+        }, 'metadata': { 'orderNumber': '#{@eight_digit_id}' },
+        'description': 'Платёж за заказ № #{@eight_digit_id} в интернет-магазине Розарио.Цветы',
+      }));
+      xhr.onload = function() { if (xhr.status === 200) { var response = JSON.parse(xhr.responseText);
+        if (response.metadata.orderNumber.split('D')[0] == '#{@eight_digit_id}') {
+          if (response.confirmation.type == 'redirect') {
+            // var otherWindow = window.open(); otherWindow.opener = null; otherWindow.location = response.confirmation.confirmation_url; // Safety open in new window (https://habr.com/ru/articles/282880/) // Popup blocking issues
+            // window.location.href = response.confirmation.confirmation_url; // Simulate a mouse click // https://www.w3schools.com/howto/howto_js_redirect_webpage.asp
+            window.location.replace(response.confirmation.confirmation_url); // Simulate an HTTP redirect // https://www.w3schools.com/howto/howto_js_redirect_webpage.asp
+          } else { errorHandler('No link for redirect');   }
+        } else   { errorHandler('Order numbers do not match'); }
+      } else     { errorHandler(xhr.statusText);               }};
+    }
+    // document.getElementById('BANG').addEventListener("click", bang());
+    bang();
+  </script>

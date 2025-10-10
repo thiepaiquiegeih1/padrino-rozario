@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <style>
+      body { font-family: Verdana; font-size: 15px; margin: 0; color: #000; }
+      small { font-size: 11px; color: #666; }
+    </style>
+  </head>
+  <body>
+
+    <div class="site" style="width: 920px; margin: 0 auto; padding: 0 40px; background: #fff;">
+      <div id="logo" style="height: 91px; margin-bottom: 20px; padding-bottom: 20px;">
+        <img src="/admin/images/logoroz.png" alt="" style="float: left; width: 150px; margin-right: 42px; margin-left: 20px;">
+        <h2>Заказ №<%= @order_id %></h2>
+        <div class="title" style="float: left; font-size: 46px; color: #ccc; line-height: 88px;">Интернет-магазин «Розарио»</div>
+      </div>
+
+  <% if @cart %>
+
+      <!--<h1>Заказ от <%= Time.now.strftime("%d.%m.%Y, %H:%M") %></h1>-->
+
+
+      <table width="100%" cellpadding="0" cellspacing="0" style="border-top: 1px solid #bbb; border-left: 1px solid #bbb;">
+
+      <% @cart.each do |item| %>
+
+        <% p = Product.find(item["id"]) %>
+
+        <tr>
+          <td width="10%" style="border-bottom:1px solid #bbb;border-right:1px solid #bbb;padding:5px;">
+            <a href="/product/<%= p.id %>"><img src="https://<%= request.host %><%= p.image %>" alt="" width="180" class="iimg"></a>
+          </td>
+          <td style="border-bottom:1px solid #bbb;border-right:1px solid #bbb;padding:5px;">
+            Состав: <%= p.dump_tags(item['type']) %> <br>
+            Количество: <%= item["quantity"] %><br>
+          </td>
+        </tr>
+
+      <% end %>
+
+      </table>
+  <% end %>
+
+
+      <table width="100%" cellpadding="0" cellspacing="0" style="border-top: 1px solid #bbb; border-left: 1px solid #bbb; background: #f3f3f3;">
+        <tr>
+          <td style="border-bottom:1px solid #bbb;border-right:1px solid #bbb;padding:5px;">Способ доставки</td>
+          <td style="border-bottom:1px solid #bbb;border-right:1px solid #bbb;padding:5px;">
+            <strong><%= @dt_txt %></strong>
+            <% if (@dcall==1&&@dt_txt!='Забрать в магазине (самовывоз)') %> | Позвонить получателю для уточнения времени доставки<% if (@surprise) %> (не говорить по телефону, что это цветы)<%end%><%end%>
+            <% if (@dcall==2&&@dt_txt!='Забрать в магазине (самовывоз)') %> | Везти без звонка в указанный промежуток времени:<%=@d2_date + ' ' + @d2_date_tFr + ' ' + @d2_date_tTo %><%end%>
+          </td>
+        </tr>
+        <tr>
+          <td style="border-bottom:1px solid #bbb;border-right:1px solid #bbb;padding:5px;">Способ оплаты</td>
+          <td style="border-bottom:1px solid #bbb;border-right:1px solid #bbb;padding:5px;"><strong><%= @payment_type_text.length > 0 ? @payment_type_text : 'Оплатить на сайте' %></strong></td>
+        </tr>
+      </table>
+
+      <p style="margin-top:0;">&nbsp;</p>
+
+      <% if @dt_txt != "Забрать в магазине (самовывоз)" %>
+      <table width="100%" cellpadding="0" cellspacing="0" style="border-top: 1px solid #bbb; border-left: 1px solid #bbb; background: #f3f3f3;">
+        <tr>
+          <td width="40%" height="80" style="border-bottom:1px solid #bbb;border-right:1px solid #bbb;padding:5px;">
+            <% if !@city_text.blank? %><%= @city_text %><br><% end %>
+          </td>
+          <td style="border-bottom:1px solid #bbb;border-right:1px solid #bbb;padding:5px;">
+            <% if !@delivery_address.blank? %><%= @delivery_address %><% end %>
+            <% if !@deldom.blank? %><%= @deldom %><% end %>
+            <% if !@delkorpus.blank? %><%= @delkorpus %><% end %>
+            <% if !@delkvart.blank? %><%= @delkvart %><% end %>
+          </td>
+        </tr>
+      </table>
+      <% end %>
+
+      <h3 style="margin-top:0;font-size:20px;"><span style="font-weight:normal;">Получатель: </span><%= @dname %></h3>
+      <h3 style="margin-top:0;font-size:20px;"><span style="font-weight:normal;">Телефон получателя: </span><%= @dtel %></h3>
+
+
+      <h4 style="margin-bottom:0;">Дополнительная информация</h4>
+      <table width="100%" cellpadding="0" cellspacing="0" style="border-top:1px solid #bbb; border-left:1px solid #bbb;">
+        <% if !@card_text.blank? %>
+          <tr>
+            <td style="border-bottom:1px solid #bbb;border-right:1px solid #bbb;padding:5px;" height="80" width="200">Текст открытки</td>
+            <td style="border-bottom:1px solid #bbb;border-right:1px solid #bbb;padding:5px;"><%= @card_text %></td>
+          </tr>
+        <% end %>
+        <% if !@comment.blank? && @subdomain.url == 'murmansk' %>
+          <tr>
+            <td style="border-bottom:1px solid #bbb;border-right:1px solid #bbb;padding:5px;" height="80">Комментарий</td>
+            <td style="border-bottom:1px solid #bbb;border-right:1px solid #bbb;padding:5px;"><%= @comment %></td>
+          </tr>
+        <% end %>
+      </table>
+
+      <p style="margin-top:0;">&nbsp;</p>
+
+      <table width="100%" cellpadding="0" cellspacing="0">
+        <tr>
+          <td width="40%" style="font-size:17px;">
+            <% if !@d1_date.blank? %>
+              Дата и время самовывоза:<br>
+              <div style="text-align:center;"><h3 style="margin:0 auto;width:120px;font-size:20px;"><%= @d1_date %></h3></div>
+            <% end %>
+            <% if !@d2_date.blank? %>
+              Дата и время доставки:<br>
+              <div style="text-align:center;"><h3 style="margin:0 auto;width:120px;font-size:20px;"><%= @d2_date %></h3></div>
+            <% end %>
+          </td>
+          <td>
+            <% if @dt_txt != "Забрать в магазине (самовывоз)" %>
+            <table width="100%" cellpadding="0" cellspacing="0" style="font-style:italic;">
+              <tr>
+                <td>Сделать фото получателя в момент вручения?</td>
+                <td><strong><%= @make_photo %></strong></td>
+              </tr>
+              <tr>
+                <td>Можно оставить букет соседям/родственникам?</td>
+                <td><strong><%= @ostav %></strong></td>
+              </tr>
+            </table>
+            <% end %>
+          </td>
+        </tr>
+
+      </table>
+
+
+      <p>&nbsp;</p>
+
+      <p class="sign">
+        Претензий по качеству доставленного не имею: <span style="position:relative;left:130px;">___________________________</span><br>
+        <small style="position:relative;left:501px;">(подпись получателя)</small>
+      </p>
+
+      <p class="sign">
+        Согласен на размещение фото в галерее сайта <%=CURRENT_DOMAIN%>: <span style="position:relative;left:20px;">___________________________</span><br>
+        <small style="position:relative;left:501px;">(подпись получателя)</small>
+      </p>
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+      <p class="sign">
+        <center><b>Бесплатный телефон для звонков о доставке заказа:</b></center>
+        <center>8 (800) 250-64-70 Email: <%=ENV['ORDER_EMAIL'].to_s %> </center>
+<center>https://www.<%=CURRENT_DOMAIN%> ООО "Розарио", 183038, Россия, Мурманск, ул. Ростинская, 9а</center>
+ </p>
+    </div>
+
+  </body>
+</html>

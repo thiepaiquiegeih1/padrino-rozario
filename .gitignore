@@ -1,0 +1,8 @@
+/.git.*.bak/
+.env
+/public
+/vendor/
+/log/
+/tmp/
+*.bak
+/README.md

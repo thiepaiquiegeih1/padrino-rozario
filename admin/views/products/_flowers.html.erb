@@ -1,0 +1,22 @@
+<% if @product.tags.present? %>
+<h3>Количество цветов (стандартный, уменьшенный, люкс)</h3>
+<% @product.tags.each do |tag| %>
+  <% flower = @product.get_flower(tag.title) %>
+<fieldset class="control-group">
+<label for="product_Цена уменьшенный" class="control-label"><%= flower.title %></label>
+<div class="controls">
+  <input type="text" name="flower[standart_<%= tag.id %>]" id="flower_standart_<%= tag.id %>" value="<%= flower.standart_count %>" class="first width30per input-with-feedback">
+  <input type="text" name="flower[small_<%= tag.id %>]" id="flower_small_<%= tag.id %>" value="<%= flower.small_count %>" class="width30per input-with-feedback">
+  <input type="text" name="flower[lux_<%= tag.id %>]" id="flower_lux_<%= tag.id %>" value="<%= flower.lux_count %>" class="width30per input-with-feedback">
+</div>
+</fieldset>
+<% end %>
+<fieldset class="control-group">
+  <label for="flower_standarts" class="control-label">Из стандартного?: </label>
+  <div class="controls">
+    <input type="hidden" name="flowers_from_standarts" value="0">
+    <input type="checkbox" name="flowers_from_standarts" value="1" id="flower_standarts" class="input-xlarge input-with-feedback">
+    <span class="help-inline">Рассчитать количество цветов из стандартного букета</span>
+  </div>
+</fieldset>
+<% end %>
