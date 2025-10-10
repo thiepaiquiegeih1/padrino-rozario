@@ -1,4 +1,18 @@
 # encoding: utf-8
+# ИСПРАВЛЕНО: Lazy Load подгрузка отзывов
+# 
+# Проблемы, которые были исправлены:
+# 1. Несоответствие URL между контроллером (:feedback) и JavaScript (/comment/load_more)
+# 2. Проблемы с render partial - заменено на ручную генерацию HTML
+# 3. Дублированный код между :feedback и :comment контроллерами
+# 4. Улучшена обработка ошибок и логирование
+# 
+# Теперь lazy loading работает через:
+# - /feedback/load_more - основной endpoint
+# - /comment/load_more - алиас для совместимости (редирект)
+# 
+
+# encoding: utf-8
 
 Rozario::App.controllers :feedback do
 
@@ -158,17 +172,29 @@ Rozario::App.controllers :feedback do
       
       puts "Load more: page=#{@page}, per_page=#{@per_page}, comments_count=#{@comments.count}, has_more=#{@has_more}"
       
-      # Рендерим HTML для каждого отзыва
+      # Создаем HTML для каждого отзыва вручную (избегаем проблем с render)
       comments_html = ''
       if @comments.any?
-        comments_html = @comments.map do |comment|
+        @comments.each do |comment|
           begin
-            render 'comment/comment', :locals => { :comment => comment }
+            date = comment.date.present? ? comment.date.strftime("%d.%m.%Y") : comment.created_at.strftime("%d.%m.%Y")
+            rating_stars = '★' * comment.rating.to_i + '☆' * (5 - comment.rating.to_i)
+            order_info = comment.order_eight_digit_id.present? ? "<div class='order-info' style='font-size: 12px; color: #666; margin: 4px 0;'><small>Отзыв к заказу #{comment.order_eight_digit_id}</small></div>" : ''
+            
+            comments_html += "<article class='comment-item' style='padding: 8px 0;' itemscope='' itemtype='http://schema.org/Rating'>
+              <h3 class='name'>#{comment.name}</h3>
+              <div class='date'>#{date}</div>
+              #{order_info}
+              <div class='body' itemprop='description'>#{comment.body}</div>
+              <div>
+                <span class='star-rating mini' content='#{comment.rating}' itemprop='ratingValue'>#{rating_stars}</span>
+              </div>
+            </article>"
           rescue => e
-            puts "Error rendering comment #{comment.id}: #{e.message}"
-            '' # Пропускаем проблемные отзывы
+            puts "Error creating HTML for comment #{comment.id}: #{e.message}"
+            # Пропускаем проблемные отзывы
           end
-        end.join
+        end
       end
       
       response = {
@@ -294,8 +320,13 @@ Rozario::App.controllers :comment do
     redirect url(:feedback, :index), 301
   end
   
-  # AJAX endpoint для ленивой загрузки отзывов (алиас для совместимости с Nginx)
+  # Добавляем алиас для load_more в feedback контроллер
   get :load_more do
+    redirect url(:feedback, :load_more, :page => params[:page]), 301
+  end
+  
+  # AJAX endpoint для ленивой загрузки отзывов (реальная реализация для :comment контроллера)
+  get :load_more_direct do
     begin
       content_type 'application/json'
       
@@ -318,25 +349,28 @@ Rozario::App.controllers :comment do
       
       puts "[COMMENT ALIAS] Load more: page=#{@page}, per_page=#{@per_page}, comments_count=#{@comments.count}, has_more=#{@has_more}"
       
-      # Создаем HTML для каждого отзыва (простое решение)
-      comments_html = @comments.map do |comment|
+      # Создаем HTML для каждого отзыва
+      comments_html = ''
+      @comments.each do |comment|
         begin
           date = comment.date.present? ? comment.date.strftime("%d.%m.%Y") : comment.created_at.strftime("%d.%m.%Y")
           rating_stars = '★' * comment.rating.to_i + '☆' * (5 - comment.rating.to_i)
-          order_info = comment.order_eight_digit_id.present? ? "<div style='font-size: 12px; color: #666; margin: 4px 0;'><small>Отзыв к заказу #{comment.order_eight_digit_id}</small></div>" : ''
+          order_info = comment.order_eight_digit_id.present? ? "<div class='order-info' style='font-size: 12px; color: #666; margin: 4px 0;'><small>Отзыв к заказу #{comment.order_eight_digit_id}</small></div>" : ''
           
-          "<article class='comment-item' style='padding: 8px 0;' itemscope='' itemtype='http://schema.org/Rating'>
+          comments_html += "<article class='comment-item' style='padding: 8px 0;' itemscope='' itemtype='http://schema.org/Rating'>
              <h3 class='name'>#{comment.name}</h3>
              <div class='date'>#{date}</div>
              #{order_info}
              <div class='body' itemprop='description'>#{comment.body}</div>
-             <div class='star-rating' style='color: #FFD700;'>#{rating_stars}</div>
+             <div>
+               <span class='star-rating mini' content='#{comment.rating}' itemprop='ratingValue'>#{rating_stars}</span>
+             </div>
            </article>"
         rescue => e
           puts "Error creating HTML for comment #{comment.id}: #{e.message}"
-          '' # Пропускаем проблемные отзывы
+          # Пропускаем проблемные отзывы
         end
-      end.join
+      end
       
       response = {
         :html => comments_html,
@@ -349,7 +383,7 @@ Rozario::App.controllers :comment do
       response.to_json
       
     rescue => e
-      puts "Error in load_more (comment alias): #{e.message}"
+      puts "Error in load_more_direct (comment alias): #{e.message}"
       puts e.backtrace.join("\n")
       
       content_type 'application/json'

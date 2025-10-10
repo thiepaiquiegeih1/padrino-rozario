@@ -139,13 +139,22 @@
     const commentsContainer = document.getElementById('comments');
     const loader = document.getElementById('comments-loader');
     
-    // Проверяем, есть ли элементы
-    if (!commentsContainer || !hasMore) {
-      console.log('Lazy loading не активирован: отсутствуют элементы или нет дополнительных отзывов');
+    // Проверяем наличие контейнера и возможность загрузки
+    if (!commentsContainer) {
+      console.log('❌ Контейнер #comments не найден');
       return;
     }
+    if (!hasMore) {
+      console.log('📚 Нет дополнительных отзывов');
+      return;
+    }
+    console.log('🚀 Lazy loading активирован!');
     
-    console.log('Инициализация lazy loading: страница', currentPage, 'есть ещё:', hasMore);
+    console.log('📋 Начальные данные lazy loading:');
+    console.log('  - commentsContainer:', !!commentsContainer);
+    console.log('  - loader:', !!loader);
+    console.log('  - currentPage:', currentPage);
+    console.log('  - hasMore:', hasMore);
     
     function loadMoreComments() {
       if (isLoading || !hasMore) {
@@ -156,7 +165,7 @@
       isLoading = true;
       currentPage++;
       
-      console.log('Начинаем загрузку страницы ' + currentPage);
+      console.log('📄 Начинаем загрузку страницы ' + currentPage);
       
       // Пробуем fetch API как основной метод, потом XMLHttpRequest
       if (typeof fetch !== 'undefined') {
@@ -167,9 +176,10 @@
     }
     
     function loadWithFetch() {
-      console.log('Используем Fetch API');
+      console.log('🌐 Используем Fetch API');
       
-      const url = '/comment/load_more?page=' + currentPage + '&t=' + Date.now();
+      const url = '/feedback/load_more?page=' + currentPage + '&t=' + Date.now();
+      console.log('🔗 URL запроса:', url);
       
       fetch(url, {
         method: 'GET',
@@ -210,7 +220,7 @@
       // Создаем чистый XMLHttpRequest без вмешательства includes.js
       const NativeXHR = window.XMLHttpRequest;
       const xhr = new NativeXHR();
-      xhr.open('GET', '/comment/load_more?page=' + currentPage + '&t=' + Date.now(), true);
+      xhr.open('GET', '/feedback/load_more?page=' + currentPage + '&t=' + Date.now(), true);
       
       // Устанавливаем все необходимые заголовки
       xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
@@ -233,7 +243,7 @@
           } else {
             let errorMsg = 'HTTP Error ' + xhr.status;
             if (xhr.status === 404) {
-              errorMsg += ': Endpoint not found. Check /comment/load_more route.';
+              errorMsg += ': Endpoint not found. Check /feedback/load_more route.';
             } else if (xhr.status === 0) {
               errorMsg += ': Network error or CORS issue.';
             } else {
