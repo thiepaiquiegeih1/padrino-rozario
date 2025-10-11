@@ -1,9 +1,7 @@
 - # encoding: utf-8
 - @title = "Отзывы клиентов | Доставка цветов №1 " + @subdomain.city
 
-/ see also
-/ https://github.com/ambethia/recaptcha
-/ https://github.com/ambethia/recaptcha/blob/master/demo/sinatra/server.rb
+
 
 %div.hidden-xs.hidden-sm{style:"height: 42px"}
 #comment-form
@@ -16,7 +14,6 @@
     -form_tag url(:feedback, :submit), :method => 'post', :class => 'form comment', :id => 'FORM' do |f|
       = flash_tag(:notice)
       = flash_tag(:error)
-      %input{type: "hidden", name: "g-recaptcha-response"}
       -# Поля имени и email убраны, данные берутся из авторизации
       .row.a2
         .col-md-12
@@ -164,15 +161,6 @@
 
 :javascript
   $('.feedback').css('display','none');
-  
-  // reCAPTCHA
-  if (typeof grecaptcha !== 'undefined') {
-    grecaptcha.ready(function() {
-      grecaptcha.execute('6LdUkAIqAAAAAPmW_r2jFaMvjMa8o-kelRM_nKKi', {action: 'submit'}).then(function(token) {
-        document.getElementsByName('g-recaptcha-response')[0].value = token;
-      });
-    });
-  }
   
   // Lazy Loading для отзывов
   (function() {

@@ -16,8 +16,6 @@
 
 Rozario::App.controllers :feedback do
 
-  # https://stackoverflow.com/questions/21262254/what-captcha-for-sinatra
-
   before do
     require 'yaml'
     @redis_enable = false
@@ -82,72 +80,54 @@ Rozario::App.controllers :feedback do
       return
     end
     
-    recaptcha_token = params[:'g-recaptcha-response']
-    secret_key = ENV['RECAPTCHA_V3_SECRET_KEY_2']
-    max_score = 0.5 # Usually value: 0.5 (Probability that the user is a human and not a robot)
-    response = Net::HTTP.post_form(
-      URI.parse('https://www.google.com/recaptcha/api/siteverify'), {
-        'secret' => secret_key,
-        'response'   => recaptcha_token
-      }
-    )
-    result = JSON.parse(response.body)
-    if result['success'] && result['score'].to_f >= max_score then
-      # Проверяем обязательные поля
-      if params[:order_eight_digit_id].blank?
-        flash[:error] = 'Ошибка: укажите номер заказа'
-        redirect back
-        return
-      elsif params[:rating].nil?
-        rating = '0'
-        flash[:error] = 'Ошибка: установите оценку'
-        redirect back
-        return
-      else
-        rating = params[:rating]
-        order_id = params[:order_eight_digit_id].to_i
-        
-        # Проверяем существование заказа если номер указан
-        if order_id && !Order.exists?(:eight_digit_id => order_id)
-          flash[:error] = "Ошибка: заказ с номером #{order_id} не найден"
-          redirect back
-          return
-        end
-        
-        # Создаем комментарий с данными авторизованного пользователя
-        begin
-          # Используем данные из профиля пользователя
-          user_name = user_account.name || user_account.surname || user_account.email.split('@').first
-          
-          comment = Comment.create!(
-            :name => user_name,
-            :body => params[:msg], 
-            :rating => rating.to_f,
-            :order_eight_digit_id => order_id
-          )
-          
-          # Отправляем почту с данными авторизованного пользователя
-          order_info = order_id ? "\nНомер заказа: #{order_id}" : ""
-          user_email = user_account.email
-          user_id_info = "\nID пользователя: #{user_account.id}"
-          msg_body = "Имя: #{user_name}\nЭл. почта: #{user_email}\nОтзыв: #{params[:msg]}\nОценка: #{rating}#{order_info}#{user_id_info}"
-          email do
-            from "no-reply@rozariofl.ru"
-            to ENV['ORDER_EMAIL'].to_s
-            subject "Отзыв с сайта"
-            body msg_body
-          end
-          
-          flash[:notice] = "Спасибо! Ваш отзыв сохранен #{order_id ? 'и привязан к заказу' : ''}."
-        rescue ActiveRecord::RecordInvalid => e
-          flash[:error] = "Ошибка при сохранении отзыва: #{e.record.errors.full_messages.join(', ')}"
-        end
-      end
+    # Проверяем обязательные поля
+    if params[:order_eight_digit_id].blank?
+      flash[:error] = 'Ошибка: укажите номер заказа'
+      redirect back
+      return
+    elsif params[:rating].nil?
+      rating = '0'
+      flash[:error] = 'Ошибка: установите оценку'
+      redirect back
+      return
     else
-      if result['score'].to_f >= max_score then
-        flash[:error] = "Ошибка верификации reCAPTCHA."
-      else
-        flash[:error] = "Ошибка верификации reCAPTCHA. Score: #{result['score']} #{result['error-codes']}"
+      rating = params[:rating]
+      order_id = params[:order_eight_digit_id].to_i
+      
+      # Проверяем существование заказа если номер указан
+      if order_id && !Order.exists?(:eight_digit_id => order_id)
+        flash[:error] = "Ошибка: заказ с номером #{order_id} не найден"
+        redirect back
+        return
+      end
+      
+      # Создаем комментарий с данными авторизованного пользователя
+      begin
+        # Используем данные из профиля пользователя
+        user_name = user_account.name || user_account.surname || user_account.email.split('@').first
+        
+        comment = Comment.create!(
+          :name => user_name,
+          :body => params[:msg], 
+          :rating => rating.to_f,
+          :order_eight_digit_id => order_id
+        )
+        
+        # Отправляем почту с данными авторизованного пользователя
+        order_info = order_id ? "\nНомер заказа: #{order_id}" : ""
+        user_email = user_account.email
+        user_id_info = "\nID пользователя: #{user_account.id}"
+        msg_body = "Имя: #{user_name}\nЭл. почта: #{user_email}\nОтзыв: #{params[:msg]}\nОценка: #{rating}#{order_info}#{user_id_info}"
+        email do
+          from "no-reply@rozariofl.ru"
+          to ENV['ORDER_EMAIL'].to_s
+          subject "Отзыв с сайта"
+          body msg_body
+        end
+        
+        flash[:notice] = "Спасибо! Ваш отзыв сохранен #{order_id ? 'и привязан к заказу' : ''}."
+      rescue ActiveRecord::RecordInvalid => e
+        flash[:error] = "Ошибка при сохранении отзыва: #{e.record.errors.full_messages.join(', ')}"
       end
     end
     redirect back
@@ -243,57 +223,15 @@ Rozario::App.controllers :feedback do
   end
 
   post :index do
-    if (!params[:name].empty? && !params[:msg].empty?)
-      if verify_recaptcha
-        if params[:rating].nil?
-          rating = '0'
-          flash[:error] = 'Ошибка, установите оценку'
-        else
-          rating = params[:rating]
-          msg_body = "Имя: #{params[:name]}\nЭл. почта: #{params[:email]}\nОтзыв: #{params[:msg]}\nОценка: #{rating}"
-          email do
-            from "no-reply@rozariofl.ru"
-            to ENV['ORDER_EMAIL'].to_s
-            subject "Отзыв с сайта"
-            body msg_body
-          end
-          flash[:notice] = 'Спасибо, Ваш отзыв отправлен на модерацию.'
-        end
-        #Comment_premod.create(name: params[:name], body: params[:msg], rating: params[:rating])
-      else
-        flash[:error] = 'Ошибка: неверный проверочный код..'
-      end
-    else
-      flash[:error] = 'Пожалуйста, заполните все поля формы.'
-    end
+    # Устаревший метод - перенаправляем на новый
+    flash[:error] = 'Пожалуйста, используйте обновленную форму отзывов с авторизацией.'
     redirect(url(:feedback, :index))
   end
 
   post :indexxx do
-    puts "post :index do comment.rb"
-    if (!params[:name].empty? && !params[:msg].empty?)
-      if verify_recaptcha
-        if params[:rating].nil?
-          rating = '0'
-          flash[:error] = 'Ошибка, установите оценку'
-        else
-          rating = params[:rating]
-          msg_body = "Имя: #{params[:name]}\nЭл. почта: #{params[:email]}\nОтзыв: #{params[:msg]}\nОценка: #{rating}"
-          email do
-            from "no-reply@rozariofl.ru"
-            to ENV['ORDER_EMAIL'].to_s
-            subject "Отзыв с сайта"
-            body msg_body
-          end
-          flash[:notice] = 'Спасибо, Ваш отзыв отправлен на модерацию.'
-        end
-        #Comment_premod.create(name: params[:name], body: params[:msg], rating: params[:rating])
-      else
-        flash[:error] = 'Ошибка: неверный проверочный код..'
-      end
-    else
-      flash[:error] = 'Пожалуйста, заполните все поля формы.'
-    end
+    puts "post :indexxx do comment.rb - DEPRECATED"
+    # Устаревший метод - перенаправляем на новый
+    flash[:error] = 'Пожалуйста, используйте обновленную форму отзывов с авторизацией.'
     redirect(url(:feedback, :index))
   end
 end
