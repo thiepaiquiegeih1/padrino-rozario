@@ -118,14 +118,31 @@ Rozario::App.controllers :feedback do
         user_email = user_account.email
         user_id_info = "\nID пользователя: #{user_account.id}"
         msg_body = "Имя: #{user_name}\nЭл. почта: #{user_email}\nОтзыв: #{params[:msg]}\nОценка: #{rating}#{order_info}#{user_id_info}"
-        email do
-          from "no-reply@rozariofl.ru"
-          to ENV['ORDER_EMAIL'].to_s
-          subject "Отзыв с сайта"
-          body msg_body
+        
+        # Проверяем, что адрес получателя установлен
+        recipient_email = ENV['ORDER_EMAIL'].to_s
+        if recipient_email.empty?
+          puts "❌ WARNING: ORDER_EMAIL environment variable is not set. Email will not be sent."
+          flash[:notice] = "Спасибо! Ваш отзыв сохранен #{order_id ? 'и привязан к заказу' : ''}. (Email не отправлен - не настроена почта)"
+        else
+          begin
+            email do
+              from "no-reply@rozariofl.ru"
+              to recipient_email
+              subject "Отзыв с сайта"
+              body msg_body
+            end
+            puts "✅ Email sent successfully to #{recipient_email}"
+            flash[:notice] = "Спасибо! Ваш отзыв сохранен #{order_id ? 'и привязан к заказу' : ''} и отправлен администратору."
+          rescue => e
+            puts "❌ ERROR sending email: #{e.message}"
+            puts "   Recipient: #{recipient_email}"
+            puts "   Error class: #{e.class}"
+            flash[:notice] = "Спасибо! Ваш отзыв сохранен #{order_id ? 'и привязан к заказу' : ''}. (Email не отправлен - ошибка почтового сервера)"
+          end
         end
         
-        flash[:notice] = "Спасибо! Ваш отзыв сохранен #{order_id ? 'и привязан к заказу' : ''}."
+        # flash[:notice] устанавливается выше в зависимости от результата отправки email
       rescue ActiveRecord::RecordInvalid => e
         flash[:error] = "Ошибка при сохранении отзыва: #{e.record.errors.full_messages.join(', ')}"
       end
