@@ -403,18 +403,28 @@
       }
     }
     
-    // Отслеживание прокрутки
+    // Отслеживание прокрутки - срабатывает при приближении к концу блока отзывов
     function handleScroll() {
-      if (isLoading || !hasMore) return;
+      if (isLoading || !hasMore || !commentsContainer) return;
       
-      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      // Получаем позицию и размеры контейнера отзывов
+      const containerRect = commentsContainer.getBoundingClientRect();
       const windowHeight = window.innerHeight;
-      const documentHeight = document.documentElement.scrollHeight;
       
-      // Загружаем, когда осталось 300px до конца (увеличили для лучшей отзывчивости)
-      if (scrollTop + windowHeight >= documentHeight - 300) {
-        const remainingPx = documentHeight - scrollTop - windowHeight;
-        console.log('📜 Триггер lazy loading при прокрутке (до конца: ' + Math.round(remainingPx) + 'px)');
+      // Вычисляем расстояние от нижней границы контейнера до нижней части экрана
+      const containerBottom = containerRect.bottom;
+      const distanceFromBottom = containerBottom - windowHeight;
+      
+      // Логируем для отладки (только каждые 500мс чтобы не спамить)
+      const now = Date.now();
+      if (!window.lastScrollLog || now - window.lastScrollLog > 500) {
+        console.log('📏 Прокрутка: конец контейнера на ' + Math.round(distanceFromBottom) + 'px от низа экрана');
+        window.lastScrollLog = now;
+      }
+      
+      // Загружаем новые отзывы, когда до конца блока осталось менее 300px
+      if (distanceFromBottom <= 300) {
+        console.log('📜 Триггер lazy loading: конец блока отзывов в зоне видимости (' + Math.round(distanceFromBottom) + 'px)');
         loadMoreComments();
       }
     }
