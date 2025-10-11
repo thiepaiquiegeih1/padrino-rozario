@@ -1,4 +1,5 @@
 # encoding: utf-8
+require 'cgi'
 
 Rozario::App.controllers :testing do
   
@@ -10,6 +11,36 @@ Rozario::App.controllers :testing do
   # GET /testing/email - форма для тестирования
   get :email do
     content_type :html
+    
+    # Обработка результатов операций
+    status_message = ''
+    if params[:success] == 'sent'
+      status_message = <<-MSG
+        <div class="success status">
+            <strong>✅ Письмо успешно отправлено!</strong><br>
+            Получатель: <strong>#{params[:to]}</strong><br>
+            Проверьте почту в течение нескольких минут.
+        </div>
+MSG
+    elsif params[:error]
+      error_text = case params[:error]
+      when 'no_recipient'
+        'Не указан получатель и ORDER_EMAIL не установлена'
+      when 'missing_fields'
+        'Не заполнены обязательные поля (тема или текст)'
+      when 'send_failed'
+        "Ошибка отправки: #{params[:message]}"
+      else
+        'Неизвестная ошибка'
+      end
+      
+      status_message = <<-MSG
+        <div class="error status">
+            <strong>❌ Ошибка отправки письма</strong><br>
+            #{error_text}
+        </div>
+MSG
+    end
     
     html = <<-HTML
 <!DOCTYPE html>
@@ -45,6 +76,8 @@ Rozario::App.controllers :testing do
     <div class="container">
         <h1>🧪 Email System Test</h1>
         
+        #{status_message}
+        
         <div class="info status">
             <strong>📧 Тестирование почтовой системы Rozario Flowers</strong><br>
             Проверяет отправку писем на настроенный адрес администратора.
@@ -62,6 +95,8 @@ Rozario::App.controllers :testing do
             <a href="/testing/email/quick"><button type="button">⚡ Быстрый тест</button></a>
             <a href="/testing/email/detailed"><button type="button">📋 Подробный тест</button></a>
             <a href="/testing/email/feedback"><button type="button" class="warning">🔄 Тест как отзыв</button></a>
+            <a href="/testing/email/delivery-test"><button type="button">🧪 Тест доставки</button></a>
+            <a href="/testing/email/logs"><button type="button">📋 Логи сервера</button></a>
         </div>
         
         <hr style="margin: 30px 0;">
@@ -401,6 +436,8 @@ HTML
     end
     
     begin
+      timestamp = Time.now.strftime('%d.%m.%Y %H:%M:%S')
+      
       email do
         from "custom-test@rozariofl.ru"
         to recipient
@@ -408,12 +445,12 @@ HTML
         body body_text
       end
       
-      puts "✅ Custom email sent to #{recipient}"
-      redirect "/testing/email?success=sent&to=#{recipient}"
+      puts "✅ [#{timestamp}] Custom email sent to #{recipient} - Subject: #{subject}"
+      redirect "/testing/email?success=sent&to=#{CGI.escape(recipient)}"
       
     rescue => e
-      puts "❌ Custom email failed: #{e.message}"
-      redirect "/testing/email?error=send_failed&message=#{e.message}"
+      puts "❌ [#{Time.now.strftime('%d.%m.%Y %H:%M:%S')}] Custom email failed: #{e.message}"
+      redirect "/testing/email?error=send_failed&message=#{CGI.escape(e.message)}"
     end
   end
   
