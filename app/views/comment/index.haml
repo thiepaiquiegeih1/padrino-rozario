@@ -58,11 +58,12 @@
 #comments
   = partial 'comment/comment', :collection => @comments
   
--# Лоадер для lazy loading
-- if defined?(@has_more) && @has_more
-  #comments-loader{style: "text-align: center; padding: 20px; display: none;"}
-    .loader-spinner{style: "display: inline-block; width: 20px; height: 20px; border: 3px solid #f3f3f3; border-top: 3px solid #3498db; border-radius: 50%; animation: spin 2s linear infinite;"}
-    %p{style: "margin-top: 10px; color: #666;"} Загрузка отзывов...
+-# Прелоадер для lazy loading отзывов (всегда присутствует)
+#comments-loader{style: "text-align: center; padding: 30px; display: none; background: rgba(255, 255, 255, 0.95); border-radius: 8px; box-shadow: 0 2px 15px rgba(0,0,0,0.1); margin: 20px 0; border: 1px solid #e0e0e0;"}
+  .loader-container{style: "display: flex; align-items: center; justify-content: center; flex-direction: column;"}
+    .loader-spinner{style: "display: inline-block; width: 36px; height: 36px; border: 4px solid #f3f3f3; border-top: 4px solid #007cba; border-right: 4px solid #007cba; border-radius: 50%; animation: spin 1.2s linear infinite; margin-bottom: 15px;"}
+    %p.loader-text{style: "margin: 0; color: #555; font-size: 15px; font-weight: 500;"} 🔄 Загрузка отзывов...
+    %small{style: "color: #888; font-size: 12px; margin-top: 8px; opacity: 0.8;"} Пожалуйста, подождите
 
 -# Индикатор окончания
 - if defined?(@has_more) && !@has_more && defined?(@page) && @page > 1
@@ -85,25 +86,67 @@
     #sidebarrr {display: none;}
   }
   
-  /* CSS для ленивой загрузки */
+  /* CSS для ленивой загрузки и прелоадера */
   @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
   }
   
+  @keyframes pulse {
+    0% { opacity: 0.7; }
+    50% { opacity: 1; }
+    100% { opacity: 0.7; }
+  }
+  
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
   .loader-spinner {
     display: inline-block;
-    width: 20px;
-    height: 20px;
-    border: 3px solid #f3f3f3;
-    border-top: 3px solid #3498db;
+    width: 36px;
+    height: 36px;
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #007cba;
+    border-right: 4px solid #007cba;
     border-radius: 50%;
-    animation: spin 2s linear infinite;
+    animation: spin 1.2s linear infinite;
+  }
+  
+  .loader-text {
+    animation: pulse 2s infinite;
+  }
+  
+  #comments-loader {
+    transition: all 0.3s ease-in-out;
+  }
+  
+  #comments-loader.show {
+    animation: slideIn 0.4s ease-out;
   }
   
   .comments-loading {
-    opacity: 0.7;
+    opacity: 0.6;
     pointer-events: none;
+    position: relative;
+  }
+  
+  .comments-loading::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.7);
+    z-index: 1;
   }
   
   .comment-item {
@@ -149,6 +192,40 @@
       return;
     }
     console.log('🚀 Lazy loading активирован!');
+    
+    // Функции для управления прелоадером
+    function showLoader() {
+      if (loader) {
+        loader.style.display = 'block';
+        loader.classList.add('show');
+        loader.classList.remove('hide');
+        console.log('🔄 Прелоадер показан');
+      }
+      
+      // Добавляем класс загрузки к контейнеру
+      if (commentsContainer) {
+        commentsContainer.classList.add('comments-loading');
+      }
+    }
+    
+    function hideLoader() {
+      if (loader) {
+        loader.classList.add('hide');
+        loader.classList.remove('show');
+        
+        // Скрываем через 300мс для плавности анимации
+        setTimeout(() => {
+          loader.style.display = 'none';
+        }, 300);
+        
+        console.log('✅ Прелоадер скрыт');
+      }
+      
+      // Убираем класс загрузки
+      if (commentsContainer) {
+        commentsContainer.classList.remove('comments-loading');
+      }
+    }
     
     console.log('📋 Начальные данные lazy loading:');
     console.log('  - commentsContainer:', !!commentsContainer);
@@ -210,10 +287,8 @@
     function loadWithXHR() {
       console.log('Используем XMLHttpRequest');
       
-      // Показываем лоадер
-      if (loader) {
-        loader.style.display = 'block';
-      }
+      // Показываем прелоадер
+      showLoader();
       
       console.log('Загружаем страницу', currentPage);
       
@@ -266,10 +341,8 @@
     }
     
     function handleSuccessResponse(response) {
-      // Скрываем лоадер
-      if (loader) {
-        loader.style.display = 'none';
-      }
+      // Скрываем прелоадер
+      hideLoader();
       
       if (response.html && response.html.trim()) {
         // Добавляем новые отзывы
@@ -303,10 +376,8 @@
     function handleErrorResponse(error) {
       console.error('❌ Ошибка загрузки:', error);
       
-      // Скрываем лоадер
-      if (loader) {
-        loader.style.display = 'none';
-      }
+      // Скрываем прелоадер при ошибке
+      hideLoader();
       
       // Останавливаем lazy loading после ошибок
       hasMore = false;
@@ -340,9 +411,10 @@
       const windowHeight = window.innerHeight;
       const documentHeight = document.documentElement.scrollHeight;
       
-      // Загружаем, когда осталось 200px до конца
-      if (scrollTop + windowHeight >= documentHeight - 200) {
-        console.log('Триггер lazy loading при прокрутке');
+      // Загружаем, когда осталось 300px до конца (увеличили для лучшей отзывчивости)
+      if (scrollTop + windowHeight >= documentHeight - 300) {
+        const remainingPx = documentHeight - scrollTop - windowHeight;
+        console.log('📜 Триггер lazy loading при прокрутке (до конца: ' + Math.round(remainingPx) + 'px)');
         loadMoreComments();
       }
     }
