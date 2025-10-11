@@ -742,7 +742,7 @@ Rozario::App.controllers :cart do
     email do
       content_type :html
       from 'Rozario robot <no-reply@rozarioflowers.ru>'
-      to 'l.golubev@rozariofl.ru'
+      to 'l.golubev@rozarioflowers.ru'
       subject 'Оплата заказа ' + id
       body 'Заказ ' + id + ' оплачен ' +  date + '. Cумма ' + sum + ' ' + currency
     end     

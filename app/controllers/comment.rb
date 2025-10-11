@@ -127,7 +127,7 @@ Rozario::App.controllers :feedback do
         else
           begin
             email do
-              from "no-reply@rozariofl.ru"
+              from "no-reply@rozarioflowers.ru"
               to recipient_email
               subject "Отзыв с сайта"
               body msg_body

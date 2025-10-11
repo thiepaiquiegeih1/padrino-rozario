@@ -158,11 +158,13 @@ HTML
       result[:email_sent] = false
     else
       begin
-        email do
-          from "test@rozariofl.ru"
-          to ENV['ORDER_EMAIL'].to_s
-          subject "[QUICK TEST] Email система работает"
-          body "Быстрый тест email системы прошел успешно.\n\nВремя: #{Time.now}\nСервер: #{request.host rescue 'unknown'}"
+        thread = Thread.new do
+          email do
+            from "test@rozarioflowers.ru"
+            to ENV['ORDER_EMAIL'].to_s
+            subject "[QUICK TEST] Email система работает"
+            body "Быстрый тест email системы прошел успешно.\n\nВремя: #{Time.now}\nСервер: #{request.host rescue 'unknown'}"
+          end
         end
         
         result[:status] = 'success'
@@ -226,11 +228,12 @@ HTML
     email_test_result = nil
     if !order_email.empty?
       begin
-        email do
-          from "detailed-test@rozariofl.ru"
-          to order_email
-          subject "[DETAILED TEST] Подробная проверка email"
-          body <<-BODY
+        thread = Thread.new do
+          email do
+            from "detailed-test@rozarioflowers.ru"
+            to order_email
+            subject "[DETAILED TEST] Подробная проверка email"
+            body <<-BODY
 Подробная проверка email системы Rozario Flowers
 
 === ДИАГНОСТИКА ===
@@ -246,6 +249,7 @@ Delivery Method: #{delivery_method}
 Если вы получили это письмо, система работает корректно.
 В случае проблем обратитесь к администратору.
 BODY
+          end
         end
         
         email_test_result = {
@@ -354,11 +358,13 @@ HTML
       user_id_info = "\nID пользователя: #{fake_user_id}"
       msg_body = "Имя: #{fake_user_name}\nЭл. почта: #{fake_user_email}\nОтзыв: #{fake_review}\nОценка: #{fake_rating}#{order_info}#{user_id_info}"
       
-      email do
-        from "no-reply@rozariofl.ru"
-        to ENV['ORDER_EMAIL'].to_s
-        subject "[TEST] Отзыв с сайта"
-        body msg_body
+      thread = Thread.new do
+        email do
+          from "no-reply@rozarioflowers.ru"
+          to ENV['ORDER_EMAIL'].to_s
+          subject "[TEST] Отзыв с сайта"
+          body msg_body
+        end
       end
       
       result_html = <<-HTML
@@ -383,7 +389,7 @@ HTML
     
     <h3>📧 Содержимое отправленного письма:</h3>
     <div class="details">
-        <strong>От:</strong> no-reply@rozariofl.ru<br>
+        <strong>От:</strong> no-reply@rozarioflowers.ru<br>
         <strong>Кому:</strong> #{ENV['ORDER_EMAIL']}<br>
         <strong>Тема:</strong> [TEST] Отзыв с сайта<br><br>
         <strong>Тело письма:</strong><br>
@@ -438,14 +444,18 @@ HTML
     begin
       timestamp = Time.now.strftime('%d.%m.%Y %H:%M:%S')
       
-      email do
-        from "custom-test@rozariofl.ru"
-        to recipient
-        subject subject
-        body body_text
+      # Используем асинхронную отправку как в рабочей системе
+      thread = Thread.new do
+        email do
+          from "custom-test@rozarioflowers.ru"
+          to recipient
+          subject subject
+          body body_text
+        end
+        puts "✅ [#{timestamp}] Custom email sent to #{recipient} - Subject: #{subject}"
       end
       
-      puts "✅ [#{timestamp}] Custom email sent to #{recipient} - Subject: #{subject}"
+      # Не ждем завершения thread, как в рабочей системе
       redirect "/testing/email?success=sent&to=#{CGI.escape(recipient)}"
       
     rescue => e
