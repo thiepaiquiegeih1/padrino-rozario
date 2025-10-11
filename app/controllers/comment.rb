@@ -126,16 +126,22 @@ Rozario::App.controllers :feedback do
           flash[:notice] = "Спасибо! Ваш отзыв сохранен #{order_id ? 'и привязан к заказу' : ''}. (Email не отправлен - не настроена почта)"
         else
           begin
-            email do
-              from "no-reply@rozarioflowers.ru"
-              to recipient_email
-              subject "Отзыв с сайта"
-              body msg_body
+            # Используем асинхронную отправку как в рабочей системе заказов
+            thread = Thread.new do
+              email do
+                from "no-reply@rozarioflowers.ru"
+                to recipient_email
+                subject "Отзыв с сайта"
+                body msg_body
+              end
+              puts "✅ [#{Time.now.strftime('%d.%m.%Y %H:%M:%S')}] Comment email sent to #{recipient_email} - Rating: #{rating}"
             end
-            puts "✅ Email sent successfully to #{recipient_email}"
+            
+            # Не ждем завершения thread, как в рабочей системе
+            puts "✅ Comment saved and email queued for #{recipient_email}"
             flash[:notice] = "Спасибо! Ваш отзыв сохранен #{order_id ? 'и привязан к заказу' : ''} и отправлен администратору."
           rescue => e
-            puts "❌ ERROR sending email: #{e.message}"
+            puts "❌ [#{Time.now.strftime('%d.%m.%Y %H:%M:%S')}] ERROR sending comment email: #{e.message}"
             puts "   Recipient: #{recipient_email}"
             puts "   Error class: #{e.class}"
             flash[:notice] = "Спасибо! Ваш отзыв сохранен #{order_id ? 'и привязан к заказу' : ''}. (Email не отправлен - ошибка почтового сервера)"
