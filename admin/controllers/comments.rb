@@ -33,6 +33,10 @@ Rozario::Admin.controllers :comments do
     comment_params = params[:comment]
     # Разрешаем поле order_eight_digit_id и published
     allowed_params = comment_params.select { |k, v| ['name', 'body', 'title', 'rating', 'date', 'order_eight_digit_id', 'published'].include?(k) }
+    
+    # Автоматически заполняем поле date текущей датой, если не указано
+    allowed_params['date'] = Time.now if allowed_params['date'].blank?
+    
     @comment = Comment.new(allowed_params)
     if @comment.save
       @title = pat(:create_title, :model => "comment #{@comment.id}")
@@ -70,6 +74,12 @@ Rozario::Admin.controllers :comments do
     if @comment
       # Разрешаем поле order_eight_digit_id и published
       allowed_params = comment_params.select { |k, v| ['name', 'body', 'title', 'rating', 'date', 'order_eight_digit_id', 'published'].include?(k) }
+      
+      # Автоматически заполняем поле date, если не указано и если у комментария нет даты
+      if allowed_params["date"].blank? && @comment.date.blank?
+        allowed_params["date"] = Time.now
+      end
+      
       update_params = allowed_params["date"].present? ? allowed_params : allowed_params.except("date")
       
       if @comment.update_attributes(update_params)
