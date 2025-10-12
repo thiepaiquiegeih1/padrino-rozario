@@ -47,12 +47,12 @@
             =check_box_tag 'comment_ids[]', :value => comment.id, :class => 'list-selectable-checkbox'
           %td.list-column{class: is_published ? '' : 'unpublished-text'}=comment.id
           %td.list-column{class: is_published ? '' : 'unpublished-text'}
-            =is_published ? comment.name : content_tag(:strong, comment.name)
+            =is_published ? comment.name : content_tag(:strong, comment.name.to_s)
           %td.list-column{class: is_published ? '' : 'unpublished-text'}
-            - body_text = truncate_words(strip_tags(comment.body))
-            =is_published ? body_text : content_tag(:strong, body_text)
+            - body_text = truncate_words(strip_tags(comment.body.to_s))
+            =is_published ? body_text : content_tag(:strong, body_text.to_s)
           %td.list-column{class: is_published ? '' : 'unpublished-text'}
-            =is_published ? comment.rating : content_tag(:strong, comment.rating)
+            =is_published ? comment.rating : content_tag(:strong, comment.rating.to_s)
           %td.list-column
             - if comment.order_eight_digit_id.present?
               %strong{style: "color: #0088cc;"}= comment.order_eight_digit_id
