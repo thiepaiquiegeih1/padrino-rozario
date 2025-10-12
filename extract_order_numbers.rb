@@ -4,7 +4,40 @@
 # Скрипт для поиска номеров заказов в тексте комментариев
 # Ищет фрагменты вида "Заказ №89054541" или "Заказ № 89054541"
 
-require_relative 'config/boot'
+# Устанавливаем окружение
+ENV['PADRINO_ENV'] ||= 'development'
+
+begin
+  require_relative 'config/boot'
+rescue => e
+  puts "Ошибка загрузки окружения: #{e.message}"
+  puts "Попробуем альтернативный метод..."
+  
+  # Альтернативный способ загрузки
+  require 'bundler/setup'
+  require 'active_record'
+  require 'mysql2'
+  
+  # Настройка соединения с базой
+  ActiveRecord::Base.establish_connection(
+    adapter: 'mysql2',
+    host: '127.0.0.1',
+    port: 3306,
+    encoding: 'utf8',
+    reconnect: true,
+    database: 'admin_rozario',
+    pool: 10,
+    username: 'admin',
+    password: ENV['MYSQL_PASSWORD'].to_s
+  )
+  
+  # Определяем модель Comment
+  class Comment < ActiveRecord::Base
+    self.table_name = 'comments'
+  end
+  
+  puts "Прямое соединение с базой установлено."
+end
 
 puts "Ищем номера заказов в комментариях..."
 puts "=" * 50
