@@ -40,6 +40,7 @@
     %tbody
       -@comments.each do |comment|
         - is_published = comment.published == 1 || comment.published == true || comment.published.to_s == "1"
+        - # Debug: #{comment.id} published=#{comment.published.inspect} (#{comment.published.class}) is_published=#{is_published}
         - row_class = is_published ? 'list-row' : 'list-row unpublished-comment'
         %tr{class: row_class}
           %td.list-column.list-selectable
