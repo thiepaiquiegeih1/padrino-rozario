@@ -39,8 +39,14 @@
 
     %tbody
       -@comments.each do |comment|
-        - is_published = comment.published == 1 || comment.published == true || comment.published.to_s == "1"
-        - # Debug: #{comment.id} published=#{comment.published.inspect} (#{comment.published.class}) is_published=#{is_published}
+        - published_value = comment.published
+        - is_published = case published_value
+        -   when 1, true, "1" then true
+        -   when "\x01", "\001" then true  # BIT(1) = 1 in binary
+        -   when 0, false, "0" then false
+        -   when "\x00", "\000" then false  # BIT(1) = 0 in binary
+        -   else published_value.to_i == 1
+        - # DEBUG: comment #{comment.id}: published=#{published_value.inspect} (#{published_value.class}), is_published=#{is_published}
         - row_class = is_published ? 'list-row' : 'list-row unpublished-comment'
         %tr{class: row_class}
           %td.list-column.list-selectable
