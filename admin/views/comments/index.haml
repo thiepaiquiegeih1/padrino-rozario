@@ -28,14 +28,13 @@
                       =hidden_field_tag :comment_ids, :'data-delete-many-ids' => true
                       =submit_tag pat(:delete), :class =>'list-menu-popover-delete-selected-btn btn btn-danger btn-small'
                       .btn.btn-small.cancel=pat(:cancel)
-        %th.header= :id
-        %th.header= :name
-        %th.header= :body
-        %th.header= :rating
-        %th.header Номер заказа
-        %th.header Статус
-        %th.header= :created_at
-        %th.header= :updated_at
+        %th.header ID
+        %th.header Имя
+        %th.header Текст
+        %th.header Оценка
+        %th.header Заказ №
+        %th.header Создано
+        %th.header Обновлено
         %th.header.list-row-action-header
 
     %tbody
@@ -45,28 +44,46 @@
         %tr{class: row_class}
           %td.list-column.list-selectable
             =check_box_tag 'comment_ids[]', :value => comment.id, :class => 'list-selectable-checkbox'
-          %td.list-column{class: is_published ? '' : 'unpublished-text'}=comment.id
-          %td.list-column{class: is_published ? '' : 'unpublished-text'}
-            =is_published ? comment.name : content_tag(:strong, comment.name.to_s)
-          %td.list-column{class: is_published ? '' : 'unpublished-text'}
+          %td.list-column
+            - if is_published
+              = comment.id
+            - else
+              %strong= comment.id
+          %td.list-column
+            - if is_published
+              = comment.name
+            - else
+              %strong= comment.name
+          %td.list-column
             - body_text = truncate_words(strip_tags(comment.body.to_s))
-            =is_published ? body_text : content_tag(:strong, body_text.to_s)
-          %td.list-column{class: is_published ? '' : 'unpublished-text'}
-            =is_published ? comment.rating : content_tag(:strong, comment.rating.to_s)
+            - if is_published
+              = body_text
+            - else
+              %strong= body_text
+          %td.list-column
+            - if is_published
+              = comment.rating
+            - else
+              %strong= comment.rating
           %td.list-column
             - if comment.order_eight_digit_id.present?
-              %strong{style: "color: #0088cc;"}= comment.order_eight_digit_id
-              %br
-              %small Заказ найден
+              - order_exists = Order.exists?(eight_digit_id: comment.order_eight_digit_id)
+              - if order_exists
+                = comment.order_eight_digit_id
+              - else
+                %span{style: "color: red;"}= comment.order_eight_digit_id
             - else
               %small.text-muted Не указан
-          %td.list-column{class: is_published ? '' : 'unpublished-text'}
+          %td.list-column
             - if is_published
-              %span.label.label-success Опубликован
+              = time_ago_in_words comment.created_at
             - else
-              %span.label.label-warning Неопубликован
-          %td.list-column=time_ago_in_words comment.created_at
-          %td.list-column=time_ago_in_words comment.updated_at
+              %strong= time_ago_in_words comment.created_at
+          %td.list-column
+            - if is_published
+              = time_ago_in_words comment.updated_at
+            - else
+              %strong= time_ago_in_words comment.updated_at
           %td.list-column.list-row-action
             .list-row-action-wrapper
               =link_to tag_icon(:edit), :href => url(:comments, :edit, :id => comment.id), :rel => :tooltip, :title => "#{pat(:edit)} comment", :class => 'list-row-action-wrapper-link'
@@ -85,7 +102,4 @@
   :css
     .unpublished-comment {
       background-color: #fffbea !important;
-    }
-    .unpublished-text {
-      font-weight: bold;
     }
