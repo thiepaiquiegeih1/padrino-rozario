@@ -6,19 +6,33 @@
 -#   .controls
 -#     =f.text_field :title, :class => 'input-xlarge input-with-feedback', :autofocus => true
 -#     %span.help-inline=error ? f.error_message_on(:title, :class => 'text-error') : 'Заголовок'
+
+-# Поле номера заказа - первое по порядку
+- error = @comment.errors.include?(:order_eight_digit_id)
+%fieldset.control-group{:class => error ? 'has-error' : ''}
+  =f.label "Номер заказа", :class => 'control-label'
+  .controls
+    =f.text_field :order_eight_digit_id, type: "number", :class => 'input-xlarge input-with-feedback', placeholder: "8-значный номер заказа (необязательно)", :autofocus => true
+    %span.help-inline=error ? f.error_message_on(:order_eight_digit_id, :class => 'text-error') : 'Номер заказа (необязательно)'
+    - if @comment.order_eight_digit_id.present?
+      %br
+      %small.text-info= "Заказ найден: #{@comment.order&.useraccount&.name || 'Данные заказа недоступны'}"
+
 - error = @comment.errors.include?(:name)
 %fieldset.control-group{:class => error ? 'has-error' : ''}
-  =f.label :name, :class => 'control-label'
+  =f.label "Имя", :class => 'control-label'
   .controls
-    =f.text_field :name, :class => 'input-xlarge input-with-feedback', :autofocus => true
-    %span.help-inline=error ? f.error_message_on(:name, :class => 'text-error') : 'Имя'
+    =f.text_field :name, :class => 'input-xlarge input-with-feedback'
+    - if error
+      %span.help-inline=f.error_message_on(:name, :class => 'text-error')
 
 - error = @comment.errors.include?(:body)
 %fieldset.control-group{:class => error ? 'has-error' : ''}
-  =f.label :body, :class => 'control-label'
+  =f.label "Текст", :class => 'control-label'
   .controls
     =f.text_area :body, :class => 'input-xlarge input-with-feedback', :rows => 6, :placeholder => 'Введите текст комментария...'
-    %span.help-inline=error ? f.error_message_on(:body, :class => 'text-error') : 'Текст'
+    - if error
+      %span.help-inline=f.error_message_on(:body, :class => 'text-error')
 
 - lang=@lang.to_json
 - val=@comment.date.present? ? @comment.date.to_date.strftime("%d.%m.%Y") : ''
@@ -35,17 +49,8 @@
   =f.label "Рейтинг", :class => 'control-label'
   .controls
     =f.text_field :rating, type: "number", min: 1, max: 5, step: 0.5, :class => 'input-xlarge input-with-feedback'
-    %span.help-inline=error ? f.error_message_on(:rating, :class => 'text-error') : 'Рейтинг'
-
-- error = @comment.errors.include?(:order_eight_digit_id)
-%fieldset.control-group{:class => error ? 'has-error' : ''}
-  =f.label "Номер заказа", :class => 'control-label'
-  .controls
-    =f.text_field :order_eight_digit_id, type: "number", :class => 'input-xlarge input-with-feedback', placeholder: "8-значный номер заказа (необязательно)"
-    %span.help-inline=error ? f.error_message_on(:order_eight_digit_id, :class => 'text-error') : 'Номер заказа (необязательно)'
-    - if @comment.order_eight_digit_id.present?
-      %br
-      %small.text-info= "Заказ найден: #{@comment.order&.useraccount&.name || 'Данные заказа недоступны'}"
+    - if error
+      %span.help-inline=f.error_message_on(:rating, :class => 'text-error')
 
 - error = @comment.errors.include?(:published)
 %fieldset.control-group{:class => error ? 'has-error' : ''}
