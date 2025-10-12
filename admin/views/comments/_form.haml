@@ -1,10 +1,11 @@
 -# coding: utf-8
-- error = @comment.errors.include?(:title)
-%fieldset.control-group{:class => error ? 'has-error' : ''}
-  =f.label :title, :class => 'control-label'
-  .controls
-    =f.text_field :title, :class => 'input-xlarge input-with-feedback', :autofocus => true
-    %span.help-inline=error ? f.error_message_on(:title, :class => 'text-error') : 'Заголовок'
+-# Поле Title скрыто
+-# - error = @comment.errors.include?(:title)
+-# %fieldset.control-group{:class => error ? 'has-error' : ''}
+-#   =f.label :title, :class => 'control-label'
+-#   .controls
+-#     =f.text_field :title, :class => 'input-xlarge input-with-feedback', :autofocus => true
+-#     %span.help-inline=error ? f.error_message_on(:title, :class => 'text-error') : 'Заголовок'
 - error = @comment.errors.include?(:name)
 %fieldset.control-group{:class => error ? 'has-error' : ''}
   =f.label :name, :class => 'control-label'
@@ -51,7 +52,6 @@
   =f.label "Статус публикации", :class => 'control-label'
   .controls
     =f.check_box :published, :checked => (@comment.published == 1 || @comment.published == true || @comment.published.to_s == "1"), :value => 1
-    =f.label "Опубликовать отзыв", :class => 'checkbox inline'
     %span.help-inline=error ? f.error_message_on(:published, :class => 'text-error') : 'Если отмечено, отзыв будет виден на сайте'
 
 .form-actions
