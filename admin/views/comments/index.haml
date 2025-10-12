@@ -45,45 +45,55 @@
           %td.list-column.list-selectable
             =check_box_tag 'comment_ids[]', :value => comment.id, :class => 'list-selectable-checkbox'
           %td.list-column
-            - if is_published
-              = comment.id
-            - else
+            - unless is_published
               %strong= comment.id
-          %td.list-column
-            - if is_published
-              = comment.name
             - else
+              = comment.id
+          %td.list-column
+            - unless is_published
               %strong= comment.name
+            - else
+              = comment.name
           %td.list-column
             - body_text = truncate_words(strip_tags(comment.body.to_s))
-            - if is_published
-              = body_text
-            - else
+            - unless is_published
               %strong= body_text
-          %td.list-column
-            - if is_published
-              = comment.rating
             - else
+              = body_text
+          %td.list-column
+            - unless is_published
               %strong= comment.rating
+            - else
+              = comment.rating
           %td.list-column
             - if comment.order_eight_digit_id.present?
               - order_exists = Order.exists?(eight_digit_id: comment.order_eight_digit_id)
               - if order_exists
-                = comment.order_eight_digit_id
+                - unless is_published
+                  %strong= comment.order_eight_digit_id
+                - else
+                  = comment.order_eight_digit_id
               - else
-                %span{style: "color: red;"}= comment.order_eight_digit_id
+                - unless is_published
+                  %strong{style: "color: red;"}= comment.order_eight_digit_id
+                - else
+                  %span{style: "color: red;"}= comment.order_eight_digit_id
             - else
-              %small.text-muted Не указан
+              - unless is_published
+                %strong
+                  %small.text-muted Не указан
+              - else
+                %small.text-muted Не указан
           %td.list-column
-            - if is_published
-              = time_ago_in_words comment.created_at
-            - else
+            - unless is_published
               %strong= time_ago_in_words comment.created_at
-          %td.list-column
-            - if is_published
-              = time_ago_in_words comment.updated_at
             - else
+              = time_ago_in_words comment.created_at
+          %td.list-column
+            - unless is_published
               %strong= time_ago_in_words comment.updated_at
+            - else
+              = time_ago_in_words comment.updated_at
           %td.list-column.list-row-action
             .list-row-action-wrapper
               =link_to tag_icon(:edit), :href => url(:comments, :edit, :id => comment.id), :rel => :tooltip, :title => "#{pat(:edit)} comment", :class => 'list-row-action-wrapper-link'
