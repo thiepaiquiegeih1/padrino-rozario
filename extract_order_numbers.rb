@@ -39,15 +39,25 @@ rescue => e
   puts "Прямое соединение с базой установлено."
 end
 
-puts "Ищем номера заказов в комментариях..."
+puts "Ищем номера заказов в комментариях и сохраняем их..."
 puts "=" * 50
+
+# Просим подтверждение перед модификацией
+print "Этот скрипт будет МОДИФИЦИРОВАТЬ данные в базе. Продолжить? (yes/нет): "
+confirmation = gets.chomp.downcase
+unless ['yes', 'y', 'да', 'д'].include?(confirmation)
+  puts "Операция отменена."
+  exit
+end
 
 # Регулярное выражение для поиска номеров заказов
 # Ищет "Заказ №" или "Заказ № " с последующим 8-значным числом
 order_regex = /Заказ\s*№\s*(\d{8})/i
 
 found_comments = []
+updated_comments = []
 total_processed = 0
+modified_count = 0
 
 # Обрабатываем все комментарии
 Comment.find_each do |comment|
@@ -55,25 +65,63 @@ Comment.find_each do |comment|
   
   # Проверяем поле body на наличие номера заказа
   if comment.body.present?
+    original_body = comment.body.dup
     matches = comment.body.scan(order_regex)
     
     unless matches.empty?
-      matches.each do |match|
-        order_number = match[0]  # Извлекаем номер заказа из группы регулярного выражения
+      # Берем первый найденный номер заказа
+      first_match = matches.first
+      order_number = first_match[0]
+      
+      # Находим полный фрагмент
+      match_data = comment.body.match(order_regex)
+      text_fragment = match_data[0] if match_data
+      
+      # Удаляем все вхождения номеров заказов из текста
+      cleaned_body = comment.body.gsub(order_regex, '').strip
+      # Удаляем лишние пробелы и переносы строк
+      cleaned_body = cleaned_body.gsub(/\s+/, ' ').strip
+      
+      begin
+        # Обновляем комментарий только если поле order_eight_digit_id пустое
+        if comment.order_eight_digit_id.blank?
+          comment.order_eight_digit_id = order_number.to_i
+          comment.body = cleaned_body
+          
+          if comment.save
+            modified_count += 1
+            
+            updated_comments << {
+              comment_id: comment.id,
+              order_number: order_number,
+              text_fragment: text_fragment,
+              original_body: original_body[0..100] + (original_body.length > 100 ? '...' : ''),
+              cleaned_body: cleaned_body[0..100] + (cleaned_body.length > 100 ? '...' : '')
+            }
+            
+            puts "✅ ID: #{comment.id} | Обновлен | Номер заказа: #{order_number}"
+            puts "   Удален фрагмент: '#{text_fragment}'"
+            puts "   Новый текст: #{cleaned_body[0..100]}#{cleaned_body.length > 100 ? '...' : ''}"
+          else
+            puts "❌ Ошибка сохранения ID: #{comment.id} - #{comment.errors.full_messages.join(', ')}"
+          end
+        else
+          puts "⚠️  ID: #{comment.id} | Пропущен (номер заказа уже заполнен: #{comment.order_eight_digit_id})"
+        end
         
         found_comments << {
           comment_id: comment.id,
           order_number: order_number,
-          text_fragment: comment.body.match(order_regex)[0],  # Полный найденный фрагмент
+          text_fragment: text_fragment,
           comment_name: comment.name,
-          comment_body_preview: comment.body[0..100] + (comment.body.length > 100 ? '...' : '')
+          comment_body_preview: original_body[0..100] + (original_body.length > 100 ? '...' : '')
         }
         
-        puts "ID: #{comment.id} | Номер заказа: #{order_number} | Фрагмент: '#{comment.body.match(order_regex)[0]}'"
-        puts "  Автор: #{comment.name}"
-        puts "  Текст: #{comment.body[0..100]}#{comment.body.length > 100 ? '...' : ''}"
-        puts "-" * 50
+      rescue => e
+        puts "❌ Ошибка обработки ID: #{comment.id} - #{e.message}"
       end
+      
+      puts "-" * 50
     end
   end
   
@@ -88,11 +136,19 @@ puts "=" * 50
 puts "ИТОГИ:"
 puts "Всего обработано комментариев: #{total_processed}"
 puts "Найдено комментариев с номерами заказов: #{found_comments.length}"
+puts "МОДИФИЦИРОВАНО комментариев: #{modified_count}"
 
 if found_comments.any?
-  puts "\nСписок ID комментариев с номерами заказов:"
+  puts "\nСписок всех ID комментариев с номерами заказов:"
   found_comments.each do |item|
     puts "#{item[:comment_id]} -> заказ #{item[:order_number]}"
+  end
+  
+  if updated_comments.any?
+    puts "\nОБНОВЛЕННЫЕ комментарии:"
+    updated_comments.each do |item|
+      puts "ID #{item[:comment_id]}: номер #{item[:order_number]} сохранен, удален '#{item[:text_fragment]}'"
+    end
   end
   
   puts "\nУникальные номера заказов:"
@@ -105,4 +161,8 @@ else
 end
 
 puts "=" * 50
-puts "Поиск завершён."
+if modified_count > 0
+  puts "✅ Обработка завершена. Модифицировано #{modified_count} комментариев."
+else
+  puts "Обработка завершена. Никакие изменения не внесены."
+end
