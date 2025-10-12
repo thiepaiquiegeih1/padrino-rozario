@@ -89,3 +89,105 @@
       document.querySelectorAll("#dates input")[1].style.background = "#fff";
     }
   })
+
+:javascript
+  // Автозаполнение имени заказчика при вводе номера заказа
+  (function() {
+    var orderIdField = document.getElementById('comment_order_eight_digit_id');
+    var nameField = document.getElementById('comment_name');
+    
+    if (!orderIdField || !nameField) {
+      console.log('Поля для автозаполнения не найдены');
+      return;
+    }
+    
+    // Функция для запроса данных заказа
+    function fetchOrderData(orderId) {
+      if (!orderId || orderId.length !== 8) {
+        return;
+      }
+      
+      console.log('Запрашиваем данные для заказа:', orderId);
+      
+      var xhr = new XMLHttpRequest();
+      xhr.open('GET', '/api/order_info/' + orderId, true);
+      xhr.setRequestHeader('Accept', 'application/json');
+      
+      xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4) {
+          if (xhr.status === 200) {
+            try {
+              var response = JSON.parse(xhr.responseText);
+              console.log('Ответ сервера:', response);
+              
+              if (response.customer_name && response.customer_name.trim() !== '') {
+                // Автозаполняем имя только если поле пустое
+                if (nameField.value.trim() === '') {
+                  nameField.value = response.customer_name;
+                  console.log('Имя автозаполнено:', response.customer_name);
+                  
+                  // Подсвечиваем поле на короткое время
+                  nameField.style.backgroundColor = '#d4edda';
+                  setTimeout(function() {
+                    nameField.style.backgroundColor = '';
+                  }, 2000);
+                }
+                
+                // Показываем информацию о заказе
+                var helpBlock = orderIdField.parentNode.querySelector('.help-inline');
+                if (helpBlock) {
+                  helpBlock.innerHTML = 'Заказ найден: ' + response.customer_name + 
+                                       ' (' + response.order_date + ', ' + response.city + ')';
+                  helpBlock.style.color = '#28a745';
+                }
+              }
+            } catch (e) {
+              console.error('Ошибка парсинга JSON:', e);
+              showError('Ошибка обработки ответа сервера');
+            }
+          } else if (xhr.status === 404) {
+            showError('Заказ с данным номером не найден');
+          } else if (xhr.status === 400) {
+            showError('Некорректный номер заказа (должен быть 8-значным)');
+          } else {
+            showError('Ошибка при получении данных заказа');
+          }
+        }
+      };
+      
+      xhr.onerror = function() {
+        showError('Ошибка сетевого соединения');
+      };
+      
+      xhr.send();
+    }
+    
+    // Функция для отображения ошибок
+    function showError(message) {
+      console.log('Ошибка:', message);
+      var helpBlock = orderIdField.parentNode.querySelector('.help-inline');
+      if (helpBlock) {
+        helpBlock.innerHTML = message;
+        helpBlock.style.color = '#dc3545';
+      }
+    }
+    
+    // Обработчик события потери фокуса
+    orderIdField.addEventListener('blur', function() {
+      var orderId = this.value.trim();
+      
+      if (orderId === '') {
+        // Очищаем справочную информацию если поле пустое
+        var helpBlock = this.parentNode.querySelector('.help-inline');
+        if (helpBlock) {
+          helpBlock.innerHTML = 'Номер заказа (необязательно)';
+          helpBlock.style.color = '';
+        }
+        return;
+      }
+      
+      fetchOrderData(orderId);
+    });
+    
+    console.log('Автозаполнение имени заказчика инициализировано');
+  })();

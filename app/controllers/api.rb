@@ -1177,4 +1177,42 @@ Rozario::App.controllers :api do
     # redirect_to "https://www.example.com"
   end
 
+  # API endpoint для получения данных заказа по номеру (для автозаполнения в админке)
+  get '/order_info/:order_id' do
+    content_type :json
+    
+    begin
+      order_id = params[:order_id].to_i
+      
+      # Проверяем формат номера заказа (должен быть 8-значным числом)
+      if order_id < 10_000_000 || order_id > 99_999_999
+        status 400
+        return { error: 'Номер заказа должен быть 8-значным числом' }.to_json
+      end
+      
+      # Ищем заказ по eight_digit_id
+      order = Order.find_by_eight_digit_id(order_id)
+      
+      if order.nil?
+        status 404
+        return { error: 'Заказ с данным номером не найден' }.to_json
+      end
+      
+      # Возвращаем только безопасную информацию о заказе
+      order_data = {
+        order_id: order.eight_digit_id,
+        customer_name: order.oname || '',
+        order_date: order.created_at.strftime('%d.%m.%Y'),
+        city: order.city || '',
+        status: 'найден'
+      }
+      
+      return order_data.to_json
+      
+    rescue => e
+      status 500
+      return { error: 'Внутренняя ошибка сервера' }.to_json
+    end
+  end
+
 end
