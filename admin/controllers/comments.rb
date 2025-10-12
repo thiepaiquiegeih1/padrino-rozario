@@ -4,6 +4,15 @@ Rozario::Admin.controllers :comments do
   get :index do
     @title = "Comments"
     @comments = Comment.order('id desc').paginate(:page => params[:page], :per_page => 20)
+    @filter_type = 'all'
+    render 'comments/index'
+  end
+  
+  # Новая вкладка для неопубликованных отзывов
+  get :unpublished do
+    @title = "Unpublished Comments"
+    @comments = Comment.where(published: 0).order('id desc').paginate(:page => params[:page], :per_page => 20)
+    @filter_type = 'unpublished'
     render 'comments/index'
   end
 
@@ -22,8 +31,8 @@ Rozario::Admin.controllers :comments do
 
   post :create do
     comment_params = params[:comment]
-    # Разрешаем поле order_eight_digit_id
-    allowed_params = comment_params.select { |k, v| ['name', 'body', 'title', 'rating', 'date', 'order_eight_digit_id'].include?(k) }
+    # Разрешаем поле order_eight_digit_id и published
+    allowed_params = comment_params.select { |k, v| ['name', 'body', 'title', 'rating', 'date', 'order_eight_digit_id', 'published'].include?(k) }
     @comment = Comment.new(allowed_params)
     if @comment.save
       @title = pat(:create_title, :model => "comment #{@comment.id}")
@@ -59,8 +68,8 @@ Rozario::Admin.controllers :comments do
     comment_params = params[:comment]
     @comment = Comment.find(params[:id])
     if @comment
-      # Разрешаем поле order_eight_digit_id
-      allowed_params = comment_params.select { |k, v| ['name', 'body', 'title', 'rating', 'date', 'order_eight_digit_id'].include?(k) }
+      # Разрешаем поле order_eight_digit_id и published
+      allowed_params = comment_params.select { |k, v| ['name', 'body', 'title', 'rating', 'date', 'order_eight_digit_id', 'published'].include?(k) }
       update_params = allowed_params["date"].present? ? allowed_params : allowed_params.except("date")
       
       if @comment.update_attributes(update_params)
