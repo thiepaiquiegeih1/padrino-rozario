@@ -17,7 +17,7 @@
 %fieldset.control-group{:class => error ? 'has-error' : ''}
   =f.label :body, :class => 'control-label'
   .controls
-    =f.text_area :body, :class => 'input-xlarge input-with-feedback ckeditor'
+    =f.text_area :body, :class => 'input-xlarge input-with-feedback', :rows => 6, :placeholder => 'Введите текст комментария...'
     %span.help-inline=error ? f.error_message_on(:body, :class => 'text-error') : 'Текст'
 
 - lang=@lang.to_json
