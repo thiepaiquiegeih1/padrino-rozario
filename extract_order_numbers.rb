@@ -51,8 +51,8 @@ unless ['yes', 'y', 'да', 'д'].include?(confirmation)
 end
 
 # Регулярное выражение для поиска номеров заказов
-# Ищет "Заказ №" или "Заказ № " с последующим 8-значным числом
-order_regex = /Заказ\s*№\s*(\d{8})/i
+# Ищет "Заказ №" с номером от 3 до 8 цифр
+order_regex = /Заказ\s*№?\s*(\d{3,8})/i
 
 found_comments = []
 updated_comments = []
@@ -77,15 +77,32 @@ Comment.find_each do |comment|
       match_data = comment.body.match(order_regex)
       text_fragment = match_data[0] if match_data
       
-      # Удаляем все вхождения номеров заказов из текста
-      cleaned_body = comment.body.gsub(order_regex, '').strip
-      # Удаляем лишние пробелы и переносы строк
+      # Удаляем номера заказов с учётом HTML-тегов
+      cleaned_body = comment.body.dup
+      
+      # Удаляем полные HTML-блоки с номерами заказов
+      # Пример: <p>&nbsp;</p><p>Заказ № 9121159</p>
+      cleaned_body = cleaned_body.gsub(/<p[^>]*>\s*(&nbsp;\s*)*\s*<\/p>\s*<p[^>]*>\s*Заказ\s*№?\s*\d{3,8}\s*<\/p>/mi, '')
+      
+      # Удаляем отдельные теги p с номерами
+      # Пример: <p>Заказ №9423068</p>
+      cleaned_body = cleaned_body.gsub(/<p[^>]*>\s*Заказ\s*№?\s*\d{3,8}\s*<\/p>/mi, '')
+      
+      # Удаляем простые текстовые вхождения (на случай без HTML)
+      cleaned_body = cleaned_body.gsub(order_regex, '')
+      
+      # Удаляем пустые теги <p>&nbsp;</p>
+      cleaned_body = cleaned_body.gsub(/<p[^>]*>\s*(&nbsp;\s*)*\s*<\/p>/mi, '')
+      
+      # Очищаем лишние пробелы и переносы строк
       cleaned_body = cleaned_body.gsub(/\s+/, ' ').strip
       
       begin
         # Обновляем комментарий только если поле order_eight_digit_id пустое
         if comment.order_eight_digit_id.blank?
-          comment.order_eight_digit_id = order_number.to_i
+          # Преобразуем 7-значные номера в 8-значные (добавляем 0 впереди)
+          normalized_order = order_number.length == 7 ? "0#{order_number}" : order_number
+          comment.order_eight_digit_id = normalized_order.to_i
           comment.body = cleaned_body
           
           if comment.save
@@ -99,7 +116,7 @@ Comment.find_each do |comment|
               cleaned_body: cleaned_body[0..100] + (cleaned_body.length > 100 ? '...' : '')
             }
             
-            puts "✅ ID: #{comment.id} | Обновлен | Номер заказа: #{order_number}"
+            puts "✅ ID: #{comment.id} | Обновлен | Номер заказа: #{order_number} -> #{normalized_order}"
             puts "   Удален фрагмент: '#{text_fragment}'"
             puts "   Новый текст: #{cleaned_body[0..100]}#{cleaned_body.length > 100 ? '...' : ''}"
           else
