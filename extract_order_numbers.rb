@@ -51,8 +51,8 @@ unless ['yes', 'y', 'да', 'д'].include?(confirmation)
 end
 
 # Регулярное выражение для поиска номеров заказов
-# Ищет "Заказ №" с номером от 3 до 8 цифр
-order_regex = /Заказ\s*№?\s*(\d{3,8})/i
+# Ищет "Заказ №" с номером от 3 до 8 цифр, включая &nbsp;
+order_regex = /Заказ\s*№?(?:\s|&nbsp;)*(\d{3,8})/i
 
 found_comments = []
 updated_comments = []
@@ -82,14 +82,16 @@ Comment.find_each do |comment|
       
       # Удаляем полные HTML-блоки с номерами заказов
       # Пример: <p>&nbsp;</p><p>Заказ № 9121159</p>
-      cleaned_body = cleaned_body.gsub(/<p[^>]*>\s*(&nbsp;\s*)*\s*<\/p>\s*<p[^>]*>\s*Заказ\s*№?\s*\d{3,8}\s*<\/p>/mi, '')
+      cleaned_body = cleaned_body.gsub(/<p[^>]*>\s*(&nbsp;\s*)*\s*<\/p>\s*<p[^>]*>\s*Заказ\s*№?(?:\s|&nbsp;)*\d{3,8}\s*<\/p>/mi, '')
       
-      # Удаляем отдельные теги p с номерами
-      # Пример: <p>Заказ №9423068</p>
-      cleaned_body = cleaned_body.gsub(/<p[^>]*>\s*Заказ\s*№?\s*\d{3,8}\s*<\/p>/mi, '')
+      # Удаляем отдельные теги p с номерами (включая &nbsp;)
+      # Пример: <p>Заказ №9423068</p> или <p>Заказ №&nbsp;77338077</p>
+      cleaned_body = cleaned_body.gsub(/<p[^>]*>\s*Заказ\s*№?(?:\s|&nbsp;)*\d{3,8}\s*<\/p>/mi, '')
       
       # Удаляем простые текстовые вхождения (на случай без HTML)
+      # Включая варианты с &nbsp; вне тегов
       cleaned_body = cleaned_body.gsub(order_regex, '')
+      cleaned_body = cleaned_body.gsub(/Заказ\s*№?&nbsp;\d{3,8}/mi, '')
       
       # Удаляем пустые теги <p>&nbsp;</p>
       cleaned_body = cleaned_body.gsub(/<p[^>]*>\s*(&nbsp;\s*)*\s*<\/p>/mi, '')
