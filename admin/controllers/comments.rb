@@ -34,12 +34,13 @@ Rozario::Admin.controllers :comments do
     # Разрешаем поле order_eight_digit_id и published
     allowed_params = comment_params.select { |k, v| ['name', 'body', 'title', 'rating', 'date', 'order_eight_digit_id', 'published'].include?(k) }
     
-    # Обработка чекбокса published - конвертируем в integer
-    published_value = comment_params.has_key?('published') ? comment_params['published'] : 0
-    allowed_params['published'] = published_value.to_i
+    # Обработка BIT поля published для MySQL
+    published_value = comment_params.has_key?('published') ? comment_params['published'] : '0'
+    published_int = (published_value == '1' || published_value == 1) ? 1 : 0
+    allowed_params['published'] = published_int
     
     # Debug info
-    puts "DEBUG CREATE: published exists: #{comment_params.has_key?('published')}, value: #{published_value.inspect} -> #{allowed_params['published']}"
+    puts "DEBUG CREATE: published checkbox #{comment_params.has_key?('published') ? 'checked' : 'unchecked'}, raw: #{published_value.inspect}, final: #{published_int}"
     
     # Автоматически заполняем поле date текущей датой, если не указано
     allowed_params['date'] = Time.now if allowed_params['date'].blank?
@@ -84,12 +85,13 @@ Rozario::Admin.controllers :comments do
       
       # Обработка чекбокса published: если не отмечен, браузер не отправляет параметр
       # Поэтому явно устанавливаем published = 0, если параметр отсутствует
-      # Конвертируем значение чекбокса в integer для BIT поля MySQL
-      published_value = comment_params.has_key?('published') ? comment_params['published'] : 0
-      allowed_params['published'] = published_value.to_i
+      # Обработка BIT поля published для MySQL
+      published_value = comment_params.has_key?('published') ? comment_params['published'] : '0'
+      published_int = (published_value == '1' || published_value == 1) ? 1 : 0
+      allowed_params['published'] = published_int
       
       # Debug info
-      puts "DEBUG UPDATE: published exists: #{comment_params.has_key?('published')}, value: #{published_value.inspect} -> #{allowed_params['published']}"
+      puts "DEBUG UPDATE: published checkbox #{comment_params.has_key?('published') ? 'checked' : 'unchecked'}, raw: #{published_value.inspect}, final: #{published_int}"
       
       # Автоматически заполняем поле date, если не указано и если у комментария нет даты
       if allowed_params["date"].blank? && @comment.date.blank?
@@ -99,7 +101,14 @@ Rozario::Admin.controllers :comments do
       update_params = allowed_params["date"].present? ? allowed_params : allowed_params.except("date")
       
       if @comment.update_attributes(update_params)
-        # Debug: проверяем что фактически сохранилось
+        # Для BIT поля может потребоваться прямой SQL запрос
+        if update_params.has_key?('published')
+          sql = "UPDATE comments SET published = #{published_int} WHERE id = #{@comment.id}"
+          ActiveRecord::Base.connection.execute(sql)
+          puts "DEBUG UPDATE: executed direct SQL: #{sql}"
+        end
+        
+        # Проверяем что фактически сохранилось
         @comment.reload
         puts "DEBUG UPDATE: comment after save: #{@comment.published.inspect} (#{@comment.published.class})"
         flash[:success] = pat(:update_success, :model => 'Comment', :id =>  "#{params[:id]}")
