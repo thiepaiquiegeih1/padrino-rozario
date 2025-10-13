@@ -34,6 +34,9 @@ Rozario::Admin.controllers :comments do
     # Разрешаем поле order_eight_digit_id и published
     allowed_params = comment_params.select { |k, v| ['name', 'body', 'title', 'rating', 'date', 'order_eight_digit_id', 'published'].include?(k) }
     
+    # Обработка чекбокса published
+    allowed_params['published'] = comment_params.has_key?('published') ? comment_params['published'] : 0
+    
     # Автоматически заполняем поле date текущей датой, если не указано
     allowed_params['date'] = Time.now if allowed_params['date'].blank?
     
@@ -74,6 +77,10 @@ Rozario::Admin.controllers :comments do
     if @comment
       # Разрешаем поле order_eight_digit_id и published
       allowed_params = comment_params.select { |k, v| ['name', 'body', 'title', 'rating', 'date', 'order_eight_digit_id', 'published'].include?(k) }
+      
+      # Обработка чекбокса published: если не отмечен, браузер не отправляет параметр
+      # Поэтому явно устанавливаем published = 0, если параметр отсутствует
+      allowed_params['published'] = comment_params.has_key?('published') ? comment_params['published'] : 0
       
       # Автоматически заполняем поле date, если не указано и если у комментария нет даты
       if allowed_params["date"].blank? && @comment.date.blank?
