@@ -111,7 +111,8 @@ Rozario::App.controllers :feedback do
           :body => params[:msg], 
           :rating => rating.to_f,
           :order_eight_digit_id => order_id,
-          :published => 0  # Новые комментарии по умолчанию не опубликованы (модерация)
+          :published => 0,  # Новые комментарии по умолчанию не опубликованы (модерация)
+          :date => Time.now  # Дата отправки отзыва
         )
         
         # Отправляем почту с данными авторизованного пользователя
