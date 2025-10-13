@@ -34,8 +34,12 @@ Rozario::Admin.controllers :comments do
     # Разрешаем поле order_eight_digit_id и published
     allowed_params = comment_params.select { |k, v| ['name', 'body', 'title', 'rating', 'date', 'order_eight_digit_id', 'published'].include?(k) }
     
-    # Обработка чекбокса published
-    allowed_params['published'] = comment_params.has_key?('published') ? comment_params['published'] : 0
+    # Обработка чекбокса published - конвертируем в integer
+    published_value = comment_params.has_key?('published') ? comment_params['published'] : 0
+    allowed_params['published'] = published_value.to_i
+    
+    # Debug info
+    puts "DEBUG CREATE: published exists: #{comment_params.has_key?('published')}, value: #{published_value.inspect} -> #{allowed_params['published']}"
     
     # Автоматически заполняем поле date текущей датой, если не указано
     allowed_params['date'] = Time.now if allowed_params['date'].blank?
@@ -80,7 +84,12 @@ Rozario::Admin.controllers :comments do
       
       # Обработка чекбокса published: если не отмечен, браузер не отправляет параметр
       # Поэтому явно устанавливаем published = 0, если параметр отсутствует
-      allowed_params['published'] = comment_params.has_key?('published') ? comment_params['published'] : 0
+      # Конвертируем значение чекбокса в integer для BIT поля MySQL
+      published_value = comment_params.has_key?('published') ? comment_params['published'] : 0
+      allowed_params['published'] = published_value.to_i
+      
+      # Debug info
+      puts "DEBUG UPDATE: published exists: #{comment_params.has_key?('published')}, value: #{published_value.inspect} -> #{allowed_params['published']}"
       
       # Автоматически заполняем поле date, если не указано и если у комментария нет даты
       if allowed_params["date"].blank? && @comment.date.blank?
@@ -90,6 +99,9 @@ Rozario::Admin.controllers :comments do
       update_params = allowed_params["date"].present? ? allowed_params : allowed_params.except("date")
       
       if @comment.update_attributes(update_params)
+        # Debug: проверяем что фактически сохранилось
+        @comment.reload
+        puts "DEBUG UPDATE: comment after save: #{@comment.published.inspect} (#{@comment.published.class})"
         flash[:success] = pat(:update_success, :model => 'Comment', :id =>  "#{params[:id]}")
         params[:save_and_continue] ?
           redirect(url(:comments, :index)) :
