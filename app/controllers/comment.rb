@@ -110,7 +110,8 @@ Rozario::App.controllers :feedback do
           :name => user_name,
           :body => params[:msg], 
           :rating => rating.to_f,
-          :order_eight_digit_id => order_id
+          :order_eight_digit_id => order_id,
+          :published => 1  # По умолчанию публикуем новые комментарии
         )
         
         # Отправляем почту с данными авторизованного пользователя
