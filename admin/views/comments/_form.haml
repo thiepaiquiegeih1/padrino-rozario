@@ -56,7 +56,8 @@
 %fieldset.control-group{:class => error ? 'has-error' : ''}
   =f.label "Статус публикации", :class => 'control-label'
   .controls
-    =f.check_box :published, :value => '1', :checked => [1, '1', true].include?(@comment.published)
+    =f.check_box :published, :checked => (@comment.published.to_s == '1' || @comment.published == 1 || @comment.published == true)
+    -# Debug: value=#{@comment.published.inspect}, type=#{@comment.published.class}
     %span.help-inline=error ? f.error_message_on(:published, :class => 'text-error') : 'Опубликовано'
 
 .form-actions
