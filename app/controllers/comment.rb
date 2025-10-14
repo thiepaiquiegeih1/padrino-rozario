@@ -60,6 +60,8 @@ Rozario::App.controllers :feedback do
       # Пагинация для ленивой загрузки - только опубликованные отзывы
       @page = (params[:page] || 1).to_i
       @per_page = 10 # Количество отзывов на страницу
+      
+
       @comments = Comment.published.order('created_at desc').limit(@per_page).offset((@page - 1) * @per_page)
       @total_comments = Comment.published.count
       @has_more = (@page * @per_page) < @total_comments

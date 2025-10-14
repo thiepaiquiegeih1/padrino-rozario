@@ -49,9 +49,13 @@ begin
   method3_count = Comment.where("published = '\\x01'").count
   puts "published = '\\\\x01': #{method3_count} записей"
   
-  # Способ 4: использование нашего scope
-  method4_count = Comment.published.count
-  puts "Comment.published scope: #{method4_count} записей"
+  # Способ 4: простое сравнение с ActiveRecord
+  method4_count = Comment.where(published: 1).count
+  puts "Comment.where(published: 1): #{method4_count} записей"
+  
+  # Способ 5: использование нашего scope (должно совпадать с методом 4)
+  method5_count = Comment.published.count
+  puts "Comment.published scope: #{method5_count} записей"
   
   puts
   puts "=== Результат тестирования ==="

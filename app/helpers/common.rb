@@ -174,3 +174,25 @@ class String
     return text
   end
 end
+# Helper для обработки MySQL BIT полей (скопирован из админки)
+def bit_field_to_bool(value)
+  case value
+  when nil, false
+    false
+  when true, 1
+    true
+  when String
+    # MySQL BIT поле может возвращать строку с битовыми данными
+    return true if value == '1'
+    return true if value.bytes.first == 1 # бинарная единица
+    false
+  when Integer
+    value == 1
+  else
+    # Любое другое значение - проверяем на "truthy"
+    !!value
+  end
+rescue => e
+  # При ошибке - возвращаем false
+  false
+end
