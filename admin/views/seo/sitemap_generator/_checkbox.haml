@@ -1,7 +1,8 @@
 -#coding: utf-8
+- data.build_seo unless data.seo
 -form_for data, url(:"#{title}", :update, :id => data.id), :method => :put, multipart: true do |f|
   =f.fields_for :seo do |s|
     %fieldset.control-group
       .seo-check.index
-        =s.check_box :index, :id => "chk" + data.id.to_s, :class => "chk_index", :data_id => data.id, :data_seo_id => data.seo.id
+        =s.check_box :index, :id => "chk" + data.id.to_s, :class => "chk_index", :data_id => data.id, :data_seo_id => (data.seo ? data.seo.id : 0)
         %label{for: 'chk'+ data.id.to_s}
