@@ -125,6 +125,53 @@
         color: #ffffff;
         background-color: #3498db;
       }
+      .sidebar-accordion {
+        background: none;
+        border: none;
+        width: 100%;
+        text-align: left;
+        padding: 15px 20px;
+        color: #bdc3c7;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        position: relative;
+      }
+      .sidebar-accordion:hover {
+        color: #ecf0f1;
+        background-color: #34495e;
+      }
+      .sidebar-accordion::after {
+        content: '▶';
+        position: absolute;
+        right: 20px;
+        top: 50%;
+        transform: translateY(-50%);
+        transition: transform 0.3s ease;
+        font-size: 12px;
+      }
+      .sidebar-accordion.active::after {
+        transform: translateY(-50%) rotate(90deg);
+      }
+      .sidebar-submenu {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease;
+        background-color: #1a252f;
+      }
+      .sidebar-submenu.open {
+        max-height: 500px;
+      }
+      .sidebar-submenu .sidebar-link {
+        padding: 12px 20px 12px 40px;
+        font-size: 14px;
+        border-bottom: 1px solid #243242;
+      }
+      .sidebar-submenu .sidebar-link:hover {
+        background-color: #243242;
+      }
+      .sidebar-submenu .sidebar-item.active .sidebar-link {
+        background-color: #2980b9;
+      }
       .admin-content {
         min-height: calc(100vh - 60px);
       }
@@ -195,21 +242,32 @@
           %span &times;
       
       %ul.sidebar-menu
-        - menu_entries.each do |project_module|
-          %li{:class => "sidebar-item #{('active' if request.path_info =~ /^#{project_module.path}/)}"}
-            =link_to I18n.t("padrino.admin.menu.#{project_module.name}"), project_module.path('/admin'), :class => 'sidebar-link'
-        %li{:class => "sidebar-item #{'active' if request.path_info =~ /tags/}"}
-          =link_to "Теги", '/admin/tags', :class => 'sidebar-link'
-        %li{:class => "sidebar-item #{'active' if request.path_info =~ /slides/}"}
-          =link_to "Слайды", '/admin/slides', :class => 'sidebar-link'
-        %li{:class => "sidebar-item #{'active' if request.path_info =~ /payment/}"}
-          =link_to "Способы оплаты", '/admin/payment_methods', :class => 'sidebar-link'
-        %li{:class => "sidebar-item #{'active' if request.path_info =~ /seo/}"}
-          =link_to "SEO", '/admin/seo', :class => 'sidebar-link'
-        %li{:class => "sidebar-item #{'active' if request.path_info =~ /comments/}"}
-          =link_to "Комментарии", '/admin/comments', :class => 'sidebar-link'
-        %li{:class => "sidebar-item #{'active' if request.path_info =~ /smiles/}"}
-          =link_to "Отзывы", '/admin/smiles', :class => 'sidebar-link'
+        %li.sidebar-item
+          %button.sidebar-accordion{:type => "button"} Manage
+          .sidebar-submenu
+            - menu_entries.each do |project_module|
+              %li{:class => "sidebar-item #{('active' if request.path_info =~ /^#{project_module.path}/)}"}
+                =link_to I18n.t("padrino.admin.menu.#{project_module.name}"), project_module.path('/admin'), :class => 'sidebar-link'
+            %li{:class => "sidebar-item #{'active' if request.path_info =~ /tags/}"}
+              =link_to "Теги", '/admin/tags', :class => 'sidebar-link'
+            %li{:class => "sidebar-item #{'active' if request.path_info =~ /slides/}"}
+              =link_to "Слайды", '/admin/slides', :class => 'sidebar-link'
+            %li{:class => "sidebar-item #{'active' if request.path_info =~ /payment/}"}
+              =link_to "Способы оплаты", '/admin/payment_methods', :class => 'sidebar-link'
+            %li{:class => "sidebar-item #{'active' if request.path_info =~ /seo/}"}
+              =link_to "SEO", '/admin/seo', :class => 'sidebar-link'
+            %li{:class => "sidebar-item #{'active' if request.path_info =~ /comments/}"}
+              =link_to "Комментарии", '/admin/comments', :class => 'sidebar-link'
+            %li{:class => "sidebar-item #{'active' if request.path_info =~ /smiles/}"}
+              =link_to "Отзывы", '/admin/smiles', :class => 'sidebar-link'
+        
+        %li.sidebar-item
+          %button.sidebar-accordion{:type => "button"} Testing
+          .sidebar-submenu
+            %li.sidebar-item
+              =link_to "Test Suite", '#', :class => 'sidebar-link'
+            %li.sidebar-item
+              =link_to "Debug Panel", '#', :class => 'sidebar-link'
     
     / Main content wrapper
     .admin-wrapper
@@ -307,6 +365,53 @@
             }, 150);
           });
         });
+        
+        // Accordion functionality
+        var accordionButtons = document.querySelectorAll('.sidebar-accordion');
+        accordionButtons.forEach(function(button) {
+          button.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            var submenu = this.nextElementSibling;
+            var isActive = this.classList.contains('active');
+            
+            // Close all other accordions
+            accordionButtons.forEach(function(otherButton) {
+              if (otherButton !== button) {
+                otherButton.classList.remove('active');
+                var otherSubmenu = otherButton.nextElementSibling;
+                if (otherSubmenu) {
+                  otherSubmenu.classList.remove('open');
+                }
+              }
+            });
+            
+            // Toggle current accordion
+            if (isActive) {
+              this.classList.remove('active');
+              if (submenu) {
+                submenu.classList.remove('open');
+              }
+            } else {
+              this.classList.add('active');
+              if (submenu) {
+                submenu.classList.add('open');
+              }
+            }
+          });
+        });
+        
+        // Auto-open accordion if current page is inside
+        var activeSubmenuItems = document.querySelectorAll('.sidebar-submenu .sidebar-item.active');
+        if (activeSubmenuItems.length > 0) {
+          var parentAccordion = activeSubmenuItems[0].closest('.sidebar-item').querySelector('.sidebar-accordion');
+          var parentSubmenu = activeSubmenuItems[0].closest('.sidebar-submenu');
+          if (parentAccordion && parentSubmenu) {
+            parentAccordion.classList.add('active');
+            parentSubmenu.classList.add('open');
+          }
+        }
         
         console.log('Admin sidebar initialized');
       })();
