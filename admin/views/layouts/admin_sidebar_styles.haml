@@ -1,6 +1,7 @@
-/ CSS стили для адаптивной боковой панели
+- # encoding: utf-8
+/ CSS styles for responsive admin sidebar
 :css
-  /* Основная структура */
+  /* Main structure */
   .admin-wrapper {
     display: flex;
     min-height: 100vh;
@@ -11,7 +12,7 @@
     z-index: 1030;
   }
   
-  /* Кнопка гамбургера */
+  /* Hamburger button */
   .navbar-toggle.sidebar-toggle {
     float: left;
     margin-left: 15px;
@@ -42,7 +43,7 @@
     background-color: #333;
   }
   
-  /* Боковая панель */
+  /* Sidebar */
   .admin-sidebar {
     width: 250px;
     background-color: #2c3e50;
@@ -116,7 +117,7 @@
     background-color: #3498db;
   }
   
-  /* Основной контент */
+  /* Main content */
   .admin-content {
     flex: 1;
     margin-left: 250px;
@@ -137,7 +138,7 @@
     z-index: 1010;
   }
   
-  /* Мобильная адаптация */
+  /* Mobile adaptation */
   @media (max-width: 768px) {
     .navbar-toggle.sidebar-toggle {
       display: block;
@@ -171,20 +172,20 @@
     }
   }
   
-  /* Анимация для гладкого перехода */
+  /* Smooth transition animation */
   .admin-sidebar,
   .admin-content {
     transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
   }
   
-  /* Улучшения для маленьких экранов */
+  /* Small screen improvements */
   @media (max-width: 480px) {
     .admin-sidebar {
       width: 280px;
     }
   }
   
-  /* Для планшетов */
+  /* For tablets */
   @media (min-width: 769px) and (max-width: 1024px) {
     .admin-sidebar {
       width: 220px;

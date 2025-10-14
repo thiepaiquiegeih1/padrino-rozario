@@ -16,7 +16,7 @@
 
     =stylesheet_link_tag 'bootstrap', 'redactor', 'bootstrap-select.min', 'application'
     
-    / Подключаем стили адаптивной боковой панели
+    / Include responsive sidebar styles
     =render 'layouts/admin_sidebar_styles'
     =javascript_include_tag 'jquery-1.9.0.min', 'redactor.min', 'redactor.ru', (Padrino.env == :production ? 'bootstrap/bootstrap.min' : %w[bootstrap/bootstrap-affix bootstrap/bootstrap-alert bootstrap/bootstrap-button bootstrap/bootstrap-carousel bootstrap/bootstrap-collapse bootstrap/bootstrap-dropdown bootstrap/bootstrap-tooltip bootstrap/bootstrap-transition bootstrap/bootstrap-typeahead bootstrap/bootstrap-modal bootstrap/bootstrap-popover bootstrap/bootstrap-scrollspy bootstrap/bootstrap-tab]), 'bootstrap-select.min', 'defaults-ru-RU', '/ckeditor2/ckeditor.js', :application
     = javascript_include_tag 'jquery-migrate-1.0.0.js', 'jquery-ui.js', 'chosen.order.jquery.min.js'
@@ -28,11 +28,11 @@
   %script{:src => "//unpkg.com/clipboard@2.0.0/dist/clipboard.min.js"}
   %link{:href => "//unpkg.com/vue-multiselect@2.1.0/dist/vue-multiselect.min.css", :rel => "stylesheet"}/
   %body
-    / Адаптивная навигация с гамбургером
+    / Responsive navigation with hamburger
     %nav.navbar.navbar-fixed-top.admin-navbar
       .navbar-inner
         .container-fluid
-          / Гамбургер кнопка для мобильных устройств
+          / Hamburger button for mobile devices
           %button.navbar-toggle.sidebar-toggle{:type => "button"}
             %span.sr-only Toggle navigation
             %span.icon-bar
@@ -48,12 +48,12 @@
                 =button_to :logout, url(:sessions, :destroy), :method => :delete, :class => 'navbar-nav-form' do
                   =content_tag :button, tag_icon(:off), :type => :submit, :title => pat(:logout), :class => 'navbar-nav-form-link'
 
-    / Основная структура с боковой панелью
+    / Main structure with sidebar
     .admin-wrapper
-      / Боковая панель
+      / Sidebar
       .admin-sidebar
         .sidebar-header
-          %h4 Навигация
+          %h4 Navigation
           %button.sidebar-close.visible-xs{:type => "button"}
             %span &times;
         
@@ -74,10 +74,10 @@
           %li{:class => "sidebar-item #{'active' if request.path_info =~ /smiles/}"}
             =link_to "Отзывы", '/admin/smiles', :class => 'sidebar-link'
       
-      / Затемнение для мобильных устройств
+      / Overlay for mobile devices
       .sidebar-overlay
       
-      / Основной контент
+      / Main content
       .admin-content
         .container-fluid.main
           .main-wrapper
@@ -102,5 +102,5 @@
       var btns = document.querySelectorAll('.copy-tag');
       var clipboard = new ClipboardJS(btns);
     
-    / Подключаем JavaScript для управления боковой панелью
+    / Include sidebar management JavaScript
     =render 'layouts/admin_sidebar_scripts'

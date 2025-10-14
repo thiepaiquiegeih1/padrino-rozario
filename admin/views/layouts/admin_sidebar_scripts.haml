@@ -1,4 +1,5 @@
-/ JavaScript для управления адаптивной боковой панелью
+- # encoding: utf-8
+/ JavaScript for responsive admin sidebar management
 :javascript
   (function() {
     var sidebar = document.querySelector('.admin-sidebar');
@@ -11,21 +12,21 @@
       return;
     }
     
-    // Открытие боковой панели
+    // Open sidebar
     function openSidebar() {
       sidebar.classList.add('sidebar-open');
       overlay.classList.add('active');
       document.body.style.overflow = 'hidden';
     }
     
-    // Закрытие боковой панели
+    // Close sidebar
     function closeSidebar() {
       sidebar.classList.remove('sidebar-open');
       overlay.classList.remove('active');
       document.body.style.overflow = '';
     }
     
-    // Переключение боковой панели
+    // Toggle sidebar
     function toggleSidebar() {
       if (sidebar.classList.contains('sidebar-open')) {
         closeSidebar();
@@ -34,14 +35,14 @@
       }
     }
     
-    // Обработчики событий
+    // Event handlers
     toggleBtn.addEventListener('click', function(e) {
       e.preventDefault();
       e.stopPropagation();
       toggleSidebar();
     });
     
-    // Кнопка закрытия (только на мобильных)
+    // Close button (mobile only)
     if (closeBtn) {
       closeBtn.addEventListener('click', function(e) {
         e.preventDefault();
@@ -50,26 +51,26 @@
       });
     }
     
-    // Закрытие по клику на затемнение
+    // Close on overlay click
     overlay.addEventListener('click', function() {
       closeSidebar();
     });
     
-    // Закрытие по ESC
+    // Close on ESC key
     document.addEventListener('keydown', function(e) {
       if (e.key === 'Escape' && sidebar.classList.contains('sidebar-open')) {
         closeSidebar();
       }
     });
     
-    // Адаптивность - закрываем сайдбар при изменении размера экрана
+    // Responsive - close sidebar on screen resize
     window.addEventListener('resize', function() {
       if (window.innerWidth > 768) {
         closeSidebar();
       }
     });
     
-    // Автозакрытие при навигации на мобильных устройствах
+    // Auto-close on navigation (mobile)
     var sidebarLinks = document.querySelectorAll('.sidebar-link');
     sidebarLinks.forEach(function(link) {
       link.addEventListener('click', function() {
