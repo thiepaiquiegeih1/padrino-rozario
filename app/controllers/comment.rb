@@ -57,11 +57,11 @@ Rozario::App.controllers :feedback do
     if !user_account && REDIS.get(@subdomain.url + ':feedback') && @redis_enable
       REDIS.get @subdomain.url + ':feedback'
     else
-      # Пагинация для ленивой загрузки
+      # Пагинация для ленивой загрузки - только опубликованные отзывы
       @page = (params[:page] || 1).to_i
       @per_page = 10 # Количество отзывов на страницу
-      @comments = Comment.order('created_at desc').limit(@per_page).offset((@page - 1) * @per_page)
-      @total_comments = Comment.count
+      @comments = Comment.published.order('created_at desc').limit(@per_page).offset((@page - 1) * @per_page)
+      @total_comments = Comment.published.count
       @has_more = (@page * @per_page) < @total_comments
       get_seo_data('comments', nil, true)
       page = render 'comment/index'
@@ -171,8 +171,8 @@ Rozario::App.controllers :feedback do
         @page = 1
       end
       
-      @comments = Comment.order('created_at desc').limit(@per_page).offset((@page - 1) * @per_page)
-      @total_comments = Comment.count
+      @comments = Comment.published.order('created_at desc').limit(@per_page).offset((@page - 1) * @per_page)
+      @total_comments = Comment.published.count
       @has_more = (@page * @per_page) < @total_comments
       
       puts "Load more: page=#{@page}, per_page=#{@per_page}, comments_count=#{@comments.count}, has_more=#{@has_more}"
@@ -227,7 +227,7 @@ Rozario::App.controllers :feedback do
   end
 
   get :test do
-    @comments = Comment.all(:order => 'created_at desc')
+    @comments = Comment.published.order('created_at desc')
     get_seo_data('comments', nil, true)
     page = render 'comment/indexxx'
   end
@@ -306,8 +306,8 @@ Rozario::App.controllers :comment do
         raise "Comment model not found"
       end
       
-      @comments = Comment.order('created_at desc').limit(@per_page).offset((@page - 1) * @per_page)
-      @total_comments = Comment.count
+      @comments = Comment.published.order('created_at desc').limit(@per_page).offset((@page - 1) * @per_page)
+      @total_comments = Comment.published.count
       @has_more = (@page * @per_page) < @total_comments
       
       puts "[COMMENT ALIAS] Load more: page=#{@page}, per_page=#{@per_page}, comments_count=#{@comments.count}, has_more=#{@has_more}"

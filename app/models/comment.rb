@@ -14,6 +14,25 @@ class Comment < ActiveRecord::Base
   # Проверка существования заказа
   validate :order_exists_if_provided
   
+  # Scopes для работы с BIT полем published
+  scope :published, -> { where("published = b'1' OR published = 1 OR published = '\\x01'") }
+  scope :unpublished, -> { where("published = b'0' OR published = 0 OR published = '\\x00' OR published IS NULL") }
+  
+  # Helper метод для проверки статуса публикации с учетом особенностей BIT поля
+  def published?
+    # В MySQL BIT(1) может возвращаться как строка "\x01" для 1 и "\x00" для 0
+    # Или как число 1/0, или как булево значение
+    case published
+    when "\x01", 1, true
+      true
+    when "\x00", 0, false, nil
+      false
+    else
+      # Для других случаев пытаемся конвертировать в число
+      published.to_i == 1
+    end
+  end
+  
   private
   
   def order_exists_if_provided
