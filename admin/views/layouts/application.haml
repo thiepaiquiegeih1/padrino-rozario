@@ -244,7 +244,7 @@
       %ul.sidebar-menu
         %li.sidebar-item
           %button.sidebar-accordion{:type => "button"} Manage
-          .sidebar-submenu
+          %ul.sidebar-submenu
             - menu_entries.each do |project_module|
               %li{:class => "sidebar-item #{('active' if request.path_info =~ /^#{project_module.path}/)}"}
                 =link_to I18n.t("padrino.admin.menu.#{project_module.name}"), project_module.path('/admin'), :class => 'sidebar-link'
@@ -263,7 +263,7 @@
         
         %li.sidebar-item
           %button.sidebar-accordion{:type => "button"} Testing
-          .sidebar-submenu
+          %ul.sidebar-submenu
             %li.sidebar-item
               =link_to "Test Suite", '#', :class => 'sidebar-link'
             %li.sidebar-item
