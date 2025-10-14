@@ -299,6 +299,14 @@
               =link_to "GoAccess", '/0197421a-fde3-73b4-b31d-879b52991dfe/goaccess', :class => 'sidebar-link'
             %li.sidebar-item
               =link_to "LightHouse", '/0197421e-68a0-738f-b06d-4174185b05ee/lighthouse', :class => 'sidebar-link'
+        
+        %li.sidebar-item
+          %button.sidebar-accordion{:type => "button"} Database
+          %ul.sidebar-submenu
+            %li.sidebar-item
+              =link_to "Adminer", "https://adminer.#{request.host.split('.')[1..-1].join('.')}/", :class => 'sidebar-link', :target => '_blank'
+            %li.sidebar-item
+              =link_to "phpMyAdmin", '/phpmyadmin', :class => 'sidebar-link', :target => '_blank'
     
     / Main content wrapper
     .admin-wrapper
