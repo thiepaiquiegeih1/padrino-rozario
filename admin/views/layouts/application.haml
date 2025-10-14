@@ -16,17 +16,17 @@
 
     =stylesheet_link_tag 'bootstrap', 'redactor', 'bootstrap-select.min', 'application'
     
-    / Inline responsive sidebar styles
+    / Fixed overlay sidebar styles
     :css
       .admin-wrapper {
-        display: flex;
-        min-height: 100vh;
         padding-top: 60px;
+        min-height: 100vh;
       }
       .admin-navbar {
         z-index: 1030;
       }
       .navbar-toggle.sidebar-toggle {
+        display: block;
         float: left;
         margin-left: 15px;
         margin-right: 15px;
@@ -53,16 +53,20 @@
         background-color: #333;
       }
       .admin-sidebar {
-        width: 250px;
+        width: 280px;
         background-color: #2c3e50;
         color: #ecf0f1;
         position: fixed;
         top: 60px;
-        left: 0;
+        left: -280px;
         height: calc(100vh - 60px);
         overflow-y: auto;
-        transition: transform 0.3s ease;
-        z-index: 1020;
+        transition: left 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+        z-index: 1025;
+        box-shadow: 2px 0 8px rgba(0, 0, 0, 0.15);
+      }
+      .admin-sidebar.sidebar-open {
+        left: 0;
       }
       .sidebar-header {
         padding: 20px 15px;
@@ -76,7 +80,6 @@
         font-weight: 600;
       }
       .sidebar-close {
-        display: none;
         position: absolute;
         top: 15px;
         right: 15px;
@@ -90,6 +93,11 @@
         height: 30px;
         text-align: center;
         line-height: 1;
+        opacity: 0.7;
+        transition: opacity 0.2s ease;
+      }
+      .sidebar-close:hover {
+        opacity: 1;
       }
       .sidebar-menu {
         list-style: none;
@@ -117,10 +125,7 @@
         background-color: #3498db;
       }
       .admin-content {
-        flex: 1;
-        margin-left: 250px;
         min-height: calc(100vh - 60px);
-        transition: margin-left 0.3s ease;
       }
       .sidebar-overlay {
         position: fixed;
@@ -131,50 +136,20 @@
         background-color: rgba(0, 0, 0, 0.5);
         opacity: 0;
         visibility: hidden;
-        transition: all 0.3s ease;
-        z-index: 1010;
-      }
-      @media (max-width: 768px) {
-        .navbar-toggle.sidebar-toggle {
-          display: block;
-        }
-        .admin-sidebar {
-          transform: translateX(-100%);
-        }
-        .admin-sidebar.sidebar-open {
-          transform: translateX(0);
-        }
-        .admin-content {
-          margin-left: 0;
-        }
-        .sidebar-overlay.active {
-          opacity: 1;
-          visibility: visible;
-        }
-        .sidebar-close {
-          display: block !important;
-        }
-      }
-      @media (min-width: 769px) {
-        .navbar-toggle.sidebar-toggle {
-          display: none;
-        }
-      }
-      .admin-sidebar,
-      .admin-content {
         transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+        z-index: 1020;
+      }
+      .sidebar-overlay.active {
+        opacity: 1;
+        visibility: visible;
+      }
+      .sidebar-overlay.active ~ body {
+        overflow: hidden;
       }
       @media (max-width: 480px) {
         .admin-sidebar {
-          width: 280px;
-        }
-      }
-      @media (min-width: 769px) and (max-width: 1024px) {
-        .admin-sidebar {
-          width: 220px;
-        }
-        .admin-content {
-          margin-left: 220px;
+          width: 100%;
+          left: -100%;
         }
       }
     =javascript_include_tag 'jquery-1.9.0.min', 'redactor.min', 'redactor.ru', (Padrino.env == :production ? 'bootstrap/bootstrap.min' : %w[bootstrap/bootstrap-affix bootstrap/bootstrap-alert bootstrap/bootstrap-button bootstrap/bootstrap-carousel bootstrap/bootstrap-collapse bootstrap/bootstrap-dropdown bootstrap/bootstrap-tooltip bootstrap/bootstrap-transition bootstrap/bootstrap-typeahead bootstrap/bootstrap-modal bootstrap/bootstrap-popover bootstrap/bootstrap-scrollspy bootstrap/bootstrap-tab]), 'bootstrap-select.min', 'defaults-ru-RU', '/ckeditor2/ckeditor.js', :application
@@ -207,36 +182,35 @@
                 =button_to :logout, url(:sessions, :destroy), :method => :delete, :class => 'navbar-nav-form' do
                   =content_tag :button, tag_icon(:off), :type => :submit, :title => pat(:logout), :class => 'navbar-nav-form-link'
 
-    / Main structure with sidebar
+    / Overlay for blocking interface when sidebar is open
+    .sidebar-overlay
+    
+    / Fixed sidebar
+    .admin-sidebar
+      .sidebar-header
+        %h4 Navigation
+        %button.sidebar-close{:type => "button", :title => "Закрыть меню"}
+          %span &times;
+      
+      %ul.sidebar-menu
+        - menu_entries.each do |project_module|
+          %li{:class => "sidebar-item #{('active' if request.path_info =~ /^#{project_module.path}/)}"}
+            =link_to I18n.t("padrino.admin.menu.#{project_module.name}"), project_module.path('/admin'), :class => 'sidebar-link'
+        %li{:class => "sidebar-item #{'active' if request.path_info =~ /tags/}"}
+          =link_to "Теги", '/admin/tags', :class => 'sidebar-link'
+        %li{:class => "sidebar-item #{'active' if request.path_info =~ /slides/}"}
+          =link_to "Слайды", '/admin/slides', :class => 'sidebar-link'
+        %li{:class => "sidebar-item #{'active' if request.path_info =~ /payment/}"}
+          =link_to "Способы оплаты", '/admin/payment_methods', :class => 'sidebar-link'
+        %li{:class => "sidebar-item #{'active' if request.path_info =~ /seo/}"}
+          =link_to "SEO", '/admin/seo', :class => 'sidebar-link'
+        %li{:class => "sidebar-item #{'active' if request.path_info =~ /comments/}"}
+          =link_to "Комментарии", '/admin/comments', :class => 'sidebar-link'
+        %li{:class => "sidebar-item #{'active' if request.path_info =~ /smiles/}"}
+          =link_to "Отзывы", '/admin/smiles', :class => 'sidebar-link'
+    
+    / Main content wrapper
     .admin-wrapper
-      / Sidebar
-      .admin-sidebar
-        .sidebar-header
-          %h4 Navigation
-          %button.sidebar-close.visible-xs{:type => "button"}
-            %span &times;
-        
-        %ul.sidebar-menu
-          - menu_entries.each do |project_module|
-            %li{:class => "sidebar-item #{('active' if request.path_info =~ /^#{project_module.path}/)}"}
-              =link_to I18n.t("padrino.admin.menu.#{project_module.name}"), project_module.path('/admin'), :class => 'sidebar-link'
-          %li{:class => "sidebar-item #{'active' if request.path_info =~ /tags/}"}
-            =link_to "Теги", '/admin/tags', :class => 'sidebar-link'
-          %li{:class => "sidebar-item #{'active' if request.path_info =~ /slides/}"}
-            =link_to "Слайды", '/admin/slides', :class => 'sidebar-link'
-          %li{:class => "sidebar-item #{'active' if request.path_info =~ /payment/}"}
-            =link_to "Способы оплаты", '/admin/payment_methods', :class => 'sidebar-link'
-          %li{:class => "sidebar-item #{'active' if request.path_info =~ /seo/}"}
-            =link_to "SEO", '/admin/seo', :class => 'sidebar-link'
-          %li{:class => "sidebar-item #{'active' if request.path_info =~ /comments/}"}
-            =link_to "Комментарии", '/admin/comments', :class => 'sidebar-link'
-          %li{:class => "sidebar-item #{'active' if request.path_info =~ /smiles/}"}
-            =link_to "Отзывы", '/admin/smiles', :class => 'sidebar-link'
-      
-      / Overlay for mobile devices
-      .sidebar-overlay
-      
-      / Main content
       .admin-content
         .container-fluid.main
           .main-wrapper
@@ -317,20 +291,18 @@
           }
         });
         
+        // Auto-close sidebar on window resize
         window.addEventListener('resize', function() {
-          if (window.innerWidth > 768) {
-            closeSidebar();
-          }
+          closeSidebar();
         });
         
+        // Close sidebar when clicking on menu links
         var sidebarLinks = document.querySelectorAll('.sidebar-link');
         sidebarLinks.forEach(function(link) {
           link.addEventListener('click', function() {
-            if (window.innerWidth <= 768) {
-              setTimeout(function() {
-                closeSidebar();
-              }, 100);
-            }
+            setTimeout(function() {
+              closeSidebar();
+            }, 150);
           });
         });
         
