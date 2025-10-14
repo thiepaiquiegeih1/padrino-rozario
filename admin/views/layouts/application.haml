@@ -304,7 +304,7 @@
           %button.sidebar-accordion{:type => "button"} Database
           %ul.sidebar-submenu
             %li.sidebar-item
-              =link_to "Adminer", "https://adminer.#{request.host.split('.')[1..-1].join('.')}/", :class => 'sidebar-link', :target => '_blank'
+              =link_to "Adminer", "https://adminer.#{request.host}/", :class => 'sidebar-link', :target => '_blank'
             %li.sidebar-item
               =link_to "phpMyAdmin", '/phpmyadmin', :class => 'sidebar-link', :target => '_blank'
     
