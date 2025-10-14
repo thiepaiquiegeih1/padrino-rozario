@@ -1,0 +1,85 @@
+/ JavaScript для управления адаптивной боковой панелью
+:javascript
+  (function() {
+    var sidebar = document.querySelector('.admin-sidebar');
+    var overlay = document.querySelector('.sidebar-overlay');
+    var toggleBtn = document.querySelector('.sidebar-toggle');
+    var closeBtn = document.querySelector('.sidebar-close');
+    
+    if (!sidebar || !overlay || !toggleBtn) {
+      console.log('Sidebar elements not found');
+      return;
+    }
+    
+    // Открытие боковой панели
+    function openSidebar() {
+      sidebar.classList.add('sidebar-open');
+      overlay.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+    
+    // Закрытие боковой панели
+    function closeSidebar() {
+      sidebar.classList.remove('sidebar-open');
+      overlay.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+    
+    // Переключение боковой панели
+    function toggleSidebar() {
+      if (sidebar.classList.contains('sidebar-open')) {
+        closeSidebar();
+      } else {
+        openSidebar();
+      }
+    }
+    
+    // Обработчики событий
+    toggleBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      toggleSidebar();
+    });
+    
+    // Кнопка закрытия (только на мобильных)
+    if (closeBtn) {
+      closeBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        closeSidebar();
+      });
+    }
+    
+    // Закрытие по клику на затемнение
+    overlay.addEventListener('click', function() {
+      closeSidebar();
+    });
+    
+    // Закрытие по ESC
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape' && sidebar.classList.contains('sidebar-open')) {
+        closeSidebar();
+      }
+    });
+    
+    // Адаптивность - закрываем сайдбар при изменении размера экрана
+    window.addEventListener('resize', function() {
+      if (window.innerWidth > 768) {
+        closeSidebar();
+      }
+    });
+    
+    // Автозакрытие при навигации на мобильных устройствах
+    var sidebarLinks = document.querySelectorAll('.sidebar-link');
+    sidebarLinks.forEach(function(link) {
+      link.addEventListener('click', function() {
+        if (window.innerWidth <= 768) {
+          setTimeout(function() {
+            closeSidebar();
+          }, 100);
+        }
+      });
+    });
+    
+    console.log('Admin sidebar initialized');
+  })();

@@ -15,6 +15,9 @@
 
 
     =stylesheet_link_tag 'bootstrap', 'redactor', 'bootstrap-select.min', 'application'
+    
+    / Подключаем стили адаптивной боковой панели
+    =render 'layouts/admin_sidebar_styles'
     =javascript_include_tag 'jquery-1.9.0.min', 'redactor.min', 'redactor.ru', (Padrino.env == :production ? 'bootstrap/bootstrap.min' : %w[bootstrap/bootstrap-affix bootstrap/bootstrap-alert bootstrap/bootstrap-button bootstrap/bootstrap-carousel bootstrap/bootstrap-collapse bootstrap/bootstrap-dropdown bootstrap/bootstrap-tooltip bootstrap/bootstrap-transition bootstrap/bootstrap-typeahead bootstrap/bootstrap-modal bootstrap/bootstrap-popover bootstrap/bootstrap-scrollspy bootstrap/bootstrap-tab]), 'bootstrap-select.min', 'defaults-ru-RU', '/ckeditor2/ckeditor.js', :application
     = javascript_include_tag 'jquery-migrate-1.0.0.js', 'jquery-ui.js', 'chosen.order.jquery.min.js'
     =javascript_include_tag 'contacts.js'
@@ -25,33 +28,62 @@
   %script{:src => "//unpkg.com/clipboard@2.0.0/dist/clipboard.min.js"}
   %link{:href => "//unpkg.com/vue-multiselect@2.1.0/dist/vue-multiselect.min.css", :rel => "stylesheet"}/
   %body
-    .navbar.navbar-fixed-top
+    / Адаптивная навигация с гамбургером
+    %nav.navbar.navbar-fixed-top.admin-navbar
       .navbar-inner
-        .container
+        .container-fluid
+          / Гамбургер кнопка для мобильных устройств
+          %button.navbar-toggle.sidebar-toggle{:type => "button"}
+            %span.sr-only Toggle navigation
+            %span.icon-bar
+            %span.icon-bar
+            %span.icon-bar
+          
           =link_to 'Rozario', url(:base_index), :class => 'navbar-brand', :title => 'Rozario Admin'
+          
           - if current_account
-            %ul.nav.pull-right
+            %ul.nav.navbar-nav.pull-right
               %li.navbar-edit-account=link_to tag_icon(:user), url(:accounts, :edit, :id => current_account.id), :title => pat(:profile), :class => 'navbar-nav-link'
               %li.navbar-logout
                 =button_to :logout, url(:sessions, :destroy), :method => :delete, :class => 'navbar-nav-form' do
                   =content_tag :button, tag_icon(:off), :type => :submit, :title => pat(:logout), :class => 'navbar-nav-form-link'
 
-          %ul.nav.pull-left
-            - menu_entries.each do |project_module|
-              %li{:class => "navbar-module #{('active' if request.path_info =~ /^#{project_module.path}/)}"}
-                =link_to I18n.t("padrino.admin.menu.#{project_module.name}"), project_module.path('/admin')
-            %li{:class => "navbar-module #{'active' if request.path_info =~ /tags/}"}
-              =link_to "Теги", '/admin/tags'
-            %li{:class => "navbar-module #{'active' if request.path_info =~ /slides/}"}
-              =link_to "Слайды", '/admin/slides'
-            %li{:class => "navbar-module #{'active' if request.path_info =~ /payment/}"}
-              =link_to "Способы оплаты", '/admin/payment_methods'
-
-    .container.main
-      .main-wrapper
-        =[:error, :warning, :success, :notice].map { |type| flash_tag(type, :class => "alert alert-#{type} fade in", :bootstrap => true) }.join.html_safe
-        .row=yield
-        .main-wrapper-push
+    / Основная структура с боковой панелью
+    .admin-wrapper
+      / Боковая панель
+      .admin-sidebar
+        .sidebar-header
+          %h4 Навигация
+          %button.sidebar-close.visible-xs{:type => "button"}
+            %span &times;
+        
+        %ul.sidebar-menu
+          - menu_entries.each do |project_module|
+            %li{:class => "sidebar-item #{('active' if request.path_info =~ /^#{project_module.path}/)}"}
+              =link_to I18n.t("padrino.admin.menu.#{project_module.name}"), project_module.path('/admin'), :class => 'sidebar-link'
+          %li{:class => "sidebar-item #{'active' if request.path_info =~ /tags/}"}
+            =link_to "Теги", '/admin/tags', :class => 'sidebar-link'
+          %li{:class => "sidebar-item #{'active' if request.path_info =~ /slides/}"}
+            =link_to "Слайды", '/admin/slides', :class => 'sidebar-link'
+          %li{:class => "sidebar-item #{'active' if request.path_info =~ /payment/}"}
+            =link_to "Способы оплаты", '/admin/payment_methods', :class => 'sidebar-link'
+          %li{:class => "sidebar-item #{'active' if request.path_info =~ /seo/}"}
+            =link_to "SEO", '/admin/seo', :class => 'sidebar-link'
+          %li{:class => "sidebar-item #{'active' if request.path_info =~ /comments/}"}
+            =link_to "Комментарии", '/admin/comments', :class => 'sidebar-link'
+          %li{:class => "sidebar-item #{'active' if request.path_info =~ /smiles/}"}
+            =link_to "Отзывы", '/admin/smiles', :class => 'sidebar-link'
+      
+      / Затемнение для мобильных устройств
+      .sidebar-overlay
+      
+      / Основной контент
+      .admin-content
+        .container-fluid.main
+          .main-wrapper
+            =[:error, :warning, :success, :notice].map { |type| flash_tag(type, :class => "alert alert-#{type} fade in", :bootstrap => true) }.join.html_safe
+            =yield
+            .main-wrapper-push
 
     %footer
       .footer-wrapper.container
@@ -69,3 +101,6 @@
     :javascript
       var btns = document.querySelectorAll('.copy-tag');
       var clipboard = new ClipboardJS(btns);
+    
+    / Подключаем JavaScript для управления боковой панелью
+    =render 'layouts/admin_sidebar_scripts'
