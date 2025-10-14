@@ -6,6 +6,19 @@ class Smile < ActiveRecord::Base
   accepts_nested_attributes_for :seo, allow_destroy: true
   validates_presence_of :title
   validates_uniqueness_of :slug
+  
+  # Валидация номера заказа (если указан)
+  validates_numericality_of :order_eight_digit_id, 
+    :only_integer => true, 
+    :greater_than => 9_999_999, 
+    :less_than => 100_000_000,
+    :allow_blank => true
+    
+  # Проверка существования заказа
+  validate :order_exists_if_provided
+  
+  # Связь с заказом через eight_digit_id
+  belongs_to :order, foreign_key: :order_eight_digit_id, primary_key: :eight_digit_id
 
 	mount_uploader :images, UploaderSmile
 
@@ -44,3 +57,13 @@ class Smile < ActiveRecord::Base
     end
   end
 end
+
+  private
+  
+  def order_exists_if_provided
+    return if order_eight_digit_id.blank?
+    
+    unless Order.exists?(:eight_digit_id => order_eight_digit_id)
+      errors.add(:order_eight_digit_id, "Заказ с номером #{order_eight_digit_id} не найден")
+    end
+  end

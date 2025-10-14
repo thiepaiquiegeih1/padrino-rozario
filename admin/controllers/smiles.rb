@@ -29,8 +29,15 @@ Rozario::Admin.controllers :smiles do
 
   post :create do
     json_order = params[:smile][:order]
+    smile_params = params[:smile]
+    
+    # Разрешаем необходимые параметры, включая новое поле order_eight_digit_id
+    allowed_params = smile_params.select { |k, v| 
+      ['title', 'slug', 'date', 'body', 'images', 'rating', 'alt', 'smile_text', 'sidebar', 'order_eight_digit_id', 'seo_attributes'].include?(k) 
+    }
+    
     hash = {}
-    @smile = Smile.new(params[:smile].except("order"))
+    @smile = Smile.new(allowed_params)
     @smile[:slug] = @smile[:title].to_lat unless @smile[:slug].present?
     json_order[:products_names].each.with_index do |j, i|
       hash[i] = [["id", j[1].split(' - ')[0]], ["complect", json_order[:products_components][i.to_s]]].to_h if j[1].present?
@@ -77,15 +84,22 @@ Rozario::Admin.controllers :smiles do
     json_order = params[:smile][:order]
     @title = pat(:update_title, :model => "smile #{params[:id]}")
     @smile = Smile.find(params[:id])
+    smile_params = params[:smile]
+    
+    # Разрешаем необходимые параметры, включая новое поле order_eight_digit_id
+    allowed_params = smile_params.select { |k, v| 
+      ['title', 'slug', 'date', 'body', 'images', 'rating', 'alt', 'smile_text', 'sidebar', 'order_eight_digit_id', 'seo_attributes'].include?(k) 
+    }
+    
     hash = {}
     if json_order
       json_order[:products_names].each.with_index do |j, i|
         hash[i] = [["id", j[1].split(' - ')[0]], ["complect", json_order[:products_components][i.to_s]]].to_h if j[1].present?
       end
-      params[:smile][:json_order] = hash.to_json
+      allowed_params[:json_order] = hash.to_json
     end
     if @smile
-      if @smile.update_attributes(params[:smile].except("order"))
+      if @smile.update_attributes(allowed_params)
         flash[:success] = pat(:update_success, :model => 'Smile', :id =>  "#{params[:id]}")
         params[:save_and_continue] ?
           redirect(url(:smiles, :index)) :

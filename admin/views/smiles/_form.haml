@@ -12,6 +12,17 @@
     =f.text_field :slug, :class => 'input-xlarge input-with-feedback', :autofocus => true
     %span.help-inline=error ? f.error_message_on(:slug, :class => 'text-error') : 'URI (по-умолчанию транслитерация поля title, повторения недопустимы)'
 
+-# Поле номера заказа - добавлено
+- error = @smile.errors.include?(:order_eight_digit_id)
+%fieldset.control-group{:class => error ? 'has-error' : ''}
+  =f.label "Номер заказа", :class => 'control-label'
+  .controls
+    =f.text_field :order_eight_digit_id, type: "number", :class => 'input-xlarge input-with-feedback', placeholder: "8-значный номер заказа (необязательно)"
+    %span.help-inline=error ? f.error_message_on(:order_eight_digit_id, :class => 'text-error') : 'Номер заказа (необязательно)'
+    - if @smile.order_eight_digit_id.present?
+      %br
+      %small.text-info= "Заказ найден: #{@smile.order&.useraccount&.name || 'Данные заказа недоступны'}"
+
 - error = @smile.errors.include?(:date)
 %fieldset.control-group{:class => error ? 'has-error' : ''}
   =f.label "Дата", :class => 'control-label'
@@ -268,3 +279,90 @@
       }
     },
   });
+
+:javascript
+  // Автозаполнение информации о заказе при вводе номера заказа
+  (function() {
+    var orderIdField = document.getElementById('smile_order_eight_digit_id');
+    
+    if (!orderIdField) {
+      console.log('Поле номера заказа не найдено');
+      return;
+    }
+    
+    // Функция для запроса данных заказа
+    function fetchOrderData(orderId) {
+      if (!orderId || orderId.length !== 8) {
+        return;
+      }
+      
+      console.log('Запрашиваем данные для заказа:', orderId);
+      
+      var xhr = new XMLHttpRequest();
+      xhr.open('GET', '/api/order_info/' + orderId, true);
+      xhr.setRequestHeader('Accept', 'application/json');
+      
+      xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4) {
+          if (xhr.status === 200) {
+            try {
+              var response = JSON.parse(xhr.responseText);
+              console.log('Ответ сервера:', response);
+              
+              // Показываем информацию о заказе
+              var helpBlock = orderIdField.parentNode.querySelector('.help-inline');
+              if (helpBlock && response.customer_name) {
+                helpBlock.innerHTML = 'Заказ найден: ' + response.customer_name + 
+                                     ' (' + response.order_date + ', ' + response.city + ')';
+                helpBlock.style.color = '#28a745';
+              }
+            } catch (e) {
+              console.error('Ошибка парсинга JSON:', e);
+              showError('Ошибка обработки ответа сервера');
+            }
+          } else if (xhr.status === 404) {
+            showError('Заказ с данным номером не найден');
+          } else if (xhr.status === 400) {
+            showError('Некорректный номер заказа (должен быть 8-значным)');
+          } else {
+            showError('Ошибка при получении данных заказа');
+          }
+        }
+      };
+      
+      xhr.onerror = function() {
+        showError('Ошибка сетевого соединения');
+      };
+      
+      xhr.send();
+    }
+    
+    // Функция для отображения ошибок
+    function showError(message) {
+      console.log('Ошибка:', message);
+      var helpBlock = orderIdField.parentNode.querySelector('.help-inline');
+      if (helpBlock) {
+        helpBlock.innerHTML = message;
+        helpBlock.style.color = '#dc3545';
+      }
+    }
+    
+    // Обработчик события потери фокуса
+    orderIdField.addEventListener('blur', function() {
+      var orderId = this.value.trim();
+      
+      if (orderId === '') {
+        // Очищаем справочную информацию если поле пустое
+        var helpBlock = this.parentNode.querySelector('.help-inline');
+        if (helpBlock) {
+          helpBlock.innerHTML = 'Номер заказа (необязательно)';
+          helpBlock.style.color = '';
+        }
+        return;
+      }
+      
+      fetchOrderData(orderId);
+    });
+    
+    console.log('Автозаполнение информации о заказе для smiles инициализировано');
+  })();
