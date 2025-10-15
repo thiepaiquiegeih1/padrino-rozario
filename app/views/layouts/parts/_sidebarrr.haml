@@ -55,19 +55,18 @@
         = link_to 'Показать все'.html_safe, host_url('/smiles/'), rel: 'nofollow'
     .col-md-12.hidden-xs.hidden-sm
       %section.feedback{style:"margin-left: 30px"}
-        - @cmts = Comment.published.order('created_at desc')
-        %a.ttl{href: '/feedback', rel: 'nofollow'}
-        %img{ src: '/uploads/o%20nas/fedbacks.png', style: 'width: 100%', loading: "lazy" }
-        %a{href: '/feedback#comment-form', style: 'width: 100%; border-radius: 2px; padding: 8px; background: #ef845b; color: #fff; display: block; text-align: center;', rel: 'nofollow'} Оставить отзыв
-        %br
-        - @comment = @cmts[0]
-        = partial 'layouts/parts/sidebarrr/comment'
-        %hr
-        - @comment = @cmts[1]
-        = partial 'layouts/parts/sidebarrr/comment'
-        %hr
-        - @comment = @cmts[2]
-        = partial 'layouts/parts/sidebarrr/comment'
+        - @cmts = Comment.published.order('created_at desc').limit(3)
+        - if @cmts.any?
+          %a.ttl{href: '/feedback', rel: 'nofollow'}
+          %img{ src: '/uploads/o%20nas/fedbacks.png', style: 'width: 100%', loading: "lazy" }
+          %a{href: '/feedback#comment-form', style: 'width: 100%; border-radius: 2px; padding: 8px; background: #ef845b; color: #fff; display: block; text-align: center;', rel: 'nofollow'} Оставить отзыв
+          %br
+          - @cmts.each_with_index do |comment, index|
+            - if comment
+              - @comment = comment
+              = partial 'layouts/parts/sidebarrr/comment'
+              - unless index == @cmts.length - 1
+                %hr
         %hr
         = link_to 'Показать все'.html_safe, host_url('/feedback')
         -# Schema.org Reviews markup for sidebar

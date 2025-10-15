@@ -1,41 +1,29 @@
 ﻿.row.colored
   .hidden-lg.hidden-md.col-xs-12.col-sm-12
-    - @cmts = Comment.published.order('created_at desc')
-    - comment = @cmts[0]
-    %section.feedback{style:"text-align: left; padding: 8px; background: #FAF2E9; border-radius: 8px; margin-bottom: 24px;"}
-      %a.ttl{href: '/feedback', rel: 'nofollow'}
-        / %h2{style: 'color: #000; text-align: center;'} Впечатления клиентов
+    - @cmts = Comment.published.order('created_at desc').limit(3)
+    - if @cmts.any?
+      %section.feedback{style:"text-align: left; padding: 8px; background: #FAF2E9; border-radius: 8px; margin-bottom: 24px;"}
+        %a.ttl{href: '/feedback', rel: 'nofollow'}
+          / %h2{style: 'color: #000; text-align: center;'} Впечатления клиентов
 
-      /%div{style:'text-align:center'}
-      /  %a.btn{href: '/feedback#comment-form', style: 'font-size: 16px; font-weight: bold;'} Оставить отзыв
+        /%div{style:'text-align:center'}
+        /  %a.btn{href: '/feedback#comment-form', style: 'font-size: 16px; font-weight: bold;'} Оставить отзыв
 
-      %img{ src: '/uploads/o%20nas/fedbacks.png', style: 'width: 100%', loading: "lazy" }
+        %img{ src: '/uploads/o%20nas/fedbacks.png', style: 'width: 100%', loading: "lazy" }
 
-      %a{href: '/feedback#comment-form', style: 'width: 100%; border-radius: 2px; padding: 8px; background: #ef845b; color: #fff; display: block; text-align: center;', rel: 'nofollow'} Оставить отзыв
+        %a{href: '/feedback#comment-form', style: 'width: 100%; border-radius: 2px; padding: 8px; background: #ef845b; color: #fff; display: block; text-align: center;', rel: 'nofollow'} Оставить отзыв
 
-      %br
-
-      %article
-        %b.name= comment.name
         %br
-        - comment.date.present? ? d = comment.date.strftime("%d.%m.%Y") : d = comment.created_at.strftime("%d.%m.%Y")
-        %span.date= d
-        .body!= comment.body
-      %hr
-      - comment = @cmts[1]
-      %article
-        %b.name= comment.name
-        %br
-        - comment.date.present? ? d = comment.date.strftime("%d.%m.%Y") : d = comment.created_at.strftime("%d.%m.%Y")
-        %span.date= d
-        .body!= comment.body
-      %hr
-      - comment = @cmts[2]
-      %article
-        %b.name= comment.name
-        %br
-        - comment.date.present? ? d = comment.date.strftime("%d.%m.%Y") : d = comment.created_at.strftime("%d.%m.%Y")
-        %span.date= d
-        .body!= comment.body
-      %hr
-      = link_to 'Показать все'.html_safe, host_url('/feedback'), rel: 'nofollow'
+
+        - @cmts.each_with_index do |comment, index|
+          - if comment
+            %article
+              %b.name= comment.name
+              %br
+              - comment.date.present? ? d = comment.date.strftime("%d.%m.%Y") : d = comment.created_at.strftime("%d.%m.%Y")
+              %span.date= d
+              .body!= comment.body
+            - unless index == @cmts.length - 1
+              %hr
+        %hr
+        = link_to 'Показать все'.html_safe, host_url('/feedback'), rel: 'nofollow'
