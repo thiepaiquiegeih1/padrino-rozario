@@ -1,6 +1,6 @@
 ﻿.row.colored
   .hidden-lg.hidden-md.col-xs-12.col-sm-12
-    - @cmts = Comment.all(:order => 'created_at desc')
+    - @cmts = Comment.published.order('created_at desc')
     - comment = @cmts[0]
     %section.feedback{style:"text-align: left; padding: 8px; background: #FAF2E9; border-radius: 8px; margin-bottom: 24px;"}
       %a.ttl{href: '/feedback', rel: 'nofollow'}

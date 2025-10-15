@@ -1,4 +1,6 @@
 # encoding: utf-8
+require_relative '../helpers/common.rb'
+
 class Comment < ActiveRecord::Base
   
   # Связь с заказом через eight_digit_id
@@ -15,19 +17,12 @@ class Comment < ActiveRecord::Base
   validate :order_exists_if_provided
   
   # Scopes для работы с BIT полем published
-  # Пробуем самый простой подход
   scope :published, -> { where(published: 1) }
   scope :unpublished, -> { where(published: 0) }
   
-  # Альтернативные scopes для тестирования
-  scope :published_bit, -> { where("published = b'1'") }
-  scope :published_hex, -> { where("published = '\\x01'") }
-  scope :published_simple, -> { where(published: 1) }
-  
   # Helper метод для проверки статуса публикации
   def published?
-    # Используем проверенный helper из админки
-    require File.expand_path('../../helpers/common.rb', __FILE__) unless defined?(bit_field_to_bool)
+    # Используем проверенный helper из common.rb
     bit_field_to_bool(published)
   end
   

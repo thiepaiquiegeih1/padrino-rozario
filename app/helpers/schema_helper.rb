@@ -838,8 +838,8 @@ end
 
   # Generate comprehensive reviews Schema.org JSON-LD markup
   def generate_reviews_schema(comments = nil)
-    # Use passed comments or get default comments
-    comments ||= Comment.all(order: 'created_at desc')
+    # Use passed comments or get default published comments
+    comments ||= Comment.published.order('created_at desc')
     
     return "" if blank?(comments) || comments.empty?
     
@@ -901,8 +901,8 @@ end
   
   # Generate reviews schema for sidebar (limited to 3 reviews)
   def generate_sidebar_reviews_schema(comments = nil)
-    # Get only first 3 comments for sidebar
-    comments ||= Comment.all(order: 'created_at desc').limit(3)
+    # Get only first 3 published comments for sidebar
+    comments ||= Comment.published.order('created_at desc').limit(3)
     generate_reviews_schema(comments)
   end
 

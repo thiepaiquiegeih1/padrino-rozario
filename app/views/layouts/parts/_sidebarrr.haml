@@ -55,7 +55,7 @@
         = link_to 'Показать все'.html_safe, host_url('/smiles/'), rel: 'nofollow'
     .col-md-12.hidden-xs.hidden-sm
       %section.feedback{style:"margin-left: 30px"}
-        - @cmts = Comment.all(:order => 'created_at desc')
+        - @cmts = Comment.published.order('created_at desc')
         %a.ttl{href: '/feedback', rel: 'nofollow'}
         %img{ src: '/uploads/o%20nas/fedbacks.png', style: 'width: 100%', loading: "lazy" }
         %a{href: '/feedback#comment-form', style: 'width: 100%; border-radius: 2px; padding: 8px; background: #ef845b; color: #fff; display: block; text-align: center;', rel: 'nofollow'} Оставить отзыв
@@ -73,7 +73,7 @@
         -# Schema.org Reviews markup for sidebar
         = generate_sidebar_reviews_schema(@cmts.first(3))
         
-        - count = 0; summ = 0; for x in Comment.all; summ += x.rating; count += 1; end; agrgtn = summ / count
+        - count = 0; summ = 0; for x in Comment.published; summ += x.rating; count += 1; end; agrgtn = summ / count
         %div{:itemscope => 'itemscope', :itemtype => 'http://schema.org/AggregateRating'}
           %div{itemprop: "itemReviewed", itemscope: 'itemscope', itemtype: "http://schema.org/LocalBusiness"}
             %meta{content: "Цветочный центр Розарио", itemprop: "name"}/
