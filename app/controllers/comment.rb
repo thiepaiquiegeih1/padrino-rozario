@@ -186,7 +186,7 @@ Rozario::App.controllers :feedback do
           begin
             date = comment.date.present? ? comment.date.strftime("%d.%m.%Y") : comment.created_at.strftime("%d.%m.%Y")
             rating_stars = '★' * comment.rating.to_i + '☆' * (5 - comment.rating.to_i)
-            order_info = comment.order_eight_digit_id.present? ? "<div class='order-info' style='font-size: 12px; color: #666; margin: 4px 0;'><small>Отзыв к заказу #{comment.order_eight_digit_id}</small></div>" : ''
+            order_info = comment.order_eight_digit_id.present? ? "<div class='order-info' style='font-size: 12px; color: #666; margin: 4px 0;'><small>Отзыв к заказу № #{comment.order_eight_digit_id}</small></div>" : ''
             
             comments_html += "<article class='comment-item' style='padding: 8px 0;' itemscope='' itemtype='http://schema.org/Rating'>
               <h3 class='name'>#{comment.name}</h3>
@@ -320,7 +320,7 @@ Rozario::App.controllers :comment do
         begin
           date = comment.date.present? ? comment.date.strftime("%d.%m.%Y") : comment.created_at.strftime("%d.%m.%Y")
           rating_stars = '★' * comment.rating.to_i + '☆' * (5 - comment.rating.to_i)
-          order_info = comment.order_eight_digit_id.present? ? "<div class='order-info' style='font-size: 12px; color: #666; margin: 4px 0;'><small>Отзыв к заказу #{comment.order_eight_digit_id}</small></div>" : ''
+          order_info = comment.order_eight_digit_id.present? ? "<div class='order-info' style='font-size: 12px; color: #666; margin: 4px 0;'><small>Отзыв к заказу № #{comment.order_eight_digit_id}</small></div>" : ''
           
           comments_html += "<article class='comment-item' style='padding: 8px 0;' itemscope='' itemtype='http://schema.org/Rating'>
              <h3 class='name'>#{comment.name}</h3>
