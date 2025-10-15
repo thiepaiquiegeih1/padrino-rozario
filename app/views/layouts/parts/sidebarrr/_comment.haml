@@ -12,6 +12,9 @@
   %meta{:itemprop => 'datePublished', :content => "#{date.to_time.iso8601}"}
   %br
   %span.date=date
+  - if @comment.order_eight_digit_id.present?
+    .order-info{style: "font-size: 12px; color: #666; margin: 4px 0;"}
+      %small Отзыв к заказу № #{@comment.order_eight_digit_id}
   .body{:itemprop => 'description'}!=@comment.body
   %div
   %span.star-rating
