@@ -205,6 +205,9 @@ def get_seo_data(page, id = nil, index = false)
     def_seo &&  def_seo[:h1].present? ? @seo[:h1] = def_seo[:h1]  :
     all_seo &&  all_seo[:h1].present? ? @seo[:h1] = all_seo[:h1]  : ''
   end
+  
+  # Process variables for all SEO fields
+  @seo = wrap_seo_params(@seo)
 end
   # Generate custom title for smiles pages
   # Format: «[Product Name]» – фото доставки, [Date]

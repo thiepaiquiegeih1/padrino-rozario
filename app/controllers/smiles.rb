@@ -71,7 +71,8 @@ Rozario::App.controllers :smiles do
     end
 
     # Load SEO data and generate custom title for smiles pages
-    get_seo_data('smiles', Smile.find_by_id(@id).seo_id) if Smile.find_by_id(@id)
+    @smile = Smile.find_by_id(@id)
+    get_seo_data('smiles', @smile.seo_id) if @smile
     custom_title = generate_smile_title(@id)
     @seo[:title] = custom_title if custom_title
     
@@ -144,8 +145,9 @@ Rozario::App.controllers :smiles do
       end
       i += 1
     end
-    "https://" + request.env['HTTP_HOST'] +  '/smiles/' + Smile.find_by_id(@id).slug if Smile.find_by_id(@id).slug
-    get_seo_data('smiles', Smile.find_by_id(@id).seo_id)
+    @smile = Smile.find_by_id(@id)
+    "https://" + request.env['HTTP_HOST'] +  '/smiles/' + @smile.slug if @smile && @smile.slug
+    get_seo_data('smiles', @smile.seo_id) if @smile
     
     # Generate custom SEO data for smiles pages
     custom_title = generate_smile_title(@id)
