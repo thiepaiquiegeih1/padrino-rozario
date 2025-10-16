@@ -8,7 +8,7 @@ Rozario::App.helpers do
     known_inserts = {}
     #insert params by id
     result_hash.each_value do |v|
-      next if v.nil? || v.class == UploaderOg || v.class == UploaderTwitter
+      next if v.nil? || v.class == UploaderOg || v.class == UploaderTwitter || !v.is_a?(String)
       v.scan(/%pattern\d+%/i).each do |entry|
 
         id = entry.match(/\d+/)[0].to_s.to_i
@@ -26,7 +26,7 @@ Rozario::App.helpers do
     # @subdomain = Subdomain.all.first
     if @subdomain
       result_hash.each_value do |v|
-        next if v.nil? || v.class == UploaderOg || v.class == UploaderTwitter
+        next if v.nil? || v.class == UploaderOg || v.class == UploaderTwitter || !v.is_a?(String)
         v.gsub!(/%city%/, "#{@subdomain.city}")
         v.gsub!(/%in_city%/, "в #{@subdomain.city}")
         v.gsub!(/%suffix%/, "#{@subdomain.suffix}")
@@ -80,7 +80,7 @@ Rozario::App.helpers do
     # Special variables for smiles only
     if @smile
       result_hash.each_value do |v|
-        next if v.nil? || v.class == UploaderOg || v.class == UploaderTwitter
+        next if v.nil? || v.class == UploaderOg || v.class == UploaderTwitter || !v.is_a?(String) || !v.is_a?(String) || !v.is_a?(String)
         
         # %customer_name% - Имя клиента
         customer_name = @smile.customer_name || "Покупатель"
@@ -115,7 +115,7 @@ Rozario::App.helpers do
 
     # raise result_hash.inspect
     result_hash.each_value do |v|
-      next if v.nil? || v.class == UploaderOg || v.class == UploaderTwitter
+      next if v.nil? || v.class == UploaderOg || v.class == UploaderTwitter || !v.is_a?(String)
       v.scan(/%\w+%/).uniq.each do |pattern|
         slug = pattern.gsub('%', '')
         string_to_replace = ''
