@@ -39,7 +39,7 @@ Rozario::App.helpers do
 
     if @products
       result_hash.each_value do |v|
-        next if v.nil? || v.class == UploaderOg || v.class == UploaderTwitter || @products.kind_of?(Array)
+        next if v.nil? || v.class == UploaderOg || v.class == UploaderTwitter || !v.is_a?(String) || @products.kind_of?(Array)
         v.gsub!(/%h%/, "#{@products.header}")
       end
     end
@@ -58,7 +58,7 @@ Rozario::App.helpers do
       categories = @product.categories.map(&:title).map(&:strip).uniq.join(', ')
       tags = @product.tags.map(&:title).map(&:strip).uniq.join(', ')
       result_hash.each_value do |v|
-        next if v.nil? || v.class == UploaderOg || v.class == UploaderTwitter || @product.kind_of?(Array)
+        next if v.nil? || v.class == UploaderOg || v.class == UploaderTwitter || !v.is_a?(String) || @product.kind_of?(Array)
         v.gsub!(/%categories%/, "#{categories}")
         v.gsub!(/%tags%/, "#{tags}")
       end
@@ -66,7 +66,7 @@ Rozario::App.helpers do
 
     if @article || @category || @news || @smile || @product || @products
       result_hash.each_value do |v|
-        next if v.nil? || v.class == UploaderOg || v.class == UploaderTwitter|| @news.kind_of?(Array)
+        next if v.nil? || v.class == UploaderOg || v.class == UploaderTwitter || !v.is_a?(String) || @news.kind_of?(Array)
         v.gsub!(/%header%/, "#{@article.title}") if @article
         v.gsub!(/%header%/, "#{@category.title}") if @category
         v.gsub!(/%header%/, "#{@news.title}") if @news
@@ -80,7 +80,7 @@ Rozario::App.helpers do
     # Special variables for smiles only
     if @smile
       result_hash.each_value do |v|
-        next if v.nil? || v.class == UploaderOg || v.class == UploaderTwitter || !v.is_a?(String) || !v.is_a?(String) || !v.is_a?(String)
+        next if v.nil? || v.class == UploaderOg || v.class == UploaderTwitter || !v.is_a?(String)
         
         # %customer_name% - Имя клиента
         customer_name = @smile.customer_name || "Покупатель"
