@@ -150,7 +150,7 @@
 .dropup.tags-info
   %a{"data-toggle" => "dropdown", :href => "#"}
     %i{:class => "icon-info-sign", :'data-toggle' => "tooltip", :'data-placement'=> "left", :title => "Доступные теги для seo блока"}
-  %ul.dropdown-menu{"aria-labelledby" => "dLabel", :role => "menu"}
+  %ul.dropdown-menu{"aria-labelledby" => "dLabel", :role => "menu", :style => "max-height: none; overflow-y: visible; min-width: 280px;"}
     %li{:onclick => "copyToClipboard('%city%')", :'data-toggle' => "tooltip", :'data-placement'=> "left", :title => "Нажмите чтобы копировать %city%"}
       %strong %city% 
       \- название города (пр.: Мурманск)
@@ -282,3 +282,44 @@
         }
       });
     });
+
+
+:css
+  /* Fix for tags-info dropdown height to show all items */
+  .dropup.tags-info .dropdown-menu {
+    max-height: none !important;
+    overflow-y: visible !important;
+    min-width: 300px !important;
+    padding: 10px 0 !important;
+  }
+  
+  .dropup.tags-info .dropdown-menu li {
+    padding: 3px 20px !important;
+    white-space: nowrap !important;
+    font-size: 13px !important;
+    line-height: 1.4 !important;
+  }
+  
+  .dropup.tags-info .dropdown-menu li:hover {
+    background-color: #f5f5f5 !important;
+    cursor: pointer !important;
+  }
+  
+  .dropup.tags-info .dropdown-menu strong {
+    color: #337ab7 !important;
+    font-weight: bold !important;
+  }
+  
+  /* Better positioning for dropup */
+  .dropup.tags-info {
+    position: relative !important;
+  }
+  
+  .dropup.tags-info .dropdown-menu {
+    position: absolute !important;
+    bottom: 100% !important;
+    left: 0 !important;
+    margin-bottom: 2px !important;
+    border-radius: 6px !important;
+    box-shadow: 0 -6px 12px rgba(0,0,0,.175) !important;
+  }
