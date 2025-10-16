@@ -171,6 +171,23 @@
       %strong %header% 
       \- заголовок страницы (для smiles - название товара)
 
+    - if defined?(data) && data.is_a?(Smile)
+      %li{:onclick => "copyToClipboard('%customer_name%')", :'data-toggle' => "tooltip", :'data-placement'=> "left", :title => "Нажмите чтобы копировать %customer_name%"}
+        %strong %customer_name%
+        \- Имя клиента
+    
+      %li{:onclick => "copyToClipboard('%main_product_name%')", :'data-toggle' => "tooltip", :'data-placement'=> "left", :title => "Нажмите чтобы копировать %main_product_name%"}
+        %strong %main_product_name%
+        \- Название букета
+    
+      %li{:onclick => "copyToClipboard('%date_smile%')", :'data-toggle' => "tooltip", :'data-placement'=> "left", :title => "Нажмите чтобы копировать %date_smile%"}
+        %strong %date_smile%
+        \- Дата (поле date)
+    
+      %li{:onclick => "copyToClipboard('%order_eight_digit_id%')", :'data-toggle' => "tooltip", :'data-placement'=> "left", :title => "Нажмите чтобы копировать %order_eight_digit_id%"}
+        %strong %order_eight_digit_id%
+        \- Номер заказа
+
 :javascript
 
   function copyToClipboard(value) {

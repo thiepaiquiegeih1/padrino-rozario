@@ -77,6 +77,42 @@ Rozario::App.helpers do
       end
     end
 
+    # Special variables for smiles only
+    if @smile
+      result_hash.each_value do |v|
+        next if v.nil? || v.class == UploaderOg || v.class == UploaderTwitter
+        
+        # %customer_name% - Имя клиента
+        customer_name = @smile.customer_name || "Покупатель"
+        v.gsub!(/%customer_name%/, customer_name)
+        
+        # %main_product_name% - Название букета
+        main_product_name = ""
+        if @smile.json_order && !@smile.json_order.empty?
+          begin
+            order_data = JSON.parse(@smile.json_order)
+            first_item = order_data["0"]
+            if first_item && first_item["id"]
+              product_id = first_item["id"].to_i
+              product = Product.find_by_id(product_id)
+              main_product_name = product.header if product && product.header.present?
+            end
+          rescue => e
+            # Use empty string if parsing fails
+          end
+        end
+        v.gsub!(/%main_product_name%/, main_product_name)
+        
+        # %date_smile% - Дата из поля date
+        date_smile = @smile.date || ""
+        v.gsub!(/%date_smile%/, date_smile)
+        
+        # %order_eight_digit_id% - Номер заказа
+        order_id = @smile.order_eight_digit_id ? @smile.order_eight_digit_id.to_s : ""
+        v.gsub!(/%order_eight_digit_id%/, order_id)
+      end
+    end
+
     # raise result_hash.inspect
     result_hash.each_value do |v|
       next if v.nil? || v.class == UploaderOg || v.class == UploaderTwitter
