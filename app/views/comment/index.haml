@@ -28,7 +28,7 @@
               = text_field_tag :order_eight_digit_id, :value => params[:order_eight_digit_id], :placeholder => 'Например: 12345678', :pattern => '[0-9]{8}', :title => '8-значный номер заказа', :id => 'FORM_ORDER_ID', :required => true
             %small.help-block 
               - if @user_orders && !@user_orders.empty?
-                Выберите заказ для оставления отзыва
+                Оцените качество предоставленных услуг
               - else
                 Введите 8-значный номер вашего заказа
       .row.a3
